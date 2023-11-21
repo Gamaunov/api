@@ -1,16 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { FilterQuery, SortOrder } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { Blog, BlogModelType } from '../blogs/schemas/blog.entity';
 import { Paginator } from '../../shared/genericTypes/paginator';
-import { QueryParamsEnum } from '../../shared/enums/query-params.enum';
-import { SortDirection } from '../../shared/enums/sort-direction.enum';
 import { LikeStatus } from '../../shared/enums/like-status.enum';
 
-import { Post, PostDocument, PostModelType } from './schemas/post.entity';
+import { Post, PostModelType } from './schemas/post.entity';
 import { PostQuery } from './dto/post.query';
 import { PostView } from './schemas/post.view';
+import { postQueryValidator } from './helpers/validation/postQueryValidator';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -21,52 +20,27 @@ export class PostsQueryRepository {
     private BlogModel: BlogModelType,
   ) {}
 
-  async findPosts(
-    query: PostQuery,
-    blogId?: string,
-  ): Promise<Paginator<PostView[]>> {
-    const sortBy = query.sortBy || QueryParamsEnum.createdAt;
-    const sortDirection = query.sortDirection;
-    const pageNumber = Number(query.pageNumber) || 1;
-    const pageSize = Number(query.pageSize) || 10;
+  async findPosts(queryData: PostQuery): Promise<Paginator<PostView[]>> {
+    const filter = {};
 
-    const filter: FilterQuery<PostDocument> = {};
+    const query = postQueryValidator(queryData);
 
-    if (blogId) {
-      if (!mongoose.isValidObjectId(blogId)) {
-        throw new NotFoundException();
-      }
-
-      const blog = await this.BlogModel.findOne({ _id: blogId });
-
-      if (!blog) {
-        throw new NotFoundException();
-      }
-
-      filter.blogId = blogId;
-    }
-
-    const currentSortDirection: { [key: string]: SortOrder } = {
-      [sortBy]: SortDirection.DESC,
+    const sortCriteria: { [key: string]: any } = {
+      [query.sortBy as string]: query.sortDirection,
     };
 
-    if (sortDirection === SortDirection.ASC) {
-      currentSortDirection[sortBy] = SortDirection.ASC;
-    }
-
     const posts = await this.PostModel.find(filter)
-      .sort(currentSortDirection)
-      .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
-      .limit(pageSize > 0 ? pageSize : 0)
+      .sort(sortCriteria)
+      .skip((+query.pageNumber - 1) * +query.pageSize)
+      .limit(query.pageSize)
       .lean();
 
     const totalCount = await this.PostModel.countDocuments(filter);
-    const pagesCount = Math.ceil(totalCount / pageSize);
 
     return {
-      pagesCount: pagesCount,
-      page: pageNumber,
-      pageSize: pageSize,
+      pagesCount: Math.ceil(totalCount / +query.pageSize),
+      page: +query.pageNumber,
+      pageSize: +query.pageSize,
       totalCount,
       items: posts.map((post) => {
         return {

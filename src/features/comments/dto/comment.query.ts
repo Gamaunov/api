@@ -1,6 +1,3 @@
-export class CommentQuery {
-  sortBy: string;
-  sortDirection: string;
-  pageNumber: string;
-  pageSize: string;
-}
+import { QueryDTO } from '../../../shared/dto/query.dto';
+
+export class CommentQuery extends QueryDTO {}

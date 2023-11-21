@@ -1,8 +1,10 @@
-export class UserQuery {
+import { IsOptional } from 'class-validator';
+
+import { QueryDTO } from '../../../shared/dto/query.dto';
+
+export class UserQuery extends QueryDTO {
+  @IsOptional()
   searchLoginTerm: string;
+  @IsOptional()
   searchEmailTerm: string;
-  sortBy: string;
-  sortDirection: string;
-  pageNumber: string;
-  pageSize: string;
 }

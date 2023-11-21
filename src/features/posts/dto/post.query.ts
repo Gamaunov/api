@@ -1,6 +1,3 @@
-export class PostQuery {
-  sortBy: string;
-  sortDirection: string;
-  pageNumber: string;
-  pageSize: string;
-}
+import { QueryDTO } from '../../../shared/dto/query.dto';
+
+export class PostQuery extends QueryDTO {}
