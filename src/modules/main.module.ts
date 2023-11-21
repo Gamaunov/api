@@ -24,6 +24,7 @@ import { UsersService } from '../features/users/users.service';
 import { UsersRepository } from '../features/users/users.repository';
 import { UsersQueryRepository } from '../features/users/users.query.repository';
 import { CommentsController } from '../features/comments/comments.controller';
+import { TestingController } from '../features/testing/testing.controller';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CommentsController } from '../features/comments/comments.controller';
     PostsController,
     CommentsController,
     UsersController,
+    TestingController,
   ],
   providers: [
     BlogsService,
