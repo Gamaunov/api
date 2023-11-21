@@ -36,7 +36,7 @@ export class BlogsController {
   }
 
   @Get(':id')
-  async findBlog(@Param(':id') id: string) {
+  async findBlog(@Param('id') id: string) {
     return this.blogsQueryRepository.findBlog(id);
   }
 
@@ -50,6 +50,14 @@ export class BlogsController {
     return this.blogsService.createBlog(createBlogDTO);
   }
 
+  @Post('/:id/posts')
+  async createPost(
+    @Param('id') id: string,
+    @Body() createPostDTO: CreatePostDTO,
+  ) {
+    return this.postsService.createPost(createPostDTO, id);
+  }
+
   @Put(':id')
   @HttpCode(204)
   async updateBlog(
@@ -59,17 +67,9 @@ export class BlogsController {
     return this.blogsService.updateBlog(id, updateBlogDTO);
   }
 
-  @Delete()
+  @Delete(':id')
   @HttpCode(204)
   async deleteBlog(@Param('id') id: string) {
     return this.blogsService.deleteBlog(id);
-  }
-
-  @Post('/:id/posts')
-  async createPost(
-    @Param('id') id: string,
-    @Body() createPostDTO: CreatePostDTO,
-  ) {
-    return this.postsService.createPost(createPostDTO, id);
   }
 }
