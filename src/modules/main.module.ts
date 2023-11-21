@@ -1,29 +1,29 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { Blog, BlogSchema } from '../entity/blogs/schemas/blog.entity';
-import { BlogsController } from '../entity/blogs/blogs.controller';
-import { BlogsService } from '../entity/blogs/blogs.service';
-import { Post, PostSchema } from '../entity/posts/schemas/post.entity';
+import { Blog, BlogSchema } from '../features/blogs/schemas/blog.entity';
+import { BlogsController } from '../features/blogs/blogs.controller';
+import { BlogsService } from '../features/blogs/blogs.service';
+import { Post, PostSchema } from '../features/posts/schemas/post.entity';
 import {
   Comment,
   CommentSchema,
-} from '../entity/comments/schemas/comment.entity';
-import { User, UserSchema } from '../entity/users/schemas/user.entity';
-import { PostsController } from '../entity/posts/post.controller';
-import { UsersController } from '../entity/users/users.controller';
-import { BlogsRepository } from '../entity/blogs/blogs.repository';
-import { BlogsQueryRepository } from '../entity/blogs/blogs.query.repository';
-import { PostsService } from '../entity/posts/posts.service';
-import { PostsRepository } from '../entity/posts/posts.repository';
-import { PostsQueryRepository } from '../entity/posts/posts.query.repository';
-import { CommentsService } from '../entity/comments/comments.service';
-import { CommentsRepository } from '../entity/comments/comments.repository';
-import { CommentsQueryRepository } from '../entity/comments/comments.query.repository';
-import { UsersService } from '../entity/users/users.service';
-import { UsersRepository } from '../entity/users/users.repository';
-import { UsersQueryRepository } from '../entity/users/users.query.repository';
-import { CommentsController } from '../entity/comments/comments.controller';
+} from '../features/comments/schemas/comment.entity';
+import { User, UserSchema } from '../features/users/schemas/user.entity';
+import { PostsController } from '../features/posts/post.controller';
+import { UsersController } from '../features/users/users.controller';
+import { BlogsRepository } from '../features/blogs/blogs.repository';
+import { BlogsQueryRepository } from '../features/blogs/blogs.query.repository';
+import { PostsService } from '../features/posts/posts.service';
+import { PostsRepository } from '../features/posts/posts.repository';
+import { PostsQueryRepository } from '../features/posts/posts.query.repository';
+import { CommentsService } from '../features/comments/comments.service';
+import { CommentsRepository } from '../features/comments/comments.repository';
+import { CommentsQueryRepository } from '../features/comments/comments.query.repository';
+import { UsersService } from '../features/users/users.service';
+import { UsersRepository } from '../features/users/users.repository';
+import { UsersQueryRepository } from '../features/users/users.query.repository';
+import { CommentsController } from '../features/comments/comments.controller';
 
 @Module({
   imports: [
