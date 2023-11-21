@@ -61,7 +61,7 @@ export class BlogsController {
   @Put(':id')
   @HttpCode(204)
   async updateBlog(
-    @Param(':id') id: string,
+    @Param('id') id: string,
     @Body() updateBlogDTO: UpdateBlogDTO,
   ) {
     return this.blogsService.updateBlog(id, updateBlogDTO);
