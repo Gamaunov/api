@@ -24,11 +24,11 @@ export class UsersQueryRepository {
       query.searchEmailTerm,
     );
 
-    const sortBy = query.sortBy || 'createdAt';
+    const sortBy = queryData.sortBy || 'createdAt';
     const sortCriteria: { [key: string]: SortOrder } = {
       [`accountData.${sortBy}`]: 'desc',
     };
-    if (query.sortDirection === 'asc') {
+    if (queryData.sortDirection === 'asc') {
       sortCriteria[`accountData.${sortBy}`] = 'asc';
     }
 
