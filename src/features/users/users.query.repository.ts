@@ -45,7 +45,7 @@ export class UsersQueryRepository {
           id: user._id.toString(),
           login: user.accountData.login,
           email: user.accountData.email,
-          createdAt: user.accountData.createdAt.toISOString(),
+          createdAt: user.accountData.createdAt.toString(),
         };
       }),
     };
