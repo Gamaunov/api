@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -30,8 +31,14 @@ export class PostsController {
   ) {}
 
   @Get(':id')
-  async findPost(@Param('id') id: string) {
-    return this.postsQueryRepository.findPostById(id);
+  async findPostById(@Param('id') id: string) {
+    const result = await this.postsQueryRepository.findPostById(id);
+
+    if (!result) {
+      throw new NotFoundException();
+    }
+
+    return result;
   }
 
   @Get()

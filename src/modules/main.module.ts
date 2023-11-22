@@ -10,7 +10,7 @@ import {
   CommentSchema,
 } from '../features/comments/schemas/comment.entity';
 import { User, UserSchema } from '../features/users/schemas/user.entity';
-import { PostsController } from '../features/posts/post.controller';
+import { PostsController } from '../features/posts/posts.controller';
 import { UsersController } from '../features/users/users.controller';
 import { BlogsRepository } from '../features/blogs/blogs.repository';
 import { BlogsQueryRepository } from '../features/blogs/blogs.query.repository';

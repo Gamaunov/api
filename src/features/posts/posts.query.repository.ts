@@ -27,11 +27,19 @@ export class PostsQueryRepository {
     queryData: PostQuery,
     userId: string,
     blogId?: string,
-  ): Promise<Paginator<PostView[] | null>> {
+  ): Promise<Paginator<PostView[]> | null> {
     const filter: FilterQuery<PostModelType> = {};
 
     if (blogId) {
       filter.blogId = blogId;
+
+      const foundBlog = await this.PostModel.findOne({
+        blogId,
+      });
+
+      if (!foundBlog) {
+        return null;
+      }
     }
 
     const query = postQueryValidator(queryData);

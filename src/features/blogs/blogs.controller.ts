@@ -17,6 +17,7 @@ import { CreatePostDTO } from '../posts/dto/create-post.dto';
 import { PostQuery } from '../posts/dto/post.query';
 import { PostView } from '../posts/schemas/post.view';
 import { Paginator } from '../../shared/genericTypes/paginator';
+import { UserIdDecorator } from '../../shared/decorators/user-id.decorator';
 
 import { CreateBlogDTO } from './dto/create-blog.dto';
 import { BlogQuery } from './dto/blog-query';
@@ -55,11 +56,15 @@ export class BlogsController {
 
   @Get('/:id/posts')
   async findPosts(
+    @UserIdDecorator() userId: string,
+    @Param('id') blogId: string,
     @Query() query: PostQuery,
-    @Param('id') id: string,
   ): Promise<Paginator<PostView[] | null>> {
-    const result: Paginator<PostView[] | null> =
-      await this.postsQueryRepository.findPosts(query, id);
+    const result = await this.postsQueryRepository.findPosts(
+      query,
+      userId,
+      blogId,
+    );
 
     if (!result) {
       throw new NotFoundException();
