@@ -24,13 +24,9 @@ export class UsersQueryRepository {
       query.searchEmailTerm,
     );
 
-    const sortBy = queryData.sortBy || 'createdAt';
     const sortCriteria: { [key: string]: SortOrder } = {
-      [`accountData.${sortBy}`]: 'desc',
+      [query.sortBy as string]: query.sortDirection,
     };
-    if (queryData.sortDirection === 'asc') {
-      sortCriteria[`accountData.${sortBy}`] = 'asc';
-    }
 
     const users = await this.UserModel.find(filter)
       .sort(sortCriteria)
