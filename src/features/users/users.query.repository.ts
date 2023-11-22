@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { FilterQuery, SortOrder } from 'mongoose';
 
 import { Paginator } from '../../shared/genericTypes/paginator';
 
-import { loginEmailFilter } from './helpers/filters/loginEmailFilter';
-import { usersQueryValidator } from './helpers/validation/usersQueryValidator';
-import { User, UserModelType } from './schemas/user.entity';
+import { User, UserDocument, UserModelType } from './schemas/user.entity';
 import { UserQuery } from './dto/user.query';
 import { UserView } from './schemas/user.view';
 
@@ -15,20 +14,35 @@ export class UsersQueryRepository {
     @InjectModel(User.name)
     private UserModel: UserModelType,
   ) {}
-  async findUsers(queryData: UserQuery): Promise<Paginator<UserView[]>> {
-    const query = usersQueryValidator(queryData);
+  async findUsers(query: UserQuery): Promise<Paginator<UserView[]>> {
+    const filter: FilterQuery<UserDocument> = {};
 
-    const filter = loginEmailFilter(
-      query.searchLoginTerm,
-      query.searchEmailTerm,
-    );
+    if (query.searchLoginTerm || query.searchEmailTerm) {
+      filter.$or = [];
 
-    const sortCriteria: { [key: string]: any } = {
-      [query.sortBy as string]: query.sortDirection,
+      if (query.searchLoginTerm) {
+        filter.$or.push({
+          'accountData.login': { $regex: query.searchLoginTerm, $options: 'i' },
+        });
+      }
+
+      if (query.searchEmailTerm) {
+        filter.$or.push({
+          'accountData.email': { $regex: query.searchEmailTerm, $options: 'i' },
+        });
+      }
+    }
+
+    const sortingObj: { [key: string]: SortOrder } = {
+      [`accountData.${query.sortBy}`]: query.sortDirection,
     };
 
+    if (query.sortDirection === 'asc') {
+      sortingObj[`accountData.${query.sortBy}`] = 'asc';
+    }
+
     const users = await this.UserModel.find(filter)
-      .sort(sortCriteria)
+      .sort(sortingObj)
       .skip(
         +query.pageNumber > 0 ? (+query.pageNumber - 1) * +query.pageSize : 0,
       )
@@ -36,9 +50,10 @@ export class UsersQueryRepository {
       .lean();
 
     const totalCount = await this.UserModel.countDocuments(filter);
+    const pagesCount = Math.ceil(totalCount / +query.pageSize);
 
     return {
-      pagesCount: Math.ceil(totalCount / +query.pageSize),
+      pagesCount: pagesCount,
       page: +query.pageNumber,
       pageSize: +query.pageSize,
       totalCount,
