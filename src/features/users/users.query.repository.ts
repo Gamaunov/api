@@ -28,7 +28,7 @@ export class UsersQueryRepository {
     // };
 
     const users = await this.UserModel.find(filter)
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .skip((+query.pageNumber - 1) * +query.pageSize)
       .limit(query.pageSize)
       .lean();
