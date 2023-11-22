@@ -28,10 +28,7 @@ function validateTerm(term: any): string | null {
 
 export function usersQueryValidator(query: any): UserQuery {
   query.sortBy = validateSortBy(query.sortBy);
-  query.sortDirection =
-    query.sortDirection === SortDirection.ASC
-      ? SortDirection.ASC
-      : SortDirection.DESC;
+  query.sortDirection = query.sortDirection === SortDirection.ASC ? 1 : -1;
   query.pageNumber = validateNumber(+query.pageNumber, 1);
   query.pageSize = validateNumber(+query.pageSize, 10);
   query.searchLoginTerm = validateTerm(query.searchLoginTerm);
