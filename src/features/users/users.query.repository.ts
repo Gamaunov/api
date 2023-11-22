@@ -23,12 +23,12 @@ export class UsersQueryRepository {
       query.searchEmailTerm,
     );
 
-    // const sortCriteria: { [key: string]: any } = {
-    //   [query.sortBy as string]: query.sortDirection,
-    // };
+    const sortCriteria: { [key: string]: any } = {
+      [query.sortBy as string]: query.sortDirection,
+    };
 
     const users = await this.UserModel.find(filter)
-      .sort({ createdAt: 1 })
+      .sort(sortCriteria)
       .skip((+query.pageNumber - 1) * +query.pageSize)
       .limit(query.pageSize)
       .lean();
