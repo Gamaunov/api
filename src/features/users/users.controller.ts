@@ -38,7 +38,7 @@ export class UsersController {
 
   @Delete()
   @HttpCode(204)
-  async deleteUsers() {
-    return this.usersService.deleteUsers();
+  async deleteAllUsers() {
+    return this.usersService.deleteAllUsers();
   }
 }

@@ -15,7 +15,7 @@ export class BlogsRepository {
     return blog.save();
   }
 
-  async findBlog(id: string): Promise<BlogDocument | null> {
+  async findBlogById(id: string): Promise<BlogDocument | null> {
     if (!mongoose.isValidObjectId(id)) {
       throw new NotFoundException();
     }
@@ -46,7 +46,7 @@ export class BlogsRepository {
     return blog.deletedCount === 1;
   }
 
-  async deleteBlogs(): Promise<boolean> {
+  async deleteAllBlogs(): Promise<boolean> {
     await this.BlogModel.deleteMany({});
     return (await this.BlogModel.countDocuments()) === 0;
   }

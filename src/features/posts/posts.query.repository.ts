@@ -1,27 +1,38 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
+import mongoose, { FilterQuery } from 'mongoose';
 
-import { Blog, BlogModelType } from '../blogs/schemas/blog.entity';
 import { Paginator } from '../../shared/genericTypes/paginator';
 import { LikeStatus } from '../../shared/enums/like-status.enum';
+import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
+import { getThreeNewestLikes } from '../../shared/utils/getThreeNewestLikes';
+import { getLikeStatus } from '../../shared/utils/getLikeStatus';
 
-import { Post, PostModelType } from './schemas/post.entity';
+import { Post, PostDTOType, PostModelType } from './schemas/post.entity';
 import { PostQuery } from './dto/post.query';
 import { PostView } from './schemas/post.view';
 import { postQueryValidator } from './helpers/validation/postQueryValidator';
+import { PostsRepository } from './posts.repository';
 
 @Injectable()
 export class PostsQueryRepository {
   constructor(
     @InjectModel(Post.name)
     private PostModel: PostModelType,
-    @InjectModel(Blog.name)
-    private BlogModel: BlogModelType,
+    private readonly blogsQueryRepository: BlogsQueryRepository,
+    private readonly postsRepository: PostsRepository,
   ) {}
 
-  async findPosts(queryData: PostQuery): Promise<Paginator<PostView[]>> {
-    const filter = {};
+  async findPosts(
+    queryData: PostQuery,
+    userId: string,
+    blogId?: string,
+  ): Promise<Paginator<PostView[] | null>> {
+    const filter: FilterQuery<PostModelType> = {};
+
+    if (blogId) {
+      filter.blogId = blogId;
+    }
 
     const query = postQueryValidator(queryData);
 
@@ -35,6 +46,8 @@ export class PostsQueryRepository {
       .limit(query.pageSize)
       .lean();
 
+    const postItems = await this.postsMapping(posts, userId);
+
     const totalCount = await this.PostModel.countDocuments(filter);
 
     return {
@@ -42,36 +55,31 @@ export class PostsQueryRepository {
       page: +query.pageNumber,
       pageSize: +query.pageSize,
       totalCount,
-      items: posts.map((post) => {
-        return {
-          id: post._id.toString(),
-          title: post.title,
-          shortDescription: post.shortDescription,
-          content: post.content,
-          blogId: post.blogId,
-          blogName: post.blogName,
-          createdAt: post.createdAt.toISOString(),
-          extendedLikesInfo: {
-            likesCount: post.extendedLikesInfo.likesCount,
-            dislikesCount: post.extendedLikesInfo.dislikesCount,
-            myStatus: LikeStatus.NONE,
-            newestLikes: [],
-          },
-        };
-      }),
+      items: postItems,
     };
   }
 
-  async findPost(id: string): Promise<PostView> {
-    if (!mongoose.isValidObjectId(id)) {
-      throw new NotFoundException();
+  async findPostById(
+    postId: string,
+    userId?: string,
+  ): Promise<PostView | null> {
+    if (!mongoose.isValidObjectId(postId)) {
+      return null;
     }
 
-    const post = await this.PostModel.findOne({ _id: id });
+    const post = await this.PostModel.findOne({ _id: postId });
 
     if (!post) {
-      throw new NotFoundException();
+      return null;
     }
+
+    let status;
+    if (userId) {
+      status = await this.postsRepository.findUserLikeStatus(postId, userId);
+    }
+
+    const usersLikes = post.likesInfo.users;
+    const threeNewestLikesArray = getThreeNewestLikes(usersLikes);
 
     return {
       id: post._id.toString(),
@@ -82,11 +90,40 @@ export class PostsQueryRepository {
       blogName: post.blogName,
       createdAt: post.createdAt.toISOString(),
       extendedLikesInfo: {
-        likesCount: post.extendedLikesInfo.likesCount,
-        dislikesCount: post.extendedLikesInfo.dislikesCount,
-        myStatus: LikeStatus.NONE,
-        newestLikes: [],
+        likesCount: post.likesInfo.likesCount,
+        dislikesCount: post.likesInfo.dislikesCount,
+        myStatus: status || LikeStatus.NONE,
+        newestLikes: threeNewestLikesArray,
       },
     };
+  }
+
+  private async postsMapping(
+    posts: PostDTOType[],
+    userId: string,
+  ): Promise<PostView[]> {
+    return posts.map((p) => {
+      const status = getLikeStatus(p, userId);
+
+      const usersLikes = p.likesInfo.users;
+
+      const threeNewestLikesArray = getThreeNewestLikes(usersLikes);
+
+      return {
+        id: p._id.toString(),
+        title: p.title,
+        shortDescription: p.shortDescription,
+        content: p.content,
+        blogId: p.blogId,
+        blogName: p.blogName,
+        createdAt: p.createdAt.toISOString(),
+        extendedLikesInfo: {
+          likesCount: p.likesInfo.likesCount,
+          dislikesCount: p.likesInfo.dislikesCount,
+          myStatus: status,
+          newestLikes: threeNewestLikesArray,
+        },
+      };
+    });
   }
 }

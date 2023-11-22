@@ -17,6 +17,6 @@ export class CommentsController {
   @Delete()
   @HttpCode(204)
   async deleteComments() {
-    return this.commentsService.deleteComments();
+    return this.commentsService.deleteAllComments();
   }
 }

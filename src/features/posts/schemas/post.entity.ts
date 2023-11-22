@@ -1,4 +1,4 @@
-import { HydratedDocument, Model } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { CreatePostDTO } from '../dto/create-post.dto';
@@ -6,6 +6,7 @@ import { BlogDocument } from '../../blogs/schemas/blog.entity';
 import { LikesInfoSchema } from '../../../shared/schemas/likes-info.schema';
 
 export type PostDocument = HydratedDocument<Post>;
+export type PostDTOType = Post & { _id: Types.ObjectId };
 
 export type PostModelStaticType = {
   createPost: (
@@ -38,13 +39,12 @@ export class Post {
   createdAt: Date;
 
   @Prop({ required: true })
-  extendedLikesInfo: LikesInfoSchema;
+  likesInfo: LikesInfoSchema;
 
   updatePost(updatePostDTO) {
     this.title = updatePostDTO.title;
     this.shortDescription = updatePostDTO.shortDescription;
     this.content = updatePostDTO.content;
-    this.blogId = updatePostDTO.blogId;
   }
 
   static createPost(
@@ -59,7 +59,7 @@ export class Post {
       blogId: blog._id.toString(),
       blogName: blog.name,
       createdAt: new Date(),
-      extendedLikesInfo: {
+      likesInfo: {
         likesCount: 0,
         dislikesCount: 0,
         users: [],

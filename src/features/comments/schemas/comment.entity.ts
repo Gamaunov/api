@@ -1,4 +1,4 @@
-import { HydratedDocument, Model } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { CreateCommentDTO } from '../dto/create-comment.dto';
@@ -8,6 +8,7 @@ import { LikesInfoSchema } from '../../../shared/schemas/likes-info.schema';
 import { CommentatorInfoSchema } from './commentator.info.schema';
 
 export type CommentDocument = HydratedDocument<Comment>;
+export type CommentDTOType = Comment & { _id: Types.ObjectId };
 
 export type CommentModelStaticType = {
   createComment: (
@@ -34,7 +35,7 @@ export class Comment {
   createdAt: Date;
 
   @Prop({ required: true })
-  extendedLikesInfo: LikesInfoSchema;
+  likesInfo: LikesInfoSchema;
 
   static createComment(
     createCommentDTO: CreateCommentDTO,
@@ -49,7 +50,7 @@ export class Comment {
       },
       postId: post._id.toString(),
       createdAt: new Date(),
-      extendedLikesInfo: {
+      likesInfo: {
         likesCount: 0,
         dislikesCount: 0,
         users: [],

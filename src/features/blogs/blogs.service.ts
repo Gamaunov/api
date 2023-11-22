@@ -24,7 +24,7 @@ export class BlogsService {
     id: string,
     updateBlogDto: UpdateBlogDTO,
   ): Promise<Blog | null> {
-    const blog = await this.blogsRepository.findBlog(id);
+    const blog = await this.blogsRepository.findBlogById(id);
 
     if (!blog) {
       return null;
@@ -35,12 +35,16 @@ export class BlogsService {
   }
 
   async deleteBlog(id: string): Promise<boolean | null> {
-    const blog = await this.blogsRepository.findBlog(id);
+    const blog = await this.blogsRepository.findBlogById(id);
 
     if (!blog) {
       return null;
     }
 
     return this.blogsRepository.deleteBlog(id);
+  }
+
+  async deleteAllBlogs(): Promise<boolean> {
+    return this.blogsRepository.deleteAllBlogs();
   }
 }

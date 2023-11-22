@@ -64,8 +64,8 @@ export class CommentsQueryRepository {
           },
           createdAt: comment.createdAt.toISOString(),
           likesInfo: {
-            likesCount: comment.extendedLikesInfo.likesCount,
-            dislikesCount: comment.extendedLikesInfo.dislikesCount,
+            likesCount: comment.likesInfo.likesCount,
+            dislikesCount: comment.likesInfo.dislikesCount,
             myStatus: LikeStatus.NONE,
           },
         };
@@ -93,8 +93,8 @@ export class CommentsQueryRepository {
       },
       createdAt: comment.createdAt.toISOString(),
       likesInfo: {
-        likesCount: comment.extendedLikesInfo.likesCount,
-        dislikesCount: comment.extendedLikesInfo.dislikesCount,
+        likesCount: comment.likesInfo.likesCount,
+        dislikesCount: comment.likesInfo.dislikesCount,
         myStatus: LikeStatus.NONE,
       },
     };

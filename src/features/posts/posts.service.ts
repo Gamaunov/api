@@ -26,30 +26,30 @@ export class PostsService {
   ) {}
 
   async createPost(
-    createPostDto: CreatePostDTO,
+    createPostDTO: CreatePostDTO,
     blogId?: string,
   ): Promise<PostView> {
     let blog;
 
     if (blogId) {
-      blog = await this.blogsRepository.findBlog(blogId);
+      blog = await this.blogsRepository.findBlogById(blogId);
 
       if (!blog) {
         throw new InternalServerErrorException('blog not found');
       }
     } else {
-      blog = await this.postsRepository.findBlog(createPostDto.blogId);
+      blog = await this.blogsRepository.findBlogById(createPostDTO.blogId);
       if (!blog) {
         throw new InternalServerErrorException('blog not found');
       }
     }
 
-    const post = this.PostModel.createPost(createPostDto, this.PostModel, blog);
+    const post = this.PostModel.createPost(createPostDTO, this.PostModel, blog);
     return this.postsRepository.createPost(post);
   }
 
   async updatePost(id: string, updatePostDto: UpdatePostDTO): Promise<Post> {
-    const post = await this.postsRepository.findPost(id);
+    const post = await this.postsRepository.findPostById(id);
 
     if (!post) {
       throw new InternalServerErrorException('post not found');
@@ -63,7 +63,7 @@ export class PostsService {
     id: string,
     createCommentDto: CreateCommentDTO,
   ): Promise<CommentView> {
-    const post = await this.postsRepository.findPost(id);
+    const post = await this.postsRepository.findPostById(id);
 
     if (!post) {
       throw new InternalServerErrorException('post not found');
@@ -78,7 +78,7 @@ export class PostsService {
   }
 
   async deletePost(id: string): Promise<boolean> {
-    const post = await this.postsRepository.findPost(id);
+    const post = await this.postsRepository.findPostById(id);
 
     if (!post) {
       throw new InternalServerErrorException('post not found');
@@ -87,7 +87,7 @@ export class PostsService {
     return this.postsRepository.deletePost(id);
   }
 
-  async deletePosts(): Promise<boolean> {
-    return this.postsRepository.deletePosts();
+  async deleteAllPosts(): Promise<boolean> {
+    return this.postsRepository.deleteAllPosts();
   }
 }

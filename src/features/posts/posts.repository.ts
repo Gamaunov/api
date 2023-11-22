@@ -1,16 +1,8 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
-import {
-  Blog,
-  BlogDocument,
-  BlogModelType,
-} from '../blogs/schemas/blog.entity';
+import { Blog, BlogModelType } from '../blogs/schemas/blog.entity';
 import { LikeStatus } from '../../shared/enums/like-status.enum';
 
 import { Post, PostDocument, PostModelType } from './schemas/post.entity';
@@ -39,29 +31,15 @@ export class PostsRepository {
       blogName: post.blogName,
       createdAt: post.createdAt.toISOString(),
       extendedLikesInfo: {
-        likesCount: post.extendedLikesInfo.likesCount,
-        dislikesCount: post.extendedLikesInfo.dislikesCount,
+        likesCount: post.likesInfo.likesCount,
+        dislikesCount: post.likesInfo.dislikesCount,
         myStatus: LikeStatus.NONE,
         newestLikes: [],
       },
     };
   }
 
-  async findBlog(id?: string): Promise<BlogDocument | null> {
-    if (!mongoose.isValidObjectId(id)) {
-      throw new BadRequestException('blog not found');
-    }
-
-    const blog = await this.BlogModel.findOne({ _id: id });
-
-    if (!blog) {
-      throw new BadRequestException('blog not found');
-    }
-
-    return blog;
-  }
-
-  async findPost(id: string): Promise<PostDocument | null> {
+  async findPostById(id: string): Promise<PostDocument | null> {
     if (!mongoose.isValidObjectId(id)) {
       throw new NotFoundException();
     }
@@ -75,12 +53,35 @@ export class PostsRepository {
     return post;
   }
 
+  async findUserLikeStatus(
+    postId: string,
+    userId: string,
+  ): Promise<string | null> {
+    const user = await this.PostModel.findOne(
+      { _id: postId },
+      {
+        'likesInfo.users': {
+          $filter: {
+            input: '$likesInfo.users',
+            cond: { $eq: ['$$this.userId', userId.toString()] },
+          },
+        },
+      },
+    );
+
+    if (!user || Number(user.likesInfo.users.length) === 0) {
+      return null;
+    }
+
+    return user.likesInfo.users[0].likeStatus;
+  }
+
   async deletePost(id: string): Promise<boolean> {
     const post = await this.PostModel.deleteOne({ _id: id });
     return post.deletedCount === 1;
   }
 
-  async deletePosts(): Promise<boolean> {
+  async deleteAllPosts(): Promise<boolean> {
     await this.PostModel.deleteMany({});
     return (await this.PostModel.countDocuments()) === 0;
   }

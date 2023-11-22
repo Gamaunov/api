@@ -15,12 +15,16 @@ import { PostsService } from '../posts/posts.service';
 import { PostsQueryRepository } from '../posts/posts.query.repository';
 import { CreatePostDTO } from '../posts/dto/create-post.dto';
 import { PostQuery } from '../posts/dto/post.query';
+import { PostView } from '../posts/schemas/post.view';
+import { Paginator } from '../../shared/genericTypes/paginator';
 
 import { CreateBlogDTO } from './dto/create-blog.dto';
 import { BlogQuery } from './dto/blog-query';
 import { UpdateBlogDTO } from './dto/update-blog.dto';
 import { BlogsService } from './blogs.service';
 import { BlogsQueryRepository } from './blogs.query.repository';
+import { Blog } from './schemas/blog.entity';
+import { BlogView } from './schemas/blog.view';
 
 @Controller('blogs')
 export class BlogsController {
@@ -32,13 +36,15 @@ export class BlogsController {
   ) {}
 
   @Get()
-  async findBlogs(@Query() query: BlogQuery) {
+  async findBlogs(
+    @Query() query: BlogQuery,
+  ): Promise<Paginator<BlogView[] | null>> {
     return this.blogsQueryRepository.findBlogs(query);
   }
 
   @Get(':id')
-  async findBlog(@Param('id') id: string) {
-    const blog = await this.blogsQueryRepository.findBlog(id);
+  async findBlog(@Param('id') id: string): Promise<BlogView> {
+    const blog: BlogView | null = await this.blogsQueryRepository.findBlog(id);
 
     if (!blog) {
       throw new NotFoundException();
@@ -48,12 +54,22 @@ export class BlogsController {
   }
 
   @Get('/:id/posts')
-  async findPosts(@Query() query: PostQuery, @Param('id') id: string) {
-    return this.postsQueryRepository.findPosts(query, id);
+  async findPosts(
+    @Query() query: PostQuery,
+    @Param('id') id: string,
+  ): Promise<Paginator<PostView[] | null>> {
+    const result: Paginator<PostView[] | null> =
+      await this.postsQueryRepository.findPosts(query, id);
+
+    if (!result) {
+      throw new NotFoundException();
+    }
+
+    return result;
   }
 
   @Post()
-  async createBlog(@Body() createBlogDTO: CreateBlogDTO) {
+  async createBlog(@Body() createBlogDTO: CreateBlogDTO): Promise<BlogView> {
     return this.blogsService.createBlog(createBlogDTO);
   }
 
@@ -61,7 +77,7 @@ export class BlogsController {
   async createPost(
     @Param('id') id: string,
     @Body() createPostDTO: CreatePostDTO,
-  ) {
+  ): Promise<PostView> {
     return this.postsService.createPost(createPostDTO, id);
   }
 
@@ -70,13 +86,19 @@ export class BlogsController {
   async updateBlog(
     @Param('id') id: string,
     @Body() updateBlogDTO: UpdateBlogDTO,
-  ) {
+  ): Promise<Blog | null> {
     return this.blogsService.updateBlog(id, updateBlogDTO);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  async deleteBlog(@Param('id') id: string) {
+  async deleteBlog(@Param('id') id: string): Promise<boolean | null> {
     return this.blogsService.deleteBlog(id);
+  }
+
+  @Delete()
+  @HttpCode(204)
+  async deleteAllBlogs(): Promise<boolean> {
+    return this.blogsService.deleteAllBlogs();
   }
 }

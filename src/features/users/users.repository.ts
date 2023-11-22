@@ -40,7 +40,7 @@ export class UsersRepository {
     return user.deletedCount === 1;
   }
 
-  async deleteUsers(): Promise<boolean> {
+  async deleteAllUsers(): Promise<boolean> {
     await this.UserModel.deleteMany({});
     return (await this.UserModel.countDocuments()) === 0;
   }

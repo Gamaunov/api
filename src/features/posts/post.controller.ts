@@ -13,6 +13,7 @@ import {
 import { CommentsQueryRepository } from '../comments/comments.query.repository';
 import { CreateCommentDTO } from '../comments/dto/create-comment.dto';
 import { CommentQuery } from '../comments/dto/comment.query';
+import { UserIdDecorator } from '../../shared/decorators/user-id.decorator';
 
 import { PostsQueryRepository } from './posts.query.repository';
 import { PostsService } from './posts.service';
@@ -30,12 +31,15 @@ export class PostsController {
 
   @Get(':id')
   async findPost(@Param('id') id: string) {
-    return this.postsQueryRepository.findPost(id);
+    return this.postsQueryRepository.findPostById(id);
   }
 
   @Get()
-  async findPosts(@Query() query: PostQuery) {
-    return this.postsQueryRepository.findPosts(query);
+  async findPosts(
+    @Query() query: PostQuery,
+    @UserIdDecorator() userId: string,
+  ) {
+    return this.postsQueryRepository.findPosts(query, userId);
   }
 
   @Get('/:id/comments')
@@ -65,6 +69,16 @@ export class PostsController {
     return this.postsService.updatePost(id, updatePostDTO);
   }
 
+  // @Put('/:id/like-status')
+  // @HttpCode(204)
+  // async updateLikeStatus(
+  //   @UserIdDecorator() userId: string,
+  //   @Param('id') postId: string,
+  //   @Body() likeStatusDTO: LikeStatusDTO,
+  // ) {
+  //
+  // }
+
   @Delete(':id')
   @HttpCode(204)
   async deletePost(@Param('id') id: string) {
@@ -73,7 +87,7 @@ export class PostsController {
 
   @Delete()
   @HttpCode(204)
-  async deletePosts() {
-    return this.postsService.deletePosts();
+  async deleteAllPosts() {
+    return this.postsService.deleteAllPosts();
   }
 }
