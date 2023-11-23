@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { SortOrder } from 'mongoose';
 
 import { Paginator } from '../../shared/genericTypes/paginator';
 
@@ -24,7 +23,7 @@ export class UsersQueryRepository {
       query.searchEmailTerm,
     );
 
-    const sortCriteria: { [key: string]: SortOrder } = {
+    const sortCriteria: { [key: string]: any } = {
       [query.sortBy as string]: query.sortDirection,
     };
 
