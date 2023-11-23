@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { FilterQuery, SortOrder } from 'mongoose';
+import mongoose, { SortOrder } from 'mongoose';
 
 import { Paginator } from '../../shared/genericTypes/paginator';
-import { QueryParamsEnum } from '../../shared/enums/query-params.enum';
-import { SortDirection } from '../../shared/enums/sort-direction.enum';
 
 import { BlogView } from './schemas/blog.view';
-import { Blog, BlogDocument, BlogModelType } from './schemas/blog.entity';
+import { Blog, BlogModelType } from './schemas/blog.entity';
 import { BlogQuery } from './dto/blog-query';
+import { blogsQueryValidator } from './helpers/validation/blogsQueryValidator';
 
 @Injectable()
 export class BlogsQueryRepository {
@@ -18,39 +17,28 @@ export class BlogsQueryRepository {
   ) {}
 
   async findBlogs(query: BlogQuery): Promise<Paginator<BlogView[]>> {
-    const term = query.searchNameTerm;
-    const sortBy = query.sortBy || QueryParamsEnum.createdAt;
-    const sortDirection = query.sortDirection;
-    const pageNumber = Number(query.pageNumber) || 1;
-    const pageSize = Number(query.pageSize) || 10;
+    const queryData = blogsQueryValidator(query);
 
-    const filter: FilterQuery<BlogDocument> = {};
-
-    if (term) {
-      filter.name = { $regex: term, $options: 'i' };
-    }
-
-    const currentSortDirection: { [key: string]: SortOrder } = {
-      [sortBy]: SortDirection.DESC,
+    const filter = {
+      name: { $regex: queryData.searchNameTerm ?? '', $options: 'i' },
     };
 
-    if (sortDirection === SortDirection.ASC) {
-      currentSortDirection[sortBy] = SortDirection.ASC;
-    }
+    const sortCriteria: { [key: string]: SortOrder } = {
+      [queryData.sortBy as string]: queryData.sortDirection,
+    };
 
     const blogs = await this.BlogModel.find(filter)
-      .sort(currentSortDirection)
-      .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
-      .limit(pageSize > 0 ? pageSize : 0)
+      .skip((+query.pageNumber - 1) * +query.pageSize)
+      .limit(+query.pageSize)
+      .sort(sortCriteria)
       .lean();
 
     const totalCount = await this.BlogModel.countDocuments(filter);
-    const pagesCount = Math.ceil(totalCount / pageSize);
 
     return {
-      pagesCount: pagesCount,
-      page: pageNumber,
-      pageSize: pageSize,
+      pagesCount: Math.ceil(totalCount / +query.pageSize),
+      page: +query.pageNumber,
+      pageSize: +query.pageSize,
       totalCount,
       items: blogs.map((blog) => {
         return {
