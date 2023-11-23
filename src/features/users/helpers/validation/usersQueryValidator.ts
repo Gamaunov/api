@@ -2,11 +2,15 @@ import { UserQuery } from '../../dto/user.query';
 import { SortDirection } from '../../../../shared/enums/sort-direction.enum';
 import { SortUserFields } from '../enums/sortUserFields';
 
-function validateSortBy(sortBy: any): string {
+function validateSortBy(sortBy: SortUserFields): string {
   if (Object.values(SortUserFields).includes(sortBy)) {
-    return sortBy;
+    if (sortBy === SortUserFields.id) {
+      return sortBy;
+    }
+    return `accountData.${sortBy}`;
   } else {
-    return SortUserFields.createdAt;
+    console.log(sortBy, 2);
+    return `accountData.${SortUserFields.createdAt}`;
   }
 }
 
@@ -28,10 +32,7 @@ function validateTerm(term: any): string | null {
 
 export function usersQueryValidator(query: any): UserQuery {
   query.sortBy = validateSortBy(query.sortBy);
-  query.sortDirection =
-    query.sortDirection === SortDirection.ASC
-      ? SortDirection.ASC
-      : SortDirection.DESC;
+  query.sortDirection = query.sortDirection === SortDirection.ASC ? 1 : -1;
   query.pageNumber = validateNumber(+query.pageNumber, 1);
   query.pageSize = validateNumber(+query.pageSize, 10);
   query.searchLoginTerm = validateTerm(query.searchLoginTerm);

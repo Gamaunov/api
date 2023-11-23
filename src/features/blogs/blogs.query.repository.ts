@@ -6,9 +6,9 @@ import { Paginator } from '../../shared/genericTypes/paginator';
 import { QueryParamsEnum } from '../../shared/enums/query-params.enum';
 import { SortDirection } from '../../shared/enums/sort-direction.enum';
 
+import { BlogView } from './schemas/blog.view';
 import { Blog, BlogDocument, BlogModelType } from './schemas/blog.entity';
 import { BlogQuery } from './dto/blog-query';
-import { BlogView } from './schemas/blog.view';
 
 @Injectable()
 export class BlogsQueryRepository {

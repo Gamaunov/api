@@ -3,11 +3,11 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { Paginator } from '../../shared/genericTypes/paginator';
 
-import { loginEmailFilter } from './helpers/filters/loginEmailFilter';
-import { usersQueryValidator } from './helpers/validation/usersQueryValidator';
 import { User, UserModelType } from './schemas/user.entity';
 import { UserQuery } from './dto/user.query';
 import { UserView } from './schemas/user.view';
+import { usersQueryValidator } from './helpers/validation/usersQueryValidator';
+import { loginEmailFilter } from './helpers/filters/loginEmailFilter';
 
 @Injectable()
 export class UsersQueryRepository {
@@ -26,11 +26,11 @@ export class UsersQueryRepository {
     const sortCriteria: { [key: string]: any } = {
       [query.sortBy as string]: query.sortDirection,
     };
-
+    console.log(sortCriteria);
     const users = await this.UserModel.find(filter)
-      .sort(sortCriteria)
       .skip((+query.pageNumber - 1) * +query.pageSize)
       .limit(+query.pageSize)
+      .sort(sortCriteria)
       .lean();
 
     const totalCount = await this.UserModel.countDocuments(filter);
