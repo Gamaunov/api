@@ -30,10 +30,8 @@ export class UsersQueryRepository {
 
     const users = await this.UserModel.find(filter)
       .sort(sortCriteria)
-      .skip(
-        +query.pageNumber > 0 ? (+query.pageNumber - 1) * +query.pageSize : 0,
-      )
-      .limit(+query.pageSize > 0 ? +query.pageSize : 0)
+      .skip((+query.pageNumber - 1) * +query.pageSize)
+      .limit(+query.pageSize)
       .lean();
 
     const totalCount = await this.UserModel.countDocuments(filter);
