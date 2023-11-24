@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
-import * as dotenv from 'dotenv';
 import * as process from 'process';
+import { configDotenv } from 'dotenv';
 
 import { AppModule } from './app.module';
 
-dotenv.config();
+configDotenv();
 
 const PORT = parseInt(process.env.PORT!, 10) || 5000;
 async function bootstrap() {
