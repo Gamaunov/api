@@ -10,7 +10,7 @@ import { MainModule } from './modules/main.module';
 
 configDotenv();
 
-const DB_URI =
+const DB_URI: string =
   process.env.NODE_ENV! === 'production'
     ? process.env.MONGO_URI!
     : process.env.MONGO_TEST_URI!;
