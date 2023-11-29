@@ -67,18 +67,21 @@ export class AuthService {
   }
 
   async getTokens(userId: string, deviceId: string = randomUUID()) {
-    const accessTokenPayload = { sub: userId };
-    const refreshTokenPayload = { sub: userId, deviceId: deviceId };
+    const accessToken = this.jwtService.sign(
+      { sub: userId },
+      {
+        secret: jwtConstants.accessTokenSecret,
+        expiresIn: jwtConstants.accessTokenExpirationTime,
+      },
+    );
 
-    const accessToken = this.jwtService.sign(accessTokenPayload, {
-      secret: jwtConstants.accessTokenSecret,
-      expiresIn: jwtConstants.accessTokenExpirationTime,
-    });
-
-    const refreshToken = this.jwtService.sign(refreshTokenPayload, {
-      secret: jwtConstants.refreshTokenSecret,
-      expiresIn: jwtConstants.refreshTokenExpirationTime,
-    });
+    const refreshToken = this.jwtService.sign(
+      { sub: userId, deviceId: deviceId },
+      {
+        secret: jwtConstants.refreshTokenSecret,
+        expiresIn: jwtConstants.refreshTokenExpirationTime,
+      },
+    );
 
     return {
       accessToken: accessToken,
