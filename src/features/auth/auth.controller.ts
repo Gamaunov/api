@@ -10,7 +10,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Response as ExpressResponse } from 'express';
 
 import { UsersRepository } from '../users/users.repository';
 import { DevicesService } from '../devices/devices.service';
@@ -104,15 +103,15 @@ export class AuthController {
     @UserIdFromGuard() userId: string,
     @Ip() ip: string,
     @Headers() headers: string,
-    @Response() res: ExpressResponse,
+    @Response() res,
   ) {
-    const userAgent = headers['user-agent'] || 'unknown';
+    const userAgent = headers[userAgent_] || unknown_;
     const tokens = await this.authService.getTokens(userId);
 
     await this.devicesService.createDevice(tokens.refreshToken, ip, userAgent);
 
     res
-      .cookie('refreshToken', tokens.refreshToken, {
+      .cookie(refreshToken_, tokens.refreshToken, {
         httpOnly: true,
         secure: true,
       })
@@ -127,7 +126,7 @@ export class AuthController {
     @Ip() ip: string,
     @Headers() headers: string,
     @RefreshToken() refreshToken: string,
-    @Response() res: ExpressResponse,
+    @Response() res,
   ): Promise<void> {
     const userAgent = headers[userAgent_] || unknown_;
     const decodedToken: any = this.jwtService.decode(refreshToken);
