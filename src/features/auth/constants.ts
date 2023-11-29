@@ -1,8 +1,8 @@
 import * as process from 'process';
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 
-console.log(process.env.JWT_ACCESS_SECRET);
 export const jwtConstants = {
   accessTokenSecret: process.env.JWT_ACCESS_SECRET,
   refreshTokenSecret: process.env.JWT_REFRESH_SECRET,
