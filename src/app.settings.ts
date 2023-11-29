@@ -1,12 +1,14 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import { useContainer } from 'class-validator';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 import { customExceptionFactory } from './shared/exceptions/exception.factory';
+import { HttpExceptionFilter } from './shared/exceptions/exception.filter';
 
-export const appSettings = (app: INestApplication) => {
+export const appSettings = (app): void => {
+  app.enableVersioning();
   app.use(cookieParser());
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
@@ -20,7 +22,7 @@ export const appSettings = (app: INestApplication) => {
   );
 
   app.enableCors();
-  // app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   const config = new DocumentBuilder()
     .setTitle('Swagger Documentation')

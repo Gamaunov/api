@@ -1,5 +1,6 @@
 import { SortCommentFields } from '../enums/sortCommentFields';
-import { SortDirection } from '../../../../shared/enums/sort-direction.enum';
+
+import { SortDirection } from '@/shared/enums/sort-direction.enum';
 
 function validateSortBy(sortBy: any): string {
   if (Object.values(SortCommentFields).includes(sortBy)) {

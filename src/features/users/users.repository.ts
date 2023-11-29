@@ -11,6 +11,10 @@ export class UsersRepository {
     private UserModel: UserModelType,
   ) {}
 
+  async save(user: UserDocument) {
+    return user.save();
+  }
+
   async createUser(user: UserDocument) {
     await user.save();
     return {
@@ -21,7 +25,7 @@ export class UsersRepository {
     };
   }
 
-  async findUser(id: string): Promise<UserDocument | null> {
+  async findUserById(id: string): Promise<UserDocument | null> {
     if (!mongoose.isValidObjectId(id)) {
       throw new NotFoundException();
     }
@@ -30,6 +34,47 @@ export class UsersRepository {
 
     if (!user) {
       throw new NotFoundException();
+    }
+
+    return user;
+  }
+
+  async findUserByLoginOrEmail(
+    loginOrEmail: string,
+  ): Promise<UserDocument | null> {
+    const user = await this.UserModel.findOne({
+      $or: [
+        { 'accountData.login': loginOrEmail },
+        { 'accountData.email': loginOrEmail },
+      ],
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  }
+
+  async findUserByEmailCode(code: string): Promise<UserDocument | null> {
+    const user = this.UserModel.findOne({
+      'emailConfirmation.confirmationCode': code,
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  }
+
+  async findUserByRecoveryCode(code: string): Promise<UserDocument | null> {
+    const user = this.UserModel.findOne({
+      'passwordRecovery.recoveryCode': code,
+    });
+
+    if (!user) {
+      return null;
     }
 
     return user;

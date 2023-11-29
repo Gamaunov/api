@@ -9,7 +9,7 @@ export class QueryDTO {
   @IsOptional()
   sortDirection: SortDirection.DESC | SortDirection.ASC = SortDirection.DESC;
   @IsOptional()
-  pageNumber: number = 1;
+  pageNumber = 1;
   @IsOptional()
-  pageSize: number = 10;
+  pageSize = 10;
 }

@@ -4,14 +4,20 @@ import { InjectModel } from '@nestjs/mongoose';
 import { BlogsRepository } from '../blogs/blogs.repository';
 import { Comment, CommentModelType } from '../comments/schemas/comment.entity';
 import { CommentsRepository } from '../comments/comments.repository';
-import { CreateCommentDTO } from '../comments/dto/create-comment.dto';
-import { CommentView } from '../comments/schemas/comment.view';
+import { CommentInputDTO } from '../comments/dto/comment-input.dto';
+import { UsersRepository } from '../users/users.repository';
 
 import { Post, PostModelType } from './schemas/post.entity';
 import { PostsRepository } from './posts.repository';
-import { CreatePostDTO } from './dto/create-post.dto';
-import { PostView } from './schemas/post.view';
-import { UpdatePostDTO } from './dto/update-post.dto';
+import { PostInputDTO } from './dto/post-input.dto';
+
+import {
+  blogIDField,
+  blogNotFound,
+  postIDField,
+  postNotFound,
+} from '@/shared/constants/constants';
+import { ResultCode } from '@/shared/enums/result-code.enum';
 
 @Injectable()
 export class PostsService {
@@ -23,68 +29,91 @@ export class PostsService {
     private readonly postsRepository: PostsRepository,
     private readonly commentsRepository: CommentsRepository,
     private readonly blogsRepository: BlogsRepository,
+    private readonly usersRepository: UsersRepository,
   ) {}
 
   async createPost(
-    createPostDTO: CreatePostDTO,
-    blogId?: string,
-  ): Promise<PostView> {
-    let blog;
+    createPostDTO: PostInputDTO,
+    blogIdParam?: string,
+  ): Promise<string | null> {
+    const blogId = createPostDTO.blogId || blogIdParam;
 
-    if (blogId) {
-      blog = await this.blogsRepository.findBlogById(blogId);
+    const blog = await this.blogsRepository.findBlogById(blogId);
 
-      if (!blog) {
-        throw new InternalServerErrorException('blog not found');
-      }
-    } else {
-      blog = await this.blogsRepository.findBlogById(createPostDTO.blogId);
-      if (!blog) {
-        throw new InternalServerErrorException('blog not found');
-      }
+    if (!blog) {
+      return null;
     }
 
     const post = this.PostModel.createPost(createPostDTO, this.PostModel, blog);
-    return this.postsRepository.createPost(post);
+
+    await this.postsRepository.save(post);
+
+    return post.id;
   }
 
-  async updatePost(id: string, updatePostDto: UpdatePostDTO): Promise<Post> {
+  async updatePost(id: string, postInputDTO: PostInputDTO) {
     const post = await this.postsRepository.findPostById(id);
 
     if (!post) {
-      throw new InternalServerErrorException('post not found');
+      return {
+        data: false,
+        code: ResultCode.NotFound,
+        field: postIDField,
+        message: postNotFound,
+      };
     }
 
-    await post.updatePost(updatePostDto);
-    return this.postsRepository.save(post);
+    const blog = await this.blogsRepository.findBlogById(postInputDTO.blogId);
+
+    if (!blog) {
+      return {
+        data: false,
+        code: ResultCode.NotFound,
+        field: blogIDField,
+        message: blogNotFound,
+      };
+    }
+
+    await post.updatePost(postInputDTO);
+    await this.postsRepository.save(post);
+
+    return {
+      data: true,
+      code: ResultCode.Success,
+    };
   }
 
   async createComment(
-    id: string,
-    createCommentDto: CreateCommentDTO,
-  ): Promise<CommentView> {
-    const post = await this.postsRepository.findPostById(id);
+    currentUserId: string,
+    postId: string,
+    commentInputDTO: CommentInputDTO,
+  ): Promise<string | null> {
+    const post = await this.postsRepository.findPostById(postId);
 
     if (!post) {
-      throw new InternalServerErrorException('post not found');
+      return null;
     }
+
+    const user = await this.usersRepository.findUserById(currentUserId);
 
     const comment = this.CommentModel.createComment(
-      createCommentDto,
+      commentInputDTO,
       this.CommentModel,
       post,
+      user,
     );
-    return this.commentsRepository.createComment(comment);
+    await this.commentsRepository.save(comment);
+    return comment.id;
   }
 
-  async deletePost(id: string): Promise<boolean> {
+  async deletePostById(id: string): Promise<boolean> {
     const post = await this.postsRepository.findPostById(id);
 
     if (!post) {
-      throw new InternalServerErrorException('post not found');
+      throw new InternalServerErrorException(postNotFound);
     }
 
-    return this.postsRepository.deletePost(id);
+    return this.postsRepository.deletePostById(id);
   }
 
   async deleteAllPosts(): Promise<boolean> {

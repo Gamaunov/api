@@ -1,13 +1,19 @@
 import { HydratedDocument, Model } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { CreateBlogDTO } from '../dto/create-blog.dto';
+import { BlogInputDTO } from '../dto/blog-input.dto';
+
+interface IUpdateBlogDTO {
+  name: string;
+  description: string;
+  websiteUrl: string;
+}
 
 export type BlogDocument = HydratedDocument<Blog>;
 
 export type BlogModelStaticType = {
   createBlog: (
-    createBlogDTO: CreateBlogDTO,
+    createBlogDTO: BlogInputDTO,
     BlogModel: BlogModelType,
   ) => BlogDocument;
 };
@@ -31,14 +37,14 @@ export class Blog {
   @Prop({ required: true })
   isMembership: boolean;
 
-  updateBlog(updateBlogDTO) {
+  updateBlog(updateBlogDTO: IUpdateBlogDTO): void {
     this.name = updateBlogDTO.name;
     this.description = updateBlogDTO.description;
     this.websiteUrl = updateBlogDTO.websiteUrl;
   }
 
   static createBlog(
-    createBlogDto: CreateBlogDTO,
+    createBlogDto: BlogInputDTO,
     BlogModel: BlogModelType,
   ): BlogDocument {
     const blog = {

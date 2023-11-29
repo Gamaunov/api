@@ -1,5 +1,5 @@
-import { NestFactory } from '@nestjs/core';
 import * as process from 'process';
+import { NestFactory } from '@nestjs/core';
 import { configDotenv } from 'dotenv';
 
 import { AppModule } from './app.module';
@@ -7,7 +7,7 @@ import { appSettings } from './app.settings';
 
 configDotenv();
 
-const PORT = parseInt(process.env.PORT!, 10) || 5000;
+const PORT = parseInt(process.env.PORT, 10) || 5000;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 

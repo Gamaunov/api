@@ -1,6 +1,7 @@
 import { UserQuery } from '../../dto/user.query';
-import { SortDirection } from '../../../../shared/enums/sort-direction.enum';
 import { SortUserFields } from '../enums/sortUserFields';
+
+import { SortDirection } from '@/shared/enums/sort-direction.enum';
 
 function validateSortBy(sortBy: SortUserFields): string {
   if (Object.values(SortUserFields).includes(sortBy)) {
