@@ -5,7 +5,6 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
 
 import { exceptionResponseType } from '../types/exceptions.types';
 
@@ -13,8 +12,8 @@ import { exceptionResponseType } from '../types/exceptions.types';
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
     const status = exception.getStatus();
 
     if (status === HttpStatus.BAD_REQUEST || status === HttpStatus.NOT_FOUND) {

@@ -44,7 +44,7 @@ export class AuthService {
       return null;
     }
 
-    const result: boolean = await bcrypt.compare(
+    const result = await bcrypt.compare(
       password,
       user.accountData.passwordHash,
     );
@@ -70,12 +70,12 @@ export class AuthService {
     const accessTokenPayload = { sub: userId };
     const refreshTokenPayload = { sub: userId, deviceId: deviceId };
 
-    const accessToken: string = this.jwtService.sign(accessTokenPayload, {
+    const accessToken = this.jwtService.sign(accessTokenPayload, {
       secret: jwtConstants.accessTokenSecret,
       expiresIn: jwtConstants.accessTokenExpirationTime,
     });
 
-    const refreshToken: string = this.jwtService.sign(refreshTokenPayload, {
+    const refreshToken = this.jwtService.sign(refreshTokenPayload, {
       secret: jwtConstants.refreshTokenSecret,
       expiresIn: jwtConstants.refreshTokenExpirationTime,
     });
@@ -87,7 +87,7 @@ export class AuthService {
   }
 
   async registerUser(userInputDTO: UserInputDTO): Promise<UserDocument | null> {
-    const hash: string = await bcrypt.hash(userInputDTO.password, 10);
+    const hash = await bcrypt.hash(userInputDTO.password, 10);
 
     const emailData = {
       confirmationCode: randomUUID(),
@@ -201,7 +201,7 @@ export class AuthService {
       return null;
     }
 
-    const hash: string = await bcrypt.hash(newPasswordDTO.newPassword, 10);
+    const hash = await bcrypt.hash(newPasswordDTO.newPassword, 10);
 
     await user.updatePassword(hash);
     return this.usersRepository.save(user);
