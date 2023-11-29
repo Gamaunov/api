@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
@@ -73,12 +73,12 @@ export class AuthService {
     const accessToken = this.jwtService.sign(accessTokenPayload, {
       secret: jwtConstants.accessTokenSecret,
       expiresIn: jwtConstants.accessTokenExpirationTime,
-    });
+    } as JwtSignOptions);
 
     const refreshToken = this.jwtService.sign(refreshTokenPayload, {
       secret: jwtConstants.refreshTokenSecret,
       expiresIn: jwtConstants.refreshTokenExpirationTime,
-    });
+    } as JwtSignOptions);
 
     return {
       accessToken: accessToken,
