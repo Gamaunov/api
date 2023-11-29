@@ -3,9 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { Blog, BlogModelType } from './schemas/blog.entity';
 import { BlogsRepository } from './blogs.repository';
-import { CreateBlogDTO } from './dto/create-blog.dto';
-import { BlogView } from './schemas/blog.view';
-import { UpdateBlogDTO } from './dto/update-blog.dto';
+import { BlogInputDTO } from './dto/blog-input.dto';
 
 @Injectable()
 export class BlogsService {
@@ -15,14 +13,15 @@ export class BlogsService {
     private readonly blogsRepository: BlogsRepository,
   ) {}
 
-  async createBlog(createBlogDto: CreateBlogDTO): Promise<BlogView> {
-    const blog = this.BlogModel.createBlog(createBlogDto, this.BlogModel);
-    return this.blogsRepository.createBlog(blog);
+  async createBlog(createBlogDTO: BlogInputDTO): Promise<string | null> {
+    const blog = this.BlogModel.createBlog(createBlogDTO, this.BlogModel);
+    await this.blogsRepository.save(blog);
+    return blog.id;
   }
 
   async updateBlog(
     id: string,
-    updateBlogDto: UpdateBlogDTO,
+    updateBlogDto: BlogInputDTO,
   ): Promise<Blog | null> {
     const blog = await this.blogsRepository.findBlogById(id);
 

@@ -1,16 +1,17 @@
 import { IsString, Length } from 'class-validator';
-export class UpdatePostDTO {
+export class PostInputDTO {
   @IsString()
   @Length(1, 30)
   title: string;
 
   @IsString()
-  @Length(1, 100)
+  @Length(1, 30)
   shortDescription: string;
 
   @IsString()
   @Length(1, 1000)
   content: string;
 
-  blogId?: string;
+  @IsString()
+  blogId: string;
 }

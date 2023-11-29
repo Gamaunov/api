@@ -1,20 +1,27 @@
 import { HydratedDocument, Model, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { CreateCommentDTO } from '../dto/create-comment.dto';
+import { CommentInputDTO } from '../dto/comment-input.dto';
 import { PostDocument } from '../../posts/schemas/post.entity';
-import { LikesInfoSchema } from '../../../shared/schemas/likes-info.schema';
+import { UserDocument } from '../../users/schemas/user.entity';
 
 import { CommentatorInfoSchema } from './commentator.info.schema';
+
+import { LikesInfoSchema } from '@/features/likes/schemas/likes-info.schema';
+
+interface IUpdateCommentDTO {
+  content: string;
+}
 
 export type CommentDocument = HydratedDocument<Comment>;
 export type CommentDTOType = Comment & { _id: Types.ObjectId };
 
 export type CommentModelStaticType = {
   createComment: (
-    createCommentDTO: CreateCommentDTO,
+    commentInputDTO: CommentInputDTO,
     CommentModel: CommentModelType,
     post: PostDocument,
+    user: UserDocument,
   ) => CommentDocument;
 };
 
@@ -37,16 +44,20 @@ export class Comment {
   @Prop({ required: true })
   likesInfo: LikesInfoSchema;
 
+  updateComment(updateCommentDTO: IUpdateCommentDTO): void {
+    this.content = updateCommentDTO.content;
+  }
+
   static createComment(
-    createCommentDTO: CreateCommentDTO,
+    commentInputDTO: CommentInputDTO,
     CommentModel: CommentModelType,
     post: PostDocument,
   ): CommentDocument {
     const comment = {
-      content: createCommentDTO.content,
+      content: commentInputDTO.content,
       commentatorInfo: {
-        userId: 'testUserId',
-        userLogin: 'testUserLogin',
+        userId: 'userId',
+        userLogin: 'userLogin',
       },
       postId: post._id.toString(),
       createdAt: new Date(),
@@ -61,6 +72,10 @@ export class Comment {
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
+
+CommentSchema.methods = {
+  updateComment: Comment.prototype.updateComment,
+};
 
 const commentStaticMethods: CommentModelStaticType = {
   createComment: Comment.createComment,

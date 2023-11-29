@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { SortOrder } from 'mongoose';
 
-import { Paginator } from '../../shared/genericTypes/paginator';
-
 import { BlogView } from './schemas/blog.view';
 import { Blog, BlogModelType } from './schemas/blog.entity';
 import { BlogQuery } from './dto/blog-query';
 import { blogsQueryValidator } from './helpers/validation/blogsQueryValidator';
+
+import { Paginator } from '@/shared/genericTypes/paginator';
 
 @Injectable()
 export class BlogsQueryRepository {
@@ -33,7 +33,7 @@ export class BlogsQueryRepository {
       .sort(sortCriteria)
       .lean();
 
-    const totalCount = await this.BlogModel.countDocuments(filter);
+    const totalCount: number = await this.BlogModel.countDocuments(filter);
 
     return {
       pagesCount: Math.ceil(totalCount / +query.pageSize),
@@ -53,7 +53,7 @@ export class BlogsQueryRepository {
     };
   }
 
-  async findBlog(id: string): Promise<BlogView | null> {
+  async findBlogById(id: string): Promise<BlogView | null> {
     if (!mongoose.isValidObjectId(id)) {
       return null;
     }

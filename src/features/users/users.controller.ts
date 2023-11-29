@@ -12,7 +12,10 @@ import {
 import { UsersService } from './users.service';
 import { UserQuery } from './dto/user.query';
 import { UsersQueryRepository } from './users.query.repository';
-import { CreateUserDTO } from './dto/create-user.dto';
+import { UserInputDTO } from './dto/user-input-dto';
+
+import { UserView } from '@/features/users/schemas/user.view';
+import { Paginator } from '@/shared/genericTypes/paginator';
 
 @Controller('users')
 export class UsersController {
@@ -21,24 +24,24 @@ export class UsersController {
     private readonly usersQueryRepository: UsersQueryRepository,
   ) {}
   @Get()
-  async findUsers(@Query() query: UserQuery) {
+  async findUsers(@Query() query: UserQuery): Promise<Paginator<UserView[]>> {
     return this.usersQueryRepository.findUsers(query);
   }
 
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDTO) {
+  async createUser(@Body() createUserDto: UserInputDTO): Promise<UserView> {
     return this.usersService.createUser(createUserDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  async deleteUser(@Param('id') id: string) {
+  async deleteUser(@Param('id') id: string): Promise<boolean> {
     return this.usersService.deleteUser(id);
   }
 
   @Delete()
   @HttpCode(204)
-  async deleteAllUsers() {
+  async deleteAllUsers(): Promise<boolean> {
     return this.usersService.deleteAllUsers();
   }
 }

@@ -29,18 +29,6 @@ export class BlogsRepository {
     return blog;
   }
 
-  async createBlog(blog: BlogDocument) {
-    await blog.save();
-    return {
-      id: blog._id.toString(),
-      name: blog.name,
-      description: blog.description,
-      websiteUrl: blog.websiteUrl,
-      createdAt: blog.createdAt.toISOString(),
-      isMembership: blog.isMembership,
-    };
-  }
-
   async deleteBlog(id: string): Promise<boolean> {
     const blog = await this.BlogModel.deleteOne({ _id: id });
     return blog.deletedCount === 1;
