@@ -70,16 +70,16 @@ export class AuthService {
     const accessToken = this.jwtService.sign(
       { sub: userId },
       {
-        secret: jwtConstants.accessTokenSecret,
         expiresIn: jwtConstants.accessTokenExpirationTime,
+        secret: jwtConstants.accessTokenSecret,
       },
     );
 
     const refreshToken = this.jwtService.sign(
       { sub: userId, deviceId: deviceId },
       {
-        secret: jwtConstants.refreshTokenSecret,
         expiresIn: jwtConstants.refreshTokenExpirationTime,
+        secret: jwtConstants.refreshTokenSecret,
       },
     );
 
