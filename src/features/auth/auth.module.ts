@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
-import { JwtService } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerModule } from '@nestjs/throttler';
 
@@ -31,7 +30,6 @@ import { BasicStrategy } from './strategies/basic.strategy';
   ],
   providers: [
     AuthService,
-    JwtService,
     MailService,
     LocalStrategy,
     JwtBearerStrategy,
