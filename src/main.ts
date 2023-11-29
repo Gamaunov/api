@@ -1,6 +1,7 @@
 import * as process from 'process';
 import { NestFactory } from '@nestjs/core';
 import { configDotenv } from 'dotenv';
+import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
 import { appSettings } from './app.settings';
