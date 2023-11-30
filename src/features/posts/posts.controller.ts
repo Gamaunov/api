@@ -166,6 +166,7 @@ export class PostsController {
   }
 
   @Delete()
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deleteAllPosts(): Promise<boolean> {
     return this.postsService.deleteAllPosts();

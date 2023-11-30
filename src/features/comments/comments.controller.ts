@@ -21,6 +21,7 @@ import {
   commentNotFound,
 } from '../../shared/constants/constants';
 import { ExceptionResultType } from '../../shared/types/exceptions.types';
+import { BasicAuthGuard } from '../auth/guards/basic-auth.guard';
 
 import { CommentsService } from './comments.service';
 import { CommentsQueryRepository } from './comments.query.repository';
@@ -115,6 +116,7 @@ export class CommentsController {
     return result;
   }
   @Delete()
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deleteComments(): Promise<boolean> {
     return this.commentsService.deleteAllComments();

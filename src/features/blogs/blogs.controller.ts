@@ -116,6 +116,7 @@ export class BlogsController {
   }
 
   @Delete(':id')
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deleteBlog(@Param('id') id: string): Promise<boolean | void> {
     const result: boolean = await this.blogsService.deleteBlog(id);
@@ -128,6 +129,7 @@ export class BlogsController {
   }
 
   @Delete()
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deleteAllBlogs(): Promise<boolean> {
     return this.blogsService.deleteAllBlogs();
