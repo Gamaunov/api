@@ -31,8 +31,8 @@ export class UsersController {
   }
 
   @Post()
-  async createUser(@Body() createUserDto: UserInputDTO): Promise<UserView> {
-    return this.usersService.createUser(createUserDto);
+  async createUser(@Body() userInputDTO: UserInputDTO): Promise<UserView> {
+    return this.usersService.createUser(userInputDTO);
   }
 
   @Delete(':id')
