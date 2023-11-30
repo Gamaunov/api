@@ -8,7 +8,6 @@ import { customExceptionFactory } from './shared/exceptions/exception.factory';
 import { HttpExceptionFilter } from './shared/exceptions/exception.filter';
 
 export const appSettings = (app): void => {
-  app.enableVersioning();
   app.use(cookieParser());
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
