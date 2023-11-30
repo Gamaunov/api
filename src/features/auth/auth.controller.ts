@@ -14,6 +14,17 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersRepository } from '../users/users.repository';
 import { DevicesService } from '../devices/devices.service';
 import { UserInputDTO } from '../users/dto/user-input-dto';
+import { exceptionHandler } from '../../shared/exceptions/exception.handler';
+import { ResultCode } from '../../shared/enums/result-code.enum';
+import {
+  codeField,
+  codeIsIncorrect,
+  emailField,
+  refreshToken_,
+  unknown_,
+  userAgent_,
+  userNotFoundOrConfirmed,
+} from '../../shared/constants/constants';
 
 import { AuthService } from './auth.service';
 import { EmailDTO } from './dto/email.dto';
@@ -24,18 +35,6 @@ import { RefreshToken } from './decorators/refresh-token.param.decorator';
 import { JwtBearerGuard } from './guards/jwt-bearer.guard';
 import { UserConfirmDTO } from './dto/user-confirm.dto';
 import { NewPasswordDTO } from './dto/new-password.dto';
-
-import {
-  codeField,
-  codeIsIncorrect,
-  emailField,
-  refreshToken_,
-  unknown_,
-  userAgent_,
-  userNotFoundOrConfirmed,
-} from '@/shared/constants/constants';
-import { exceptionHandler } from '@/shared/exceptions/exception.handler';
-import { ResultCode } from '@/shared/enums/result-code.enum';
 
 @Controller('auth')
 export class AuthController {

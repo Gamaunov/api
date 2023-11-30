@@ -1,7 +1,10 @@
 import { IsEmail, Length, Matches } from 'class-validator';
 
-import { IsUserAlreadyExist } from '@/shared/exceptions/decorators/unique-user.decorator';
-import { emailNotUnique, loginNotUnique } from '@/shared/constants/constants';
+import { IsUserAlreadyExist } from '../../../shared/exceptions/decorators/unique-user.decorator';
+import {
+  emailNotUnique,
+  loginNotUnique,
+} from '../../../shared/constants/constants';
 
 export class UserInputDTO {
   @Length(3, 10)

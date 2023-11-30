@@ -14,16 +14,18 @@ import { JwtBearerGuard } from '../auth/guards/jwt-bearer.guard';
 import { UserIdFromGuard } from '../auth/decorators/user-id-from-guard.param.decorator';
 import { LikeStatusInputDTO } from '../likes/dto/like-status-input.dto';
 import { LikesService } from '../likes/likes.service';
+import { exceptionHandler } from '../../shared/exceptions/exception.handler';
+import { ResultCode } from '../../shared/enums/result-code.enum';
+import {
+  commentIDField,
+  commentNotFound,
+} from '../../shared/constants/constants';
+import { ExceptionResultType } from '../../shared/types/exceptions.types';
 
 import { CommentsService } from './comments.service';
 import { CommentsQueryRepository } from './comments.query.repository';
 import { CommentInputDTO } from './dto/comment-input.dto';
-
-import { commentIDField, commentNotFound } from '@/shared/constants/constants';
-import { ResultCode } from '@/shared/enums/result-code.enum';
-import { exceptionHandler } from '@/shared/exceptions/exception.handler';
-import { CommentView } from '@/features/comments/schemas/comment.view';
-import { ExceptionResultType } from '@/shared/types/exceptions.types';
+import { CommentView } from './schemas/comment.view';
 
 @Controller('comments')
 export class CommentsController {

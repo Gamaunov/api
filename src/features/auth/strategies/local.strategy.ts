@@ -3,8 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { AuthService } from '../auth.service';
-
-import { loginOrEmail } from '@/shared/constants/constants';
+import { loginOrEmail } from '../../../shared/constants/constants';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {

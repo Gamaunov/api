@@ -9,13 +9,13 @@ import {
   Query,
 } from '@nestjs/common';
 
+import { Paginator } from '../../shared/genericTypes/paginator';
+
 import { UsersService } from './users.service';
 import { UserQuery } from './dto/user.query';
 import { UsersQueryRepository } from './users.query.repository';
 import { UserInputDTO } from './dto/user-input-dto';
-
-import { UserView } from '@/features/users/schemas/user.view';
-import { Paginator } from '@/shared/genericTypes/paginator';
+import { UserView } from './schemas/user.view';
 
 @Controller('users')
 export class UsersController {

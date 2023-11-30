@@ -6,18 +6,17 @@ import { Comment, CommentModelType } from '../comments/schemas/comment.entity';
 import { CommentsRepository } from '../comments/comments.repository';
 import { CommentInputDTO } from '../comments/dto/comment-input.dto';
 import { UsersRepository } from '../users/users.repository';
-
-import { Post, PostModelType } from './schemas/post.entity';
-import { PostsRepository } from './posts.repository';
-import { PostInputDTO } from './dto/post-input.dto';
-
+import { ResultCode } from '../../shared/enums/result-code.enum';
 import {
   blogIDField,
   blogNotFound,
   postIDField,
   postNotFound,
-} from '@/shared/constants/constants';
-import { ResultCode } from '@/shared/enums/result-code.enum';
+} from '../../shared/constants/constants';
+
+import { Post, PostModelType } from './schemas/post.entity';
+import { PostsRepository } from './posts.repository';
+import { PostInputDTO } from './dto/post-input.dto';
 
 @Injectable()
 export class PostsService {

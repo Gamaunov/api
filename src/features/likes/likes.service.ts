@@ -6,11 +6,10 @@ import { CommentsRepository } from '../comments/comments.repository';
 import { PostsRepository } from '../posts/posts.repository';
 import { Post, PostModelType } from '../posts/schemas/post.entity';
 import { UsersRepository } from '../users/users.repository';
+import { LikeStatus } from '../../shared/enums/like-status.enum';
 
 import { LikesRepository } from './likes.repository';
 import { LikesDataType } from './schemas/likes-data.type';
-
-import { LikeStatus } from '@/shared/enums/like-status.enum';
 
 @Injectable()
 export class LikesService {

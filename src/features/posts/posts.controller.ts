@@ -20,22 +20,21 @@ import { BasicAuthGuard } from '../auth/guards/basic-auth.guard';
 import { UserIdFromHeaders } from '../auth/decorators/user-id-from-headers.param.decorator';
 import { LikeStatusInputDTO } from '../likes/dto/like-status-input.dto';
 import { LikesService } from '../likes/likes.service';
-
-import { PostsQueryRepository } from './posts.query.repository';
-import { PostsService } from './posts.service';
-import { PostInputDTO } from './dto/post-input.dto';
-import { PostQuery } from './dto/post.query';
-
+import { exceptionHandler } from '../../shared/exceptions/exception.handler';
+import { ResultCode } from '../../shared/enums/result-code.enum';
 import {
   blogIDField,
   blogNotFound,
   postIDField,
   postNotFound,
-} from '@/shared/constants/constants';
-import { ResultCode } from '@/shared/enums/result-code.enum';
-import { exceptionHandler } from '@/shared/exceptions/exception.handler';
-import { PostView } from '@/features/posts/schemas/post.view';
-import { CommentView } from '@/features/comments/schemas/comment.view';
+} from '../../shared/constants/constants';
+import { CommentView } from '../comments/schemas/comment.view';
+
+import { PostsQueryRepository } from './posts.query.repository';
+import { PostsService } from './posts.service';
+import { PostInputDTO } from './dto/post-input.dto';
+import { PostQuery } from './dto/post.query';
+import { PostView } from './schemas/post.view';
 
 @Controller('posts')
 export class PostsController {

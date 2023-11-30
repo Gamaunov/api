@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { SortOrder } from 'mongoose';
 
+import { Paginator } from '../../shared/genericTypes/paginator';
+import { getLikeStatus } from '../../shared/utils/getLikeStatus';
+
 import {
   Comment,
   CommentDTOType,
@@ -10,9 +13,6 @@ import {
 import { CommentQuery } from './dto/comment.query';
 import { CommentView } from './schemas/comment.view';
 import { commentQueryValidator } from './heplers/validation/commentQueryValidator';
-
-import { getLikeStatus } from '@/shared/utils/getLikeStatus';
-import { Paginator } from '@/shared/genericTypes/paginator';
 
 @Injectable()
 export class CommentsQueryRepository {

@@ -1,6 +1,5 @@
 import { SortBlogFields } from '../enums/sortBlogFields';
-
-import { SortDirection } from '@/shared/enums/sort-direction.enum';
+import { SortDirection } from '../../../../shared/enums/sort-direction.enum';
 
 function validateSortBy(sortBy: any): string {
   if (Object.values(SortBlogFields).includes(sortBy)) {

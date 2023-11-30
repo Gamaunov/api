@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
+import { ExceptionResultType } from '../../shared/types/exceptions.types';
+import { ResultCode } from '../../shared/enums/result-code.enum';
+import {
+  commentIDField,
+  commentNotFound,
+} from '../../shared/constants/constants';
+
 import { Comment } from './schemas/comment.entity';
 import { CommentsRepository } from './comments.repository';
 import { CommentInputDTO } from './dto/comment-input.dto';
-
-import { ExceptionResultType } from '@/shared/types/exceptions.types';
-import { ResultCode } from '@/shared/enums/result-code.enum';
-import { commentIDField, commentNotFound } from '@/shared/constants/constants';
 
 @Injectable()
 export class CommentsService {

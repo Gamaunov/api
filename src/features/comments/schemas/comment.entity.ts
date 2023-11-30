@@ -4,10 +4,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { CommentInputDTO } from '../dto/comment-input.dto';
 import { PostDocument } from '../../posts/schemas/post.entity';
 import { UserDocument } from '../../users/schemas/user.entity';
+import { LikesInfoSchema } from '../../likes/schemas/likes-info.schema';
 
 import { CommentatorInfoSchema } from './commentator.info.schema';
-
-import { LikesInfoSchema } from '@/features/likes/schemas/likes-info.schema';
 
 interface IUpdateCommentDTO {
   content: string;

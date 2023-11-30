@@ -2,12 +2,12 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import bcrypt from 'bcrypt';
 
+import { userNotFound } from '../../shared/constants/constants';
+
 import { User, UserModelType } from './schemas/user.entity';
 import { UsersRepository } from './users.repository';
 import { UserInputDTO } from './dto/user-input-dto';
 import { UserView } from './schemas/user.view';
-
-import { userNotFound } from '@/shared/constants/constants';
 
 @Injectable()
 export class UsersService {

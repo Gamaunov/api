@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { FilterQuery } from 'mongoose';
 
+import { Paginator } from '../../shared/genericTypes/paginator';
+import { getLikeStatus } from '../../shared/utils/getLikeStatus';
+import { getThreeNewestLikes } from '../../shared/utils/getThreeNewestLikes';
+
 import { Post, PostDTOType, PostModelType } from './schemas/post.entity';
 import { PostQuery } from './dto/post.query';
 import { PostView } from './schemas/post.view';
 import { postQueryValidator } from './helpers/validation/postQueryValidator';
-
-import { getLikeStatus } from '@/shared/utils/getLikeStatus';
-import { getThreeNewestLikes } from '@/shared/utils/getThreeNewestLikes';
-import { Paginator } from '@/shared/genericTypes/paginator';
 
 @Injectable()
 export class PostsQueryRepository {

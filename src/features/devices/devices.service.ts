@@ -2,16 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 
-import { DevicesRepository } from './devices.repository';
+import { ExceptionResultType } from '../../shared/types/exceptions.types';
+import { ResultCode } from '../../shared/enums/result-code.enum';
+import {
+  deviceIDField,
+  deviceNotFound,
+} from '../../shared/constants/constants';
+
 import {
   Device,
   DeviceDocument,
   DeviceModelType,
 } from './schemas/device.entity';
-
-import { ExceptionResultType } from '@/shared/types/exceptions.types';
-import { ResultCode } from '@/shared/enums/result-code.enum';
-import { deviceIDField, deviceNotFound } from '@/shared/constants/constants';
+import { DevicesRepository } from './devices.repository';
 
 @Injectable()
 export class DevicesService {

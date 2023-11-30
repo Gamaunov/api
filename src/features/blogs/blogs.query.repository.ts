@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { SortOrder } from 'mongoose';
 
+import { Paginator } from '../../shared/genericTypes/paginator';
+
 import { BlogView } from './schemas/blog.view';
 import { Blog, BlogModelType } from './schemas/blog.entity';
 import { BlogQuery } from './dto/blog-query';
 import { blogsQueryValidator } from './helpers/validation/blogsQueryValidator';
-
-import { Paginator } from '@/shared/genericTypes/paginator';
 
 @Injectable()
 export class BlogsQueryRepository {

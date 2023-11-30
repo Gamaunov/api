@@ -1,6 +1,5 @@
 import { LikeStatus } from '../enums/like-status.enum';
-
-import { UsersLikesSchema } from '@/features/likes/schemas/likes-users.schema';
+import { UsersLikesSchema } from '../../features/likes/schemas/likes-users.schema';
 
 type ThreeNewestLikesType = {
   addedAt: string;

@@ -3,8 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { PostInputDTO } from '../dto/post-input.dto';
 import { BlogDocument } from '../../blogs/schemas/blog.entity';
-
-import { LikesInfoSchema } from '@/features/likes/schemas/likes-info.schema';
+import { LikesInfoSchema } from '../../likes/schemas/likes-info.schema';
 
 interface IUpdatePostDTO {
   title: string;

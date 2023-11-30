@@ -17,19 +17,18 @@ import { PostInputDTO } from '../posts/dto/post-input.dto';
 import { PostQuery } from '../posts/dto/post.query';
 import { BasicAuthGuard } from '../auth/guards/basic-auth.guard';
 import { UserIdFromHeaders } from '../auth/decorators/user-id-from-headers.param.decorator';
+import { Paginator } from '../../shared/genericTypes/paginator';
+import { exceptionHandler } from '../../shared/exceptions/exception.handler';
+import { ResultCode } from '../../shared/enums/result-code.enum';
+import { blogIDField, blogNotFound } from '../../shared/constants/constants';
+import { PostView } from '../posts/schemas/post.view';
 
 import { BlogInputDTO } from './dto/blog-input.dto';
 import { BlogQuery } from './dto/blog-query';
 import { BlogsService } from './blogs.service';
 import { BlogsQueryRepository } from './blogs.query.repository';
 import { BlogView } from './schemas/blog.view';
-
-import { blogIDField, blogNotFound } from '@/shared/constants/constants';
-import { ResultCode } from '@/shared/enums/result-code.enum';
-import { exceptionHandler } from '@/shared/exceptions/exception.handler';
-import { Paginator } from '@/shared/genericTypes/paginator';
-import { PostView } from '@/features/posts/schemas/post.view';
-import { Blog } from '@/features/blogs/schemas/blog.entity';
+import { Blog } from './schemas/blog.entity';
 
 @Controller('blogs')
 export class BlogsController {

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
+import { Paginator } from '../../shared/genericTypes/paginator';
+
 import { User, UserModelType } from './schemas/user.entity';
 import { UserQuery } from './dto/user.query';
 import { UserView } from './schemas/user.view';
 import { usersQueryValidator } from './helpers/validation/usersQueryValidator';
 import { loginEmailFilter } from './helpers/filters/loginEmailFilter';
-
-import { Paginator } from '@/shared/genericTypes/paginator';
 
 @Injectable()
 export class UsersQueryRepository {
@@ -26,7 +26,7 @@ export class UsersQueryRepository {
     const sortCriteria: { [key: string]: any } = {
       [query.sortBy as string]: query.sortDirection,
     };
-    console.log(sortCriteria);
+
     const users = await this.UserModel.find(filter)
       .skip((+query.pageNumber - 1) * +query.pageSize)
       .limit(+query.pageSize)
