@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 import { UsersRepository } from '../users/users.repository';
 import { DevicesService } from '../devices/devices.service';
@@ -44,14 +45,26 @@ export class AuthController {
     private readonly devicesService: DevicesService,
     private readonly usersRepository: UsersRepository,
   ) {}
+  @UseGuards(JwtBearerGuard)
+  @Get('me')
+  async getProfile(@UserIdFromGuard() userId: string) {
+    const user = await this.usersRepository.findUserById(userId);
 
+    return {
+      email: user?.accountData.email,
+      login: user?.accountData.login,
+      id: userId,
+    };
+  }
   @Post('registration')
+  @UseGuards(ThrottlerGuard)
   @HttpCode(204)
   async registerUser(@Body() userInputDTO: UserInputDTO) {
     return this.authService.registerUser(userInputDTO);
   }
-
   @Post('registration-email-resending')
+  @UseGuards(ThrottlerGuard)
+  @Throttle(5, 10)
   @HttpCode(204)
   async resendEmail(@Body() emailDTO: EmailDTO) {
     const result = await this.authService.resendEmail(emailDTO);
@@ -66,8 +79,9 @@ export class AuthController {
 
     return result;
   }
-
   @Post('registration-confirmation')
+  @UseGuards(ThrottlerGuard)
+  @Throttle(5, 10)
   @HttpCode(204)
   async confirmUser(@Body() userConfirmDTO: UserConfirmDTO) {
     const result = await this.authService.confirmUser(userConfirmDTO);
@@ -82,21 +96,23 @@ export class AuthController {
 
     return result;
   }
-
   @Post('password-recovery')
+  @UseGuards(ThrottlerGuard)
+  @Throttle(5, 10)
   @HttpCode(204)
   async recoverPassword(@Body() emailDTO: EmailDTO) {
     return this.authService.recoverPassword(emailDTO);
   }
-
   @Post('new-password')
+  @UseGuards(ThrottlerGuard)
+  @Throttle(5, 10)
   @HttpCode(204)
   async updatePassword(@Body() newPasswordDTO: NewPasswordDTO) {
     return this.authService.updatePassword(newPasswordDTO);
   }
-
-  @UseGuards(LocalAuthGuard)
   @Post('login')
+  @UseGuards(ThrottlerGuard, LocalAuthGuard)
+  @Throttle(5, 10)
   @HttpCode(200)
   async login(
     @UserIdFromGuard() userId: string,
@@ -116,9 +132,8 @@ export class AuthController {
       })
       .json({ accessToken: tokens.accessToken });
   }
-
-  @UseGuards(JwtRefreshGuard)
   @Post('refresh-token')
+  @UseGuards(JwtRefreshGuard)
   @HttpCode(200)
   async refreshTokens(
     @UserIdFromGuard() userId: string,
@@ -142,7 +157,6 @@ export class AuthController {
       })
       .json({ accessToken: tokens.accessToken });
   }
-
   @UseGuards(JwtRefreshGuard)
   @Post('logout')
   @HttpCode(204)
@@ -150,17 +164,5 @@ export class AuthController {
     const decodedToken: any = this.jwtService.decode(refreshToken);
     const deviceId = decodedToken.deviceId;
     return this.devicesService.logout(deviceId);
-  }
-
-  @UseGuards(JwtBearerGuard)
-  @Get('me')
-  async getProfile(@UserIdFromGuard() userId: string) {
-    const user = await this.usersRepository.findUserById(userId);
-
-    return {
-      email: user?.accountData.email,
-      login: user?.accountData.login,
-      id: userId,
-    };
   }
 }
