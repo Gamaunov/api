@@ -1,3 +1,3 @@
-export class UserConfirmDTO {
+export class ConfirmCodeInputDTO {
   code: string;
 }

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import * as process from 'process';
+import { CqrsModule } from '@nestjs/cqrs';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,6 +11,7 @@ import { TestingModule } from './features/testing/testing.module';
 import { UsersModule } from './features/users/users.module';
 import { MailModule } from './features/mail/mail.module';
 import { MainModule } from './modules/main.module';
+import { DevicesModule } from './features/devices/devices.module';
 
 const DB_URI: string =
   process.env.NODE_ENV === 'production'
@@ -20,11 +22,13 @@ const DB_URI: string =
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(DB_URI),
+    CqrsModule,
     AuthModule,
-    TestingModule,
+    DevicesModule,
+    MainModule,
     UsersModule,
     MailModule,
-    MainModule,
+    TestingModule,
   ],
 
   controllers: [AppController],

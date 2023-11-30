@@ -3,19 +3,54 @@ import { PassportModule } from '@nestjs/passport';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { JwtService } from '@nestjs/jwt';
+import { CqrsModule } from '@nestjs/cqrs';
 
-import { DevicesModule } from '../devices/devices.module';
-import { MailService } from '../mail/mail.service';
-import { MailModule } from '../mail/mail.module';
-import { User, UserSchema } from '../users/schemas/user.entity';
-import { UsersModule } from '../users/users.module';
+import { User, UserSchema } from '../users/user.entity';
+import { DeviceCreateForLoginUseCase } from '../devices/api/public/application/use-cases/device-create-for-login.use-case';
+import { DeviceUpdateForTokensUseCase } from '../devices/api/public/application/use-cases/device-update-for-tokens.use-case';
+import { DeviceDeleteForLogoutUseCase } from '../devices/api/public/application/use-cases/device-delete-for-logout.use-case';
+import { DevicesRepository } from '../devices/infrastructure/devices.repository';
+import { UsersRepository } from '../users/infrastructure/users.repository';
+import { Device, DeviceSchema } from '../devices/device.entity';
 
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtBearerStrategy } from './strategies/jwt-bearer.strategy';
 import { JwtRefreshTokenStrategy } from './strategies/jwt-refresh.strategy';
 import { BasicStrategy } from './strategies/basic.strategy';
+import { RegistrationUseCase } from './api/public/application/use-cases/registration/registration.use-case';
+import { RegistrationEmailResendUseCase } from './api/public/application/use-cases/registration/registration-email-resend.use-case';
+import { RegistrationConfirmationUseCase } from './api/public/application/use-cases/registration/registration-confirmation.use-case';
+import { PasswordRecoveryUseCase } from './api/public/application/use-cases/password/password-recovery.use-case';
+import { PasswordUpdateUseCase } from './api/public/application/use-cases/password/password-update.use-case';
+import { ValidateLoginAndPasswordUseCase } from './api/public/application/use-cases/validations/validate-login-pass.use-case';
+import { ValidateRefreshTokenUseCase } from './api/public/application/use-cases/validations/validate-refresh-token.use-case';
+import { TokensCreateUseCase } from './api/public/application/use-cases/tokens/tokens-create.use-case';
+import { PublicAuthController } from './api/public/public.auth.controller';
+
+const services = [JwtService];
+
+const useCases = [
+  RegistrationUseCase,
+  RegistrationEmailResendUseCase,
+  RegistrationConfirmationUseCase,
+  PasswordRecoveryUseCase,
+  PasswordUpdateUseCase,
+  ValidateLoginAndPasswordUseCase,
+  ValidateRefreshTokenUseCase,
+  DeviceCreateForLoginUseCase,
+  DeviceUpdateForTokensUseCase,
+  DeviceDeleteForLogoutUseCase,
+  TokensCreateUseCase,
+];
+
+const repositories = [DevicesRepository, UsersRepository];
+
+const strategies = [
+  BasicStrategy,
+  JwtBearerStrategy,
+  JwtRefreshTokenStrategy,
+  LocalStrategy,
+];
 
 @Module({
   imports: [
@@ -23,21 +58,14 @@ import { BasicStrategy } from './strategies/basic.strategy';
       ttl: 60,
       limit: 10,
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    UsersModule,
+    MongooseModule.forFeature([
+      { name: Device.name, schema: DeviceSchema },
+      { name: User.name, schema: UserSchema },
+    ]),
+    CqrsModule,
     PassportModule,
-    DevicesModule,
-    MailModule,
   ],
-  providers: [
-    JwtService,
-    AuthService,
-    MailService,
-    LocalStrategy,
-    JwtBearerStrategy,
-    JwtRefreshTokenStrategy,
-    BasicStrategy,
-  ],
-  controllers: [AuthController],
+  controllers: [PublicAuthController],
+  providers: [...services, ...useCases, ...repositories, ...strategies],
 })
 export class AuthModule {}

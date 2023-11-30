@@ -8,8 +8,8 @@ import {
   commentNotFound,
 } from '../../shared/constants/constants';
 
-import { Comment } from './schemas/comment.entity';
-import { CommentsRepository } from './comments.repository';
+import { Comment } from './comment.entity';
+import { CommentsRepository } from './infrastructure/comments.repository';
 import { CommentInputDTO } from './dto/comment-input.dto';
 
 @Injectable()

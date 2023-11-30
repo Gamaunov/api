@@ -1,27 +1,25 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CqrsModule } from '@nestjs/cqrs';
 
-import { MailService } from '../mail/mail.service';
 import { IsUserAlreadyExistConstraint } from '../../shared/exceptions/decorators/unique-user.decorator';
 
-import { UsersService } from './users.service';
-import { UsersRepository } from './users.repository';
-import { UsersQueryRepository } from './users.query.repository';
-import { User, UserSchema } from './schemas/user.entity';
-import { UsersController } from './users.controller';
+import { UserCreateUseCase } from './api/superadmin/application/use-cases/user-create.use-case';
+import { UserDeleteUseCase } from './api/superadmin/application/use-cases/user-delete.use-case';
+import { UsersQueryRepository } from './api/superadmin/infrastructure/users.query.repository';
+import { UsersRepository } from './infrastructure/users.repository';
+import { User, UserSchema } from './user.entity';
+import { SuperAdminUsersController } from './api/superadmin/sa.users.controller';
+
+const useCases = [UserCreateUseCase, UserDeleteUseCase];
+const repositories = [UsersRepository, UsersQueryRepository];
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    CqrsModule,
   ],
-  controllers: [UsersController],
-  providers: [
-    UsersService,
-    UsersRepository,
-    UsersQueryRepository,
-    MailService,
-    IsUserAlreadyExistConstraint,
-  ],
-  exports: [UsersService, UsersRepository, UsersQueryRepository, MailService],
+  controllers: [SuperAdminUsersController],
+  providers: [...useCases, ...repositories, IsUserAlreadyExistConstraint],
 })
 export class UsersModule {}
