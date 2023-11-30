@@ -23,14 +23,14 @@ export class UsersService {
     return this.usersRepository.createUser(user);
   }
 
-  async deleteUser(id: string): Promise<boolean> {
+  async deleteUserById(id: string): Promise<boolean> {
     const user = await this.usersRepository.findUserById(id);
 
     if (!user) {
       throw new InternalServerErrorException(userNotFound);
     }
 
-    return this.usersRepository.deleteUser(id);
+    return this.usersRepository.deleteUserById(id);
   }
 
   async deleteAllUsers(): Promise<boolean> {

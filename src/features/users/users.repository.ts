@@ -80,7 +80,7 @@ export class UsersRepository {
     return user;
   }
 
-  async deleteUser(id: string): Promise<boolean> {
+  async deleteUserById(id: string): Promise<boolean> {
     const user = await this.UserModel.deleteOne({ _id: id });
     return user.deletedCount === 1;
   }

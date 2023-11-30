@@ -112,7 +112,7 @@ export class AuthService {
       );
     } catch (error) {
       console.error(error);
-      await this.usersRepository.deleteUser(user.id);
+      await this.usersRepository.deleteUserById(user.id);
       return null;
     }
 

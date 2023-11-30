@@ -7,9 +7,11 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 
 import { Paginator } from '../../shared/genericTypes/paginator';
+import { BasicAuthGuard } from '../auth/guards/basic-auth.guard';
 
 import { UsersService } from './users.service';
 import { UserQuery } from './dto/user.query';
@@ -34,12 +36,14 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
-  async deleteUser(@Param('id') id: string): Promise<boolean> {
-    return this.usersService.deleteUser(id);
+  async deleteUserById(@Param('id') id: string): Promise<boolean> {
+    return this.usersService.deleteUserById(id);
   }
 
   @Delete()
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deleteAllUsers(): Promise<boolean> {
     return this.usersService.deleteAllUsers();
