@@ -46,12 +46,9 @@ export class BloggerBlogsController {
 
   @UseGuards(BasicAuthGuard)
   @Post()
-  async createBlog(
-    @Body() blogInputDTO: BlogInputDTO,
-    @UserIdFromGuard() userId,
-  ) {
+  async createBlog(@Body() blogInputDTO: BlogInputDTO) {
     const blogId = await this.commandBus.execute(
-      new BlogCreateCommand(blogInputDTO, userId),
+      new BlogCreateCommand(blogInputDTO),
     );
 
     if (!blogId) {

@@ -17,7 +17,7 @@ export type BlogModelStaticType = {
   createBlog: (
     BlogModel: BlogModelType,
     blogInputDto: BlogInputDTO,
-    user: UserDocument,
+    user?: UserDocument,
   ) => BlogDocument;
 };
 
