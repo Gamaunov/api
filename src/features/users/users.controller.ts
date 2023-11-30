@@ -30,6 +30,7 @@ export class UsersController {
     return this.usersQueryRepository.findUsers(query);
   }
 
+  @UseGuards(BasicAuthGuard)
   @Post()
   async createUser(@Body() userInputDTO: UserInputDTO): Promise<UserView> {
     return this.usersService.createUser(userInputDTO);
