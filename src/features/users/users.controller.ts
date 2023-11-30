@@ -18,12 +18,14 @@ import { UserQuery } from './dto/user.query';
 import { UsersQueryRepository } from './users.query.repository';
 import { UserInputDTO } from './dto/user-input-dto';
 import { UserView } from './schemas/user.view';
+import { UsersRepository } from './users.repository';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly usersRepository: UsersRepository,
   ) {}
   @Get()
   async findUsers(@Query() query: UserQuery): Promise<Paginator<UserView[]>> {
@@ -32,8 +34,9 @@ export class UsersController {
 
   @UseGuards(BasicAuthGuard)
   @Post()
-  async createUser(@Body() userInputDTO: UserInputDTO): Promise<UserView> {
-    return this.usersService.createUser(userInputDTO);
+  async createUser(@Body() userInputDTO: UserInputDTO) {
+    const userId = await this.usersService.createUser(userInputDTO);
+    return this.usersRepository.findUserById(userId);
   }
 
   @UseGuards(BasicAuthGuard)

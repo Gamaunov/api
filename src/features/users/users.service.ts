@@ -17,10 +17,11 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async createUser(userInputDTO: UserInputDTO): Promise<UserView> {
+  async createUser(userInputDTO: UserInputDTO): Promise<string | null> {
     const hash = await bcrypt.hash(userInputDTO.password, 10);
     const user = this.UserModel.createUser(userInputDTO, this.UserModel, hash);
-    return this.usersRepository.createUser(user);
+    await this.usersRepository.save(user);
+    return user.id;
   }
 
   async deleteUserById(id: string): Promise<boolean> {
