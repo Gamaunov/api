@@ -35,15 +35,15 @@ export class UsersController {
     return this.usersService.createUser(userInputDTO);
   }
 
-  @Delete(':id')
   @UseGuards(BasicAuthGuard)
+  @Delete(':id')
   @HttpCode(204)
   async deleteUserById(@Param('id') id: string): Promise<boolean> {
     return this.usersService.deleteUserById(id);
   }
 
-  @Delete()
   @UseGuards(BasicAuthGuard)
+  @Delete()
   @HttpCode(204)
   async deleteAllUsers(): Promise<boolean> {
     return this.usersService.deleteAllUsers();

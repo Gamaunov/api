@@ -56,15 +56,15 @@ export class AuthController {
       id: userId,
     };
   }
-  @Post('registration')
   @UseGuards(ThrottlerGuard)
+  @Post('registration')
   @HttpCode(204)
   async registerUser(@Body() userInputDTO: UserInputDTO) {
     return this.authService.registerUser(userInputDTO);
   }
-  @Post('registration-email-resending')
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
+  @Post('registration-email-resending')
   @HttpCode(204)
   async resendEmail(@Body() emailDTO: EmailDTO) {
     const result = await this.authService.resendEmail(emailDTO);
@@ -79,9 +79,9 @@ export class AuthController {
 
     return result;
   }
-  @Post('registration-confirmation')
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
+  @Post('registration-confirmation')
   @HttpCode(204)
   async confirmUser(@Body() userConfirmDTO: UserConfirmDTO) {
     const result = await this.authService.confirmUser(userConfirmDTO);
@@ -96,23 +96,23 @@ export class AuthController {
 
     return result;
   }
-  @Post('password-recovery')
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
+  @Post('password-recovery')
   @HttpCode(204)
   async recoverPassword(@Body() emailDTO: EmailDTO) {
     return this.authService.recoverPassword(emailDTO);
   }
-  @Post('new-password')
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
+  @Post('new-password')
   @HttpCode(204)
   async updatePassword(@Body() newPasswordDTO: NewPasswordDTO) {
     return this.authService.updatePassword(newPasswordDTO);
   }
-  @Post('login')
   @UseGuards(ThrottlerGuard, LocalAuthGuard)
   @Throttle(5, 10)
+  @Post('login')
   @HttpCode(200)
   async login(
     @UserIdFromGuard() userId: string,
@@ -132,8 +132,8 @@ export class AuthController {
       })
       .json({ accessToken: tokens.accessToken });
   }
-  @Post('refresh-token')
   @UseGuards(JwtRefreshGuard)
+  @Post('refresh-token')
   @HttpCode(200)
   async refreshTokens(
     @UserIdFromGuard() userId: string,
@@ -157,8 +157,8 @@ export class AuthController {
       })
       .json({ accessToken: tokens.accessToken });
   }
-  @UseGuards(JwtRefreshGuard)
   @Post('logout')
+  @UseGuards(JwtRefreshGuard)
   @HttpCode(204)
   async logout(@RefreshToken() refreshToken: string): Promise<boolean> {
     const decodedToken: any = this.jwtService.decode(refreshToken);
