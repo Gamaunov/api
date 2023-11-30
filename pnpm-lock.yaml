@@ -106,6 +106,9 @@ devDependencies:
   '@types/jest':
     specifier: 29.5.0
     version: 29.5.0
+  '@types/mocha':
+    specifier: ^10.0.6
+    version: 10.0.6
   '@types/node':
     specifier: 18.15.11
     version: 18.15.11
@@ -1489,6 +1492,10 @@ packages:
 
   /@types/mime@3.0.4:
     resolution: {integrity: sha512-iJt33IQnVRkqeqC7PzBHPTC6fDlRNRW8vjrgqtScAhrmMwe8c4Eo7+fUGTa+XdWrpEgpyKWMYmi2dIwMAYRzPw==}
+    dev: true
+
+  /@types/mocha@10.0.6:
+    resolution: {integrity: sha512-dJvrYWxP/UcXm36Qn36fxhUKu8A/xMRXVT2cliFF1Z7UA9liG5Psj3ezNSZw+5puH2czDXRLcXQxf8JbJt0ejg==}
     dev: true
 
   /@types/node@18.15.11:
