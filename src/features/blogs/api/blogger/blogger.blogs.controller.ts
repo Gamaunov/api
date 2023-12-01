@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
-import { JwtBearerGuard } from 'src/features/auth/guards/jwt-bearer.guard';
 
 import { BlogsQueryRepository } from '../../infrastructure/blogs.query.repository';
 import { BlogInputDTO } from '../../dto/blog-input.dto';
@@ -26,6 +25,7 @@ import { PostCreateCommand } from '../../../posts/api/blogger/application/use-ca
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
 import { Blog, BlogModelType } from '../../blog.entity';
 import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import { JwtBearerGuard } from '../../../auth/guards/jwt-bearer.guard';
 
 import { BlogUpdateCommand } from './application/use-cases/blog-update.use-case';
 import { BlogDeleteCommand } from './application/use-cases/blog-delete.use-case';

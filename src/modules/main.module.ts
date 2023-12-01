@@ -40,6 +40,7 @@ import { LikeUpdateForCommentUseCase } from '../features/likes/api/public/applic
 import { BlogCreateUseCase } from '../features/blogs/api/blogger/application/use-cases/blog-create.use-case';
 import { LikesRepository } from '../features/likes/infrastructure/likes.repository';
 import { IsBlogExistConstraint } from '../shared/exceptions/decorators/blog-exists.decorator';
+import { JwtBearerGuard } from '../features/auth/guards/jwt-bearer.guard';
 
 const controllers = [
   SuperAdminBlogsController,
@@ -97,6 +98,7 @@ const queryRepositories = [
     ...repositories,
     ...queryRepositories,
     IsBlogExistConstraint,
+    JwtBearerGuard,
   ],
 })
 export class MainModule implements NestModule {
