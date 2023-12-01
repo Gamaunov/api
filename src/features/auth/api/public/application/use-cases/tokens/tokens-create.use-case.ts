@@ -15,24 +15,21 @@ export class TokensCreateUseCase
   constructor(private readonly jwtService: JwtService) {}
 
   async execute(command: TokensCreateCommand) {
-    const accessToken = this.jwtService.sign(
-      { sub: command.userId },
-      {
-        secret: jwtConstants.accessTokenSecret,
-        expiresIn: jwtConstants.accessTokenExpirationTime,
-      },
-    );
+    const accessTokenPayload = { sub: command.userId };
+    const refreshTokenPayload = {
+      sub: command.userId,
+      deviceId: command.deviceId,
+    };
 
-    const refreshToken = this.jwtService.sign(
-      {
-        sub: command.userId,
-        deviceId: command.deviceId,
-      },
-      {
-        secret: jwtConstants.refreshTokenSecret as string,
-        expiresIn: jwtConstants.refreshTokenExpirationTime as string,
-      },
-    );
+    const accessToken = this.jwtService.sign(accessTokenPayload, {
+      secret: jwtConstants.accessTokenSecret,
+      expiresIn: jwtConstants.accessTokenExpirationTime,
+    });
+
+    const refreshToken = this.jwtService.sign(refreshTokenPayload, {
+      secret: jwtConstants.refreshTokenSecret,
+      expiresIn: jwtConstants.refreshTokenExpirationTime,
+    });
 
     return {
       accessToken: accessToken,
