@@ -22,13 +22,13 @@ export class TokensCreateUseCase
     };
 
     const accessToken = this.jwtService.sign(accessTokenPayload, {
-      secret: jwtConstants.accessTokenSecret,
-      expiresIn: jwtConstants.accessTokenExpirationTime,
+      secret: jwtConstants.accessTokenSecret as string,
+      expiresIn: jwtConstants.accessTokenExpirationTime as string,
     });
 
     const refreshToken = this.jwtService.sign(refreshTokenPayload, {
-      secret: jwtConstants.refreshTokenSecret,
-      expiresIn: jwtConstants.refreshTokenExpirationTime,
+      secret: jwtConstants.refreshTokenSecret as string,
+      expiresIn: jwtConstants.refreshTokenExpirationTime as string,
     });
 
     return {
