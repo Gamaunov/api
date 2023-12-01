@@ -21,12 +21,12 @@ export class TokensCreateUseCase
       deviceId: command.deviceId,
     };
 
-    const accessToken = this.jwtService.sign(accessTokenPayload, {
+    const accessToken = this.jwtService.sign(accessTokenPayload as object, {
       secret: jwtConstants.accessTokenSecret as string,
       expiresIn: jwtConstants.accessTokenExpirationTime as string,
     });
 
-    const refreshToken = this.jwtService.sign(refreshTokenPayload, {
+    const refreshToken = this.jwtService.sign(refreshTokenPayload as object, {
       secret: jwtConstants.refreshTokenSecret as string,
       expiresIn: jwtConstants.refreshTokenExpirationTime as string,
     });
