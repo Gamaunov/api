@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { getThreeNewestLikes } from 'src/features/likes/utils/getThreeNewestLikes';
 
 import { Post, PostLeanType, PostModelType } from '../post.entity';
 import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
@@ -12,6 +11,7 @@ import { postsFilter } from '../../../shared/pagination/posts-filter';
 import { sortDirection } from '../../../shared/pagination/sort-direction';
 import { getLikeStatus } from '../../likes/utils/getLikeStatus';
 import { PostViewDTO } from '../dto/post.view.dto';
+import { getThreeNewestLikes } from '../../likes/utils/getThreeNewestLikes';
 
 @Injectable()
 export class PostsQueryRepository {
