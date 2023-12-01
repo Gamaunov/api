@@ -33,6 +33,12 @@ export class SuperAdminUsersController {
   ) {}
 
   @UseGuards(BasicAuthGuard)
+  @Get()
+  async findUsers(@Query() query: UserQuery) {
+    return this.usersQueryRepository.findUsers(query);
+  }
+
+  @UseGuards(BasicAuthGuard)
   @Post()
   async createUser(@Body() userInputDTO: UserInputDTO) {
     const userId = await this.commandBus.execute(
@@ -43,15 +49,9 @@ export class SuperAdminUsersController {
   }
 
   @UseGuards(BasicAuthGuard)
-  @Get()
-  async findUsers(@Query() query: UserQuery) {
-    return this.usersQueryRepository.findUsers(query);
-  }
-
-  @UseGuards(BasicAuthGuard)
   @Delete(':id')
   @HttpCode(204)
-  async deleteUser(@Param('id') userId) {
+  async deleteUser(@Param('id') userId: string) {
     const result = await this.commandBus.execute(new UserDeleteCommand(userId));
 
     if (!result) {

@@ -1,17 +1,14 @@
-import { IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsString, Length, MaxLength } from 'class-validator';
 export class PostInputDTO {
   @IsString()
-  @Length(1, 30)
+  @IsNotEmpty()
   title: string;
 
   @IsString()
   @Length(1, 30)
   shortDescription: string;
 
-  @IsString()
-  @Length(1, 1000)
+  @IsNotEmpty()
+  @MaxLength(100)
   content: string;
-
-  @IsString()
-  blogId: string;
 }

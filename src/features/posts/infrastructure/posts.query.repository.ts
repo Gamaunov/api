@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { getThreeNewestLikes } from 'src/features/likes/utils/getThreeNewestLikes';
 
 import { Post, PostLeanType, PostModelType } from '../post.entity';
 import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
@@ -10,7 +11,6 @@ import { paginateFeature } from '../../../shared/pagination/paginate-feature';
 import { postsFilter } from '../../../shared/pagination/posts-filter';
 import { sortDirection } from '../../../shared/pagination/sort-direction';
 import { getLikeStatus } from '../../likes/utils/getLikeStatus';
-import { LikeStatus } from '../../../shared/enums/like-status.enum';
 import { PostViewDTO } from '../dto/post.view.dto';
 
 @Injectable()
@@ -20,6 +20,7 @@ export class PostsQueryRepository {
     private PostModel: PostModelType,
     private readonly blogsQueryRepository: BlogsQueryRepository,
   ) {}
+
   async findPosts(
     query: QueryDTO,
     userId: string,
@@ -51,7 +52,10 @@ export class PostsQueryRepository {
     });
   }
 
-  async findPost(postId: string, userId?: string): Promise<PostViewDTO | null> {
+  async findPostById(
+    postId: string,
+    userId?: string,
+  ): Promise<PostViewDTO | null> {
     if (!mongoose.isValidObjectId(postId)) {
       return null;
     }
@@ -63,6 +67,7 @@ export class PostsQueryRepository {
     }
 
     const status = getLikeStatus(post, userId);
+    const newestLikes = getThreeNewestLikes(post.likesInfo.users);
 
     return {
       id: post.id,
@@ -76,20 +81,7 @@ export class PostsQueryRepository {
         likesCount: post.likesInfo.likesCount,
         dislikesCount: post.likesInfo.dislikesCount,
         myStatus: status,
-        newestLikes: post.likesInfo.users
-          .filter((p) => p.likeStatus === LikeStatus.LIKE)
-          .sort(
-            (a, b) =>
-              -a.addedAt.toISOString().localeCompare(b.addedAt.toISOString()),
-          )
-          .map((p) => {
-            return {
-              addedAt: p.addedAt.toISOString(),
-              userId: p.userId,
-              login: p.userLogin,
-            };
-          })
-          .splice(0, 3),
+        newestLikes: newestLikes,
       },
     };
   }
@@ -100,7 +92,7 @@ export class PostsQueryRepository {
   ): Promise<PostViewDTO[]> {
     return posts.map((p) => {
       const status = getLikeStatus(p, userId);
-      const usersLikes = p.likesInfo.users;
+      const newestLikes = getThreeNewestLikes(p.likesInfo.users);
 
       return {
         id: p._id.toString(),
@@ -114,20 +106,7 @@ export class PostsQueryRepository {
           likesCount: p.likesInfo.likesCount,
           dislikesCount: p.likesInfo.dislikesCount,
           myStatus: status,
-          newestLikes: usersLikes
-            .filter((p) => p.likeStatus === LikeStatus.LIKE)
-            .sort(
-              (a, b) =>
-                -a.addedAt.toISOString().localeCompare(b.addedAt.toISOString()),
-            )
-            .map((p) => {
-              return {
-                addedAt: p.addedAt.toISOString(),
-                userId: p.userId,
-                login: p.userLogin,
-              };
-            })
-            .splice(0, 3),
+          newestLikes: newestLikes,
         },
       };
     });

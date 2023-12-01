@@ -31,7 +31,7 @@ import {
 } from '../../../../shared/constants/constants';
 import { ConfirmCodeInputDTO } from '../../dto/user-confirm.dto';
 import { LocalAuthGuard } from '../../guards/local-auth.guard';
-import { UserIdFromGuard } from '../../decorators/user-id-from-guard.param.decorator';
+import { UserIdFromGuard } from '../../decorators/user-id-from-guard.guard.decorator';
 import { JwtRefreshGuard } from '../../guards/jwt-refresh.guard';
 import { RefreshToken } from '../../decorators/refresh-token.param.decorator';
 import { JwtBearerGuard } from '../../guards/jwt-bearer.guard';
@@ -68,9 +68,10 @@ export class PublicAuthController {
     return {
       email: user?.accountData.email,
       login: user?.accountData.login,
-      id: userId,
+      userId,
     };
   }
+
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
   @Post('registration')
@@ -78,6 +79,7 @@ export class PublicAuthController {
   async registerUser(@Body() userInputDTO: UserInputDTO) {
     return this.commandBus.execute(new RegistrationCommand(userInputDTO));
   }
+
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
   @Post('registration-email-resending')
@@ -97,6 +99,7 @@ export class PublicAuthController {
 
     return result;
   }
+
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
   @Post('registration-confirmation')
@@ -116,6 +119,7 @@ export class PublicAuthController {
 
     return result;
   }
+
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
   @Post('password-recovery')
@@ -123,6 +127,7 @@ export class PublicAuthController {
   async recoverPassword(@Body() emailInputDTO: EmailInputDTO) {
     return this.commandBus.execute(new PasswordRecoveryCommand(emailInputDTO));
   }
+
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
   @Post('new-password')
@@ -142,6 +147,7 @@ export class PublicAuthController {
 
     return result;
   }
+
   @UseGuards(ThrottlerGuard, LocalAuthGuard)
   @Throttle(5, 10)
   @Post('login')
@@ -168,6 +174,7 @@ export class PublicAuthController {
       })
       .json({ accessToken: tokens.accessToken });
   }
+
   @UseGuards(JwtRefreshGuard)
   @Post('refresh-token')
   @HttpCode(200)
@@ -197,6 +204,7 @@ export class PublicAuthController {
       })
       .json({ accessToken: tokens.accessToken });
   }
+
   @UseGuards(JwtRefreshGuard)
   @Post('logout')
   @HttpCode(204)

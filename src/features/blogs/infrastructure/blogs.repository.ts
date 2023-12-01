@@ -15,7 +15,7 @@ export class BlogsRepository {
     return blog.save();
   }
 
-  async findBlogById(id: string): Promise<BlogDocument | null> {
+  async findBlogById(id: string) {
     if (!mongoose.isValidObjectId(id)) {
       throw new NotFoundException();
     }
@@ -27,6 +27,27 @@ export class BlogsRepository {
     }
 
     return blog;
+  }
+
+  async findBlog(_id) {
+    if (!mongoose.isValidObjectId(_id)) {
+      throw new NotFoundException();
+    }
+
+    const blog = await this.BlogModel.findOne({ _id });
+
+    if (!blog) {
+      throw new NotFoundException();
+    }
+
+    return {
+      id: blog._id,
+      name: blog.name,
+      description: blog.description,
+      websiteUrl: blog.websiteUrl,
+      createdAt: blog.createdAt,
+      isMembership: blog.isMembership,
+    };
   }
 
   async deleteBlog(id: string): Promise<boolean> {

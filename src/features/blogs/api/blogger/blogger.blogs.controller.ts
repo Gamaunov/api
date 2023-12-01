@@ -11,29 +11,31 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { InjectModel } from '@nestjs/mongoose';
+import { JwtBearerGuard } from 'src/features/auth/guards/jwt-bearer.guard';
 
 import { BlogsQueryRepository } from '../../infrastructure/blogs.query.repository';
 import { BlogInputDTO } from '../../dto/blog-input.dto';
-import { UserIdFromGuard } from '../../../auth/decorators/user-id-from-guard.param.decorator';
+import { UserIdFromGuard } from '../../../auth/decorators/user-id-from-guard.guard.decorator';
 import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
 import { ResultCode } from '../../../../shared/enums/result-code.enum';
-import {
-  userIDField,
-  userNotFound,
-} from '../../../../shared/constants/constants';
 import { BlogQuery } from '../../dto/blog-query';
 import { PostInputDTO } from '../../../posts/dto/post-input.dto';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.query.repository';
 import { PostCreateCommand } from '../../../posts/api/blogger/application/use-cases/post-create.use-case';
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
+import { Blog, BlogModelType } from '../../blog.entity';
+import { BlogsRepository } from '../../infrastructure/blogs.repository';
 
 import { BlogUpdateCommand } from './application/use-cases/blog-update.use-case';
 import { BlogDeleteCommand } from './application/use-cases/blog-delete.use-case';
-import { BlogCreateCommand } from './application/use-cases/blog-create.use-case';
 
 @Controller('blogs')
 export class BloggerBlogsController {
   constructor(
+    @InjectModel(Blog.name)
+    private BlogModel: BlogModelType,
+    private readonly blogsRepository: BlogsRepository,
     private commandBus: CommandBus,
     private readonly blogsQueryRepository: BlogsQueryRepository,
     private readonly postsQueryRepository: PostsQueryRepository,
@@ -46,16 +48,11 @@ export class BloggerBlogsController {
 
   @UseGuards(BasicAuthGuard)
   @Post()
+  @HttpCode(201)
   async createBlog(@Body() blogInputDTO: BlogInputDTO) {
-    const blogId = await this.commandBus.execute(
-      new BlogCreateCommand(blogInputDTO),
-    );
-
-    if (!blogId) {
-      return exceptionHandler(ResultCode.NotFound, userNotFound, userIDField);
-    }
-
-    return this.blogsQueryRepository.findBlogById(blogId);
+    const blog = this.BlogModel.createBlog(this.BlogModel, blogInputDTO);
+    await this.blogsRepository.save(blog);
+    return this.blogsRepository.findBlog(blog._id);
   }
 
   @UseGuards(BasicAuthGuard)
@@ -77,21 +74,22 @@ export class BloggerBlogsController {
     return result;
   }
 
+  @UseGuards(JwtBearerGuard)
   @Post(':id/posts')
   async createPost(
-    @Body() postInputDto: PostInputDTO,
-    @Param('id') blogId,
-    @UserIdFromGuard() userId,
+    @Body() postInputDTO: PostInputDTO,
+    @Param('id') blogId: string,
+    @UserIdFromGuard() userId: string,
   ) {
     const result = await this.commandBus.execute(
-      new PostCreateCommand(postInputDto, blogId, userId),
+      new PostCreateCommand(postInputDTO, blogId, userId),
     );
 
     if (result.code !== ResultCode.Success) {
       return exceptionHandler(result.code, result.message, result.field);
     }
 
-    return this.postsQueryRepository.findPost(result.response);
+    return this.postsQueryRepository.findPostById(result.response);
   }
 
   @UseGuards(BasicAuthGuard)

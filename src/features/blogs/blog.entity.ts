@@ -1,8 +1,6 @@
 import { HydratedDocument, Model, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { UserDocument } from '../users/user.entity';
-
 import { BlogInputDTO } from './dto/blog-input.dto';
 
 interface IUpdateBlogDTO {
@@ -17,7 +15,6 @@ export type BlogModelStaticType = {
   createBlog: (
     BlogModel: BlogModelType,
     blogInputDto: BlogInputDTO,
-    user?: UserDocument,
   ) => BlogDocument;
 };
 
@@ -50,7 +47,6 @@ export class Blog {
   static createBlog(
     BlogModel: BlogModelType,
     blogInputDTO: BlogInputDTO,
-    user: UserDocument,
   ): BlogDocument {
     const blog = {
       name: blogInputDTO.name,
@@ -58,10 +54,6 @@ export class Blog {
       websiteUrl: blogInputDTO.websiteUrl,
       createdAt: new Date(),
       isMembership: false,
-      blogOwnerInfo: {
-        userId: user.id,
-        userLogin: user.accountData.login,
-      },
     };
     return new BlogModel(blog);
   }

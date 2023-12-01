@@ -11,7 +11,7 @@ import { CommandBus } from '@nestjs/cqrs';
 
 import { DevicesQueryRepository } from '../../infrastructure/devices.query.repository';
 import { JwtRefreshGuard } from '../../../auth/guards/jwt-refresh.guard';
-import { UserIdFromGuard } from '../../../auth/decorators/user-id-from-guard.param.decorator';
+import { UserIdFromGuard } from '../../../auth/decorators/user-id-from-guard.guard.decorator';
 import { RefreshToken } from '../../../auth/decorators/refresh-token.param.decorator';
 import { ResultCode } from '../../../../shared/enums/result-code.enum';
 import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
@@ -29,7 +29,7 @@ export class PublicDevicesController {
 
   @UseGuards(JwtRefreshGuard)
   @Get('devices')
-  async getDevices(@UserIdFromGuard() userId) {
+  async getDevices(@UserIdFromGuard() userId: string) {
     return this.devicesQueryRepository.findDevices(userId);
   }
 
@@ -45,7 +45,10 @@ export class PublicDevicesController {
   @UseGuards(JwtRefreshGuard)
   @Delete('devices/:id')
   @HttpCode(204)
-  async terminateSession(@Param('id') deviceId, @UserIdFromGuard() userId) {
+  async terminateSession(
+    @Param('id') deviceId: string,
+    @UserIdFromGuard() userId: string,
+  ) {
     const result = await this.commandBus.execute(
       new DeviceDeleteForTerminateCommand(deviceId, userId),
     );
