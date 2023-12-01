@@ -29,8 +29,8 @@ export class TokensCreateUseCase
         deviceId: command.deviceId,
       },
       {
-        secret: jwtConstants.refreshTokenSecret as string,
-        expiresIn: jwtConstants.refreshTokenExpirationTime as string,
+        secret: jwtConstants.refreshTokenSecret,
+        expiresIn: jwtConstants.refreshTokenExpirationTime,
       },
     );
 
