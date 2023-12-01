@@ -15,21 +15,32 @@ export class TokensCreateUseCase
   constructor(private readonly jwtService: JwtService) {}
 
   async execute(command: TokensCreateCommand) {
-    const accessTokenPayload = { sub: command.userId };
-    const refreshTokenPayload = {
+<<<<<<<<< Temporary merge branch 1
+    const accessTokenPayload: object = { sub: command.userId };
+    const refreshTokenPayload: object = {
       sub: command.userId,
       deviceId: command.deviceId,
     };
+=========
+    const accessToken = this.jwtService.sign(
+      { sub: command.userId },
+      {
+        secret: jwtConstants.accessTokenSecret,
+        expiresIn: jwtConstants.accessTokenExpirationTime,
+      },
+    );
+>>>>>>>>> Temporary merge branch 2
 
-    const accessToken = this.jwtService.sign(accessTokenPayload, {
-      secret: jwtConstants.accessTokenSecret,
-      expiresIn: jwtConstants.accessTokenExpirationTime,
-    });
-
-    const refreshToken = this.jwtService.sign(refreshTokenPayload, {
-      secret: jwtConstants.refreshTokenSecret,
-      expiresIn: jwtConstants.refreshTokenExpirationTime,
-    });
+    const refreshToken = this.jwtService.sign(
+      {
+        sub: command.userId,
+        deviceId: command.deviceId,
+      },
+      {
+        secret: jwtConstants.refreshTokenSecret as string,
+        expiresIn: jwtConstants.refreshTokenExpirationTime as string,
+      },
+    );
 
     return {
       accessToken: accessToken,
