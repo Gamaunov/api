@@ -8,6 +8,7 @@ import { customExceptionFactory } from './shared/exceptions/exception.factory';
 import { HttpExceptionFilter } from './shared/exceptions/exception.filter';
 
 export const appSettings = (app): void => {
+  app.enableCors();
   app.use(cookieParser());
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
@@ -20,7 +21,6 @@ export const appSettings = (app): void => {
     }),
   );
 
-  app.enableCors();
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const config = new DocumentBuilder()
