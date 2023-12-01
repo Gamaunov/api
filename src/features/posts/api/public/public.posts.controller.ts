@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
-import { BasicAuthGuard } from 'src/features/auth/guards/basic-auth.guard';
 
 import { CommentsQueryRepository } from '../../../comments/infrastructure/comments.query.repository';
 import { QueryDTO } from '../../../../shared/dto/query.dto';
@@ -34,6 +33,7 @@ import { Post as ClassPost, PostModelType } from '../../post.entity';
 import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
 import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 import { PostUpdateCommand } from '../blogger/application/use-cases/post-update.use-case';
+import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
 
 @Controller('posts')
 export class PublicPostsController {
