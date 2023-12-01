@@ -15,8 +15,8 @@ export class TokensCreateUseCase
   constructor(private readonly jwtService: JwtService) {}
 
   async execute(command: TokensCreateCommand) {
-    const accessTokenPayload = { sub: command.userId };
-    const refreshTokenPayload = {
+    const accessTokenPayload: object = { sub: command.userId };
+    const refreshTokenPayload: object = {
       sub: command.userId,
       deviceId: command.deviceId,
     };
