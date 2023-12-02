@@ -1,5 +1,4 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { UserIdFromHeaders } from 'src/features/auth/decorators/user-id-from-headers.decorator';
 
 import { BlogsQueryRepository } from '../../infrastructure/blogs.query.repository';
 import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
@@ -10,6 +9,7 @@ import {
 } from '../../../../shared/constants/constants';
 import { QueryDTO } from '../../../../shared/dto/query.dto';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.query.repository';
+import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 
 @Controller('blogs')
 export class PublicBlogsController {
