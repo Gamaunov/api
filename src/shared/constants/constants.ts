@@ -14,6 +14,7 @@ export const deviceIDField = 'deviceId';
 export const confirmCodeField = 'code';
 export const recoveryCodeField = 'recoveryCode';
 export const emailField = 'email';
+export const loginField = 'email';
 
 // Unique user
 export const loginNotUnique = 'Login already exists';

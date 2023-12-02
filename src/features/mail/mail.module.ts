@@ -1,9 +1,10 @@
 import { MailerModule } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { Module } from '@nestjs/common';
 import { join } from 'path';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 
-import { MailService } from './application/mail.service';
+import { SendPasswordRecoveryUseCase } from './application/use-cases/send-pass-recovery-mail.use-case';
+import { SendRegistrationMailUseCase } from './application/use-cases/send-registration-mail.use-case';
 
 @Module({
   imports: [
@@ -29,7 +30,6 @@ import { MailService } from './application/mail.service';
       },
     }),
   ],
-  providers: [MailService],
-  exports: [MailService],
+  providers: [SendRegistrationMailUseCase, SendPasswordRecoveryUseCase],
 })
 export class MailModule {}

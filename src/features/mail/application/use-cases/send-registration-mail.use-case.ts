@@ -21,8 +21,9 @@ export class SendRegistrationMailUseCase
     await this.mailerService.sendMail({
       to: command.email,
       subject: 'Registration confirmation',
-      template: './confirmation',
+      template: './confirmation', // `.hbs` extension is appended automatically
       context: {
+        // ✏️ filling curly brackets with content
         login: command.login,
         url,
       },

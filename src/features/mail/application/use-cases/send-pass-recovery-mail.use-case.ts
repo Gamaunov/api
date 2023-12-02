@@ -21,8 +21,9 @@ export class SendPasswordRecoveryUseCase
     await this.mailerService.sendMail({
       to: command.email,
       subject: 'Password recovery',
-      template: './password-recovery',
+      template: './password-recovery', // `.hbs` extension is appended automatically
       context: {
+        // ✏️ filling curly brackets with content
         login: command.login,
         url,
       },

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -12,6 +12,7 @@ import { DeviceDeleteForLogoutUseCase } from '../devices/api/public/application/
 import { DevicesRepository } from '../devices/infrastructure/devices.repository';
 import { UsersRepository } from '../users/infrastructure/users.repository';
 import { Device, DeviceSchema } from '../devices/device.entity';
+import { CheckLoginAndEmail } from '../../shared/middlewares/check-login-and-email';
 
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtBearerStrategy } from './strategies/jwt-bearer.strategy';
@@ -68,4 +69,8 @@ const strategies = [
   controllers: [PublicAuthController],
   providers: [...services, ...useCases, ...repositories, ...strategies],
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CheckLoginAndEmail).forRoutes('auth/registration');
+  }
+}
