@@ -32,8 +32,8 @@ export class UsersQueryRepository {
     );
 
     return Paginator.paginate({
-      pageNumber: query.pageNumber,
-      pageSize: query.pageSize,
+      pageNumber: +query.pageNumber,
+      pageSize: +query.pageSize,
       totalCount: totalCount,
       items: await this.usersMapping(users),
     });
