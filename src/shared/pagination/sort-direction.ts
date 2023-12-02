@@ -8,7 +8,7 @@ export const sortDirection = (sortBy: string, sortDirection: SortOrder) => {
   };
 
   if (sortDirection === SortDirection.ASC) {
-    result[sortBy] = SortDirection.DESC;
+    result[sortBy] = SortDirection.ASC;
   }
 
   return result;
