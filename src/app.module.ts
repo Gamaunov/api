@@ -1,8 +1,11 @@
+import { ConfigModule } from '@nestjs/config';
+export const configModule_ENV = ConfigModule.forRoot({
+  envFilePath: ['.env.local', '.env'],
+});
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
-import * as process from 'process';
 import { CqrsModule } from '@nestjs/cqrs';
+import * as process from 'process';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -20,7 +23,7 @@ const DB_URI: string =
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    configModule_ENV,
     MongooseModule.forRoot(DB_URI),
     CqrsModule,
     AuthModule,
@@ -30,7 +33,6 @@ const DB_URI: string =
     MailModule,
     TestingModule,
   ],
-
   controllers: [AppController],
   providers: [AppService],
 })

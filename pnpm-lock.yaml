@@ -53,9 +53,6 @@ dependencies:
   date-fns:
     specifier: ^2.30.0
     version: 2.30.0
-  dotenv:
-    specifier: ^16.3.1
-    version: 16.3.1
   handlebars:
     specifier: ^4.7.7
     version: 4.7.8
@@ -100,9 +97,6 @@ devDependencies:
   '@types/cookie-parser':
     specifier: ^1.4.6
     version: 1.4.6
-  '@types/dotenv':
-    specifier: ^8.2.0
-    version: 8.2.0
   '@types/express':
     specifier: ^4.17.13
     version: 4.17.21
@@ -1411,13 +1405,6 @@ packages:
 
   /@types/cookiejar@2.1.4:
     resolution: {integrity: sha512-b698BLJ6kPVd6uhHsY7wlebZdrWPXYied883PDSzpJZYOP97EOn/oGdLCH3jJf157srkFReIZY5v0H1s8Dozrg==}
-    dev: true
-
-  /@types/dotenv@8.2.0:
-    resolution: {integrity: sha512-ylSC9GhfRH7m1EUXBXofhgx4lUWmFeQDINW5oLuS+gxWdfUeW4zJdeVTYVkexEW+e2VUvlZR2kGnGGipAWR7kw==}
-    deprecated: This is a stub types definition. dotenv provides its own type definitions, so you do not need this installed.
-    dependencies:
-      dotenv: 16.3.1
     dev: true
 
   /@types/ejs@3.1.5:
@@ -3074,10 +3061,6 @@ packages:
     resolution: {integrity: sha512-m55RtE8AsPeJBpOIFKihEmqUcoVncQIwo7x9U8ZwLEZw9ZpXboz2c+rvog+jUaJvVrZ5kBOeYQBX5+8Aa/OZQw==}
     engines: {node: '>=12'}
     dev: false
-
-  /dotenv@16.3.1:
-    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
-    engines: {node: '>=12'}
 
   /eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
