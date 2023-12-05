@@ -1,5 +1,3 @@
-import { userEmail01, userLogin01 } from './users.constants';
-
 export const auth_login_uri = '/auth/login/';
 export const auth_logout_uri = '/auth/logout/';
 export const auth_refreshToken_uri = '/auth/refresh-token/';
