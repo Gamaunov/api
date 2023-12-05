@@ -24,10 +24,7 @@ export class PasswordUpdateUseCase
       return null;
     }
 
-    const hash = await bcrypt.hash(
-      command.newPasswordDTO.newPassword,
-      Number(process.env.HASH_ROUNDS),
-    );
+    const hash = await bcrypt.hash(command.newPasswordDTO.newPassword, 10);
 
     await user.updatePassword(hash);
     return this.usersRepository.save(user);
