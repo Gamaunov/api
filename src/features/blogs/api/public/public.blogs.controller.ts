@@ -19,7 +19,7 @@ export class PublicBlogsController {
   ) {}
 
   @Get(':id')
-  async findBlog(@Param('id') id) {
+  async findBlog(@Param('id') id: string) {
     const result = await this.blogsQueryRepository.findBlogById(id);
 
     if (!result) {

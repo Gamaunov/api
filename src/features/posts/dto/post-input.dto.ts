@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, Length, MaxLength } from 'class-validator';
-export class PostInputDTO {
+export class PostInputDto {
   @IsString()
   @IsNotEmpty()
   title: string;

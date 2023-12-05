@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { BlogsRepository } from '../../../../../blogs/infrastructure/blogs.repository';
-import { PostInputDTO } from '../../../../dto/post-input.dto';
+import { PostInputDto } from '../../../../dto/post-input.dto';
 import { ExceptionResultType } from '../../../../../../shared/types/exceptions.types';
 import { ResultCode } from '../../../../../../shared/enums/result-code.enum';
 import {
@@ -14,7 +14,7 @@ import { PostsRepository } from '../../../../infrastructure/posts.repository';
 
 export class PostUpdateCommand {
   constructor(
-    public postInputDTO: PostInputDTO,
+    public postInputDTO: PostInputDto,
     public blogId: string,
     public postId: string,
     public userId: string,

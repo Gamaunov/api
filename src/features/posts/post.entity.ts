@@ -4,7 +4,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BlogDocument } from '../blogs/blog.entity';
 import { LikesInfoSchema } from '../likes/schemas/likes-info.schema';
 
-import { PostInputDTO } from './dto/post-input.dto';
+import { PostInputDto } from './dto/post-input.dto';
 
 interface IUpdatePostDTO {
   title: string;
@@ -18,7 +18,7 @@ export type PostLeanType = Post & { _id: Types.ObjectId };
 export type PostModelStaticType = {
   createPost: (
     PostModel: PostModelType,
-    postInputDTO: PostInputDTO,
+    postInputDTO: PostInputDto,
     blog: BlogDocument,
   ) => PostDocument;
 };
@@ -56,7 +56,7 @@ export class Post {
 
   static createPost(
     PostModel: PostModelType,
-    postInputDTO: PostInputDTO,
+    postInputDTO: PostInputDto,
     blog: BlogDocument,
   ): PostDocument {
     const post = {
