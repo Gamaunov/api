@@ -36,8 +36,8 @@ export class BlogsQueryRepository {
     const items = await this.blogsMapping(blogs);
 
     return Paginator.paginate({
-      pageNumber: query.pageNumber,
-      pageSize: query.pageSize,
+      pageNumber: +query.pageNumber,
+      pageSize: +query.pageSize,
       totalCount: totalCount,
       items: items,
     });
