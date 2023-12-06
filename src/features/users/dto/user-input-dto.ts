@@ -6,7 +6,7 @@ import {
   loginNotUnique,
 } from '../../../shared/constants/constants';
 
-export class UserInputDTO {
+export abstract class UserInputDTO {
   @Length(3, 10)
   @Matches(/^[a-zA-Z0-9_-]*$/)
   @IsUserAlreadyExist({

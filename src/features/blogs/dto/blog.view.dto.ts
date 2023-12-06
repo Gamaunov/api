@@ -1,4 +1,4 @@
-export class BlogViewDTO {
+export abstract class BlogViewDTO {
   id: string;
   name: string;
   description: string;

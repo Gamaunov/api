@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsUrl, MaxLength, NotContains } from 'class-validator';
 
-export class BlogInputDto {
+export abstract class BlogInputDto {
   @IsNotEmpty()
   @NotContains(' ')
   @MaxLength(15)
