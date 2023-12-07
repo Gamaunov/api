@@ -39,7 +39,6 @@ import { LikeUpdateForPostUseCase } from '../features/likes/api/public/applicati
 import { LikeUpdateForCommentUseCase } from '../features/likes/api/public/application/use-cases/like-update-for-comment-use.case';
 import { BlogCreateUseCase } from '../features/blogs/api/blogger/application/use-cases/blog-create.use-case';
 import { LikesRepository } from '../features/likes/infrastructure/likes.repository';
-import { IsBlogExistConstraint } from '../shared/exceptions/decorators/blog-exists.decorator';
 import { JwtBearerGuard } from '../features/auth/guards/jwt-bearer.guard';
 
 const controllers = [
@@ -97,7 +96,6 @@ const queryRepositories = [
     ...useCases,
     ...repositories,
     ...queryRepositories,
-    IsBlogExistConstraint,
     JwtBearerGuard,
   ],
 })

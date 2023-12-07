@@ -40,6 +40,7 @@ export class PublicBlogsController {
       userId,
       blogId,
     );
+
     if (!result) {
       return exceptionHandler(ResultCode.NotFound, blogNotFound, blogIDField);
     }
