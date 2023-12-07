@@ -1,4 +1,4 @@
-export class CommentViewDTO {
+export abstract class CommentViewDto {
   id: string;
   content: string;
   commentatorInfo: {

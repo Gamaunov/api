@@ -1,12 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import bcrypt from 'bcrypt';
 
-import { NewPasswordDTO } from '../../../../../dto/new-password.dto';
+import { NewPasswordDto } from '../../../../../dto/new-password.dto';
 import { UsersRepository } from '../../../../../../users/infrastructure/users.repository';
 import { UserDocument } from '../../../../../../users/user.entity';
 
 export class PasswordUpdateCommand {
-  constructor(public newPasswordDTO: NewPasswordDTO) {}
+  constructor(public newPasswordDTO: NewPasswordDto) {}
 }
 
 @CommandHandler(PasswordUpdateCommand)
@@ -24,10 +24,7 @@ export class PasswordUpdateUseCase
       return null;
     }
 
-    const hash = await bcrypt.hash(
-      command.newPasswordDTO.newPassword,
-      Number(process.env.HASH_ROUNDS),
-    );
+    const hash = await bcrypt.hash(command.newPasswordDTO.newPassword, 10);
 
     await user.updatePassword(hash);
     return this.usersRepository.save(user);

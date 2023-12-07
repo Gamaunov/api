@@ -18,11 +18,11 @@ import {
   commentNotFound,
 } from '../../../../shared/constants/constants';
 import { JwtBearerGuard } from '../../../auth/guards/jwt-bearer.guard';
-import { CommentInputDTO } from '../../dto/comment-input.dto';
+import { CommentInputDto } from '../../dto/comment-input.dto';
 import { UserIdFromGuard } from '../../../auth/decorators/user-id-from-guard.guard.decorator';
-import { LikeStatusInputDTO } from '../../../likes/dto/like-status-input.dto';
+import { LikeStatusInputDto } from '../../../likes/dto/like-status-input.dto';
 import { LikeUpdateForCommentCommand } from '../../../likes/api/public/application/use-cases/like-update-for-comment-use.case';
-import { CommentViewDTO } from '../../dto/comment.view.dto';
+import { CommentViewDto } from '../../dto/comment-view.dto';
 import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 
 import { CommentUpdateCommand } from './application/use-cases/comment-update.use-case';
@@ -39,8 +39,8 @@ export class PublicCommentsController {
   async findComment(
     @Param('id') commentId: string,
     @UserIdFromHeaders() userId: string,
-  ): Promise<void | CommentViewDTO> {
-    const result: CommentViewDTO =
+  ): Promise<void | CommentViewDto> {
+    const result: CommentViewDto =
       await this.commentsQueryRepository.findCommentById(commentId, userId);
 
     if (!result) {
@@ -58,12 +58,12 @@ export class PublicCommentsController {
   @Put(':id')
   @HttpCode(204)
   async updateComment(
-    @Body() commentInputDTO: CommentInputDTO,
+    @Body() commentInputDto: CommentInputDto,
     @Param('id') commentId: string,
     @UserIdFromGuard() userId: string,
   ) {
     const result = await this.commandBus.execute(
-      new CommentUpdateCommand(commentInputDTO, commentId, userId),
+      new CommentUpdateCommand(commentInputDto, commentId, userId),
     );
 
     if (result.code !== ResultCode.Success) {
@@ -77,12 +77,12 @@ export class PublicCommentsController {
   @Put(':id/like-status')
   @HttpCode(204)
   async updateLikeStatus(
-    @Body() likeStatusInputDTO: LikeStatusInputDTO,
+    @Body() likeStatusInputDto: LikeStatusInputDto,
     @Param('id') commentId: string,
     @UserIdFromGuard() userId: string,
   ) {
     const result = await this.commandBus.execute(
-      new LikeUpdateForCommentCommand(likeStatusInputDTO, commentId, userId),
+      new LikeUpdateForCommentCommand(likeStatusInputDto, commentId, userId),
     );
 
     if (!result) {

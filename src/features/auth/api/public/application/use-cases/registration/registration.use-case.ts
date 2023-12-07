@@ -10,11 +10,11 @@ import {
   UserDocument,
   UserModelType,
 } from '../../../../../../users/user.entity';
-import { UserInputDTO } from '../../../../../../users/dto/user-input-dto';
+import { UserInputDto } from '../../../../../../users/dto/user-input-dto';
 import { SendRegistrationMailCommand } from '../../../../../../mail/application/use-cases/send-registration-mail.use-case';
 
 export class RegistrationCommand {
-  constructor(public userInputDTO: UserInputDTO) {}
+  constructor(public userInputDTO: UserInputDto) {}
 }
 
 @CommandHandler(RegistrationCommand)

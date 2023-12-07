@@ -8,11 +8,11 @@ import {
   Comment,
   CommentModelType,
 } from '../../../../../comments/comment.entity';
-import { LikeStatusInputDTO } from '../../../../dto/like-status-input.dto';
+import { LikeStatusInputDto } from '../../../../dto/like-status-input.dto';
 
 export class LikeUpdateForCommentCommand {
   constructor(
-    public likeStatusInputDTO: LikeStatusInputDTO,
+    public likeStatusInputDto: LikeStatusInputDto,
     public commentId: string,
     public userId: string,
   ) {}
@@ -41,7 +41,7 @@ export class LikeUpdateForCommentUseCase
     const data: LikesDataType = {
       commentOrPostId: command.commentId,
       userId: command.userId,
-      likeStatus: command.likeStatusInputDTO.likeStatus,
+      likeStatus: command.likeStatusInputDto.likeStatus,
       likesCount: comment.likesInfo.likesCount,
       dislikesCount: comment.likesInfo.dislikesCount,
       model: this.CommentModel,

@@ -3,7 +3,7 @@ import { IsOptional } from 'class-validator';
 import { QueryParamsEnum } from '../enums/query-params.enum';
 import { SortDirection } from '../enums/sort-direction.enum';
 
-export class QueryDTO {
+export abstract class QueryDto {
   @IsOptional()
   sortBy = QueryParamsEnum.createdAt;
   @IsOptional()

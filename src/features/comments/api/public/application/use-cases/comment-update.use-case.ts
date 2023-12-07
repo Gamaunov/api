@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { CommentInputDTO } from '../../../../dto/comment-input.dto';
+import { CommentInputDto } from '../../../../dto/comment-input.dto';
 import { CommentsRepository } from '../../../../infrastructure/comments.repository';
 import { ExceptionResultType } from '../../../../../../shared/types/exceptions.types';
 import { ResultCode } from '../../../../../../shared/enums/result-code.enum';
@@ -11,7 +11,7 @@ import {
 
 export class CommentUpdateCommand {
   constructor(
-    public commentInputDTO: CommentInputDTO,
+    public commentInputDto: CommentInputDto,
     public commentId: string,
     public userId: string,
   ) {}
@@ -46,7 +46,7 @@ export class CommentUpdateUseCase
       };
     }
 
-    await comment.updateComment(command.commentInputDTO);
+    await comment.updateComment(command.commentInputDto);
     await comment.save();
 
     return {

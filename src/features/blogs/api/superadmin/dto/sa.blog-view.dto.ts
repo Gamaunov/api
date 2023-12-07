@@ -1,4 +1,4 @@
-export class SuperAdminBlogViewDTO {
+export abstract class SuperAdminBlogViewDTO {
   id: string;
   name: string;
   description: string;

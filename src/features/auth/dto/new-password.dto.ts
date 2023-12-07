@@ -1,6 +1,6 @@
 import { Length } from 'class-validator';
 
-export class NewPasswordDTO {
+export abstract class NewPasswordDto {
   @Length(6, 20)
   newPassword: string;
 

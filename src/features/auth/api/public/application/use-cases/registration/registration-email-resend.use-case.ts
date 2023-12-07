@@ -1,13 +1,13 @@
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { randomUUID } from 'crypto';
 
-import { EmailInputDTO } from '../../../../../dto/email-input.dto';
+import { EmailInputDto } from '../../../../../dto/email-input.dto';
 import { UsersRepository } from '../../../../../../users/infrastructure/users.repository';
 import { UserDocument } from '../../../../../../users/user.entity';
 import { SendRegistrationMailCommand } from '../../../../../../mail/application/use-cases/send-registration-mail.use-case';
 
 export class RegistrationEmailResendCommand {
-  constructor(public emailInputDTO: EmailInputDTO) {}
+  constructor(public emailInputDto: EmailInputDto) {}
 }
 
 @CommandHandler(RegistrationEmailResendCommand)
@@ -23,7 +23,7 @@ export class RegistrationEmailResendUseCase
     command: RegistrationEmailResendCommand,
   ): Promise<UserDocument | null> {
     const user = await this.usersRepository.findUserByLoginOrEmail(
-      command.emailInputDTO.email,
+      command.emailInputDto.email,
     );
 
     if (!user || user.emailConfirmation.isConfirmed) {
