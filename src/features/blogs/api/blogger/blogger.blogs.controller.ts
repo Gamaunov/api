@@ -25,7 +25,6 @@ import { PostCreateCommand } from '../../../posts/api/blogger/application/use-ca
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
 import { Blog, BlogModelType } from '../../blog.entity';
 import { BlogsRepository } from '../../infrastructure/blogs.repository';
-import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 
 import { BlogUpdateCommand } from './application/use-cases/blog-update.use-case';
 import { BlogDeleteCommand } from './application/use-cases/blog-delete.use-case';
