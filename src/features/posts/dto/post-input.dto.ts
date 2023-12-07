@@ -14,7 +14,6 @@ export class PostInputDTO {
   content: string;
 
   @IsString()
-  @IsNotEmpty()
   @IsOptional()
-  blogId: string;
+  blogId?: string;
 }
