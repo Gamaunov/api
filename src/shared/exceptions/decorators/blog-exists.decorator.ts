@@ -19,12 +19,12 @@ export class IsBlogExistConstraint implements ValidatorConstraintInterface {
   }
 }
 
-export const isBlogExist =
+export const IsBlogExist =
   (validationOptions?: ValidationOptions) =>
   (object: object, propertyName: string) => {
     registerDecorator({
       target: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       options: validationOptions,
       constraints: [],
       validator: IsBlogExistConstraint,

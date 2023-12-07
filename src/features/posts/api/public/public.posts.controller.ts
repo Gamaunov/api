@@ -34,8 +34,8 @@ import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository'
 import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 import { PostUpdateCommand } from '../blogger/application/use-cases/post-update.use-case';
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
-import { PostInputDTO } from '../../dto/post-input.dto';
 import { PostCreateCommand } from '../blogger/application/use-cases/post-create.use-case';
+import { CreatePostInputDto } from '../../dto/create-post-input.dto';
 
 @Controller('posts')
 export class PublicPostsController {
@@ -93,7 +93,7 @@ export class PublicPostsController {
   @UseGuards(BasicAuthGuard)
   @Post()
   @HttpCode(201)
-  async createPost(@Body() postInputDto: PostInputDTO) {
+  async createPost(@Body() postInputDto: CreatePostInputDto) {
     const result = await this.commandBus.execute(
       new PostCreateCommand(postInputDto, postInputDto.blogId),
     );
@@ -128,7 +128,7 @@ export class PublicPostsController {
   @Put(':id')
   @HttpCode(204)
   async updatePost(
-    @Body() postInputDTO: PostInputDTO,
+    @Body() postInputDTO: CreatePostInputDto,
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
   ) {
