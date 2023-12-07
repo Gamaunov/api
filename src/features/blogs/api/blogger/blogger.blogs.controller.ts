@@ -25,7 +25,7 @@ import { PostCreateCommand } from '../../../posts/api/blogger/application/use-ca
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
 import { Blog, BlogModelType } from '../../blog.entity';
 import { BlogsRepository } from '../../infrastructure/blogs.repository';
-import { JwtBearerGuard } from '../../../auth/guards/jwt-bearer.guard';
+import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 
 import { BlogUpdateCommand } from './application/use-cases/blog-update.use-case';
 import { BlogDeleteCommand } from './application/use-cases/blog-delete.use-case';
@@ -74,12 +74,12 @@ export class BloggerBlogsController {
     return result;
   }
 
-  @UseGuards(JwtBearerGuard)
+  @UseGuards(BasicAuthGuard)
   @Post(':id/posts')
   async createPost(
     @Body() postInputDTO: PostInputDTO,
     @Param('id') blogId: string,
-    @UserIdFromGuard() userId: string,
+    @UserIdFromHeaders() userId: string,
   ) {
     const result = await this.commandBus.execute(
       new PostCreateCommand(postInputDTO, blogId, userId),
