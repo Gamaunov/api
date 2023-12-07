@@ -12,7 +12,7 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
-import { UserInputDto } from '../../dto/user-input-dto';
+import { UserInputDTO } from '../../dto/user-input-dto';
 import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
 import { ResultCode } from '../../../../shared/enums/result-code.enum';
 import {
@@ -40,7 +40,7 @@ export class SuperAdminUsersController {
 
   @UseGuards(BasicAuthGuard)
   @Post()
-  async createUser(@Body() userInputDTO: UserInputDto) {
+  async createUser(@Body() userInputDTO: UserInputDTO) {
     const userId = await this.commandBus.execute(
       new UserCreateCommand(userInputDTO),
     );

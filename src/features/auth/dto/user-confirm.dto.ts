@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export abstract class ConfirmCodeInputDto {
+export class ConfirmCodeInputDTO {
   @IsString()
   @IsNotEmpty()
   code: string;

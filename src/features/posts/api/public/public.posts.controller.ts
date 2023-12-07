@@ -14,7 +14,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { CommentsQueryRepository } from '../../../comments/infrastructure/comments.query.repository';
-import { QueryDto } from '../../../../shared/dto/queryDto';
+import { QueryDTO } from '../../../../shared/dto/query.dto';
 import {
   postIDField,
   postNotFound,
@@ -22,10 +22,10 @@ import {
 import { ResultCode } from '../../../../shared/enums/result-code.enum';
 import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
 import { JwtBearerGuard } from '../../../auth/guards/jwt-bearer.guard';
-import { CommentInputDto } from '../../../comments/dto/comment-input.dto';
+import { CommentInputDTO } from '../../../comments/dto/comment-input.dto';
 import { UserIdFromGuard } from '../../../auth/decorators/user-id-from-guard.guard.decorator';
 import { CommentCreateCommand } from '../../../comments/api/public/application/use-cases/comment-create.use-case';
-import { LikeStatusInputDto } from '../../../likes/dto/like-status-input.dto';
+import { LikeStatusInputDTO } from '../../../likes/dto/like-status-input.dto';
 import { LikeUpdateForPostCommand } from '../../../likes/api/public/application/use-cases/like-update-for-post-use.case';
 import { PostsQueryRepository } from '../../infrastructure/posts.query.repository';
 import { PostsRepository } from '../../infrastructure/posts.repository';
@@ -49,7 +49,7 @@ export class PublicPostsController {
 
   @Get()
   async findPosts(
-    @Query() query: QueryDto,
+    @Query() query: QueryDTO,
     @UserIdFromHeaders() userId: string,
   ) {
     return this.postsQueryRepository.findPosts(query, userId);
@@ -71,7 +71,7 @@ export class PublicPostsController {
 
   @Get(':id/comments')
   async findComments(
-    @Query() query: QueryDto,
+    @Query() query: QueryDTO,
     @Param('id') postId: string,
     @UserIdFromHeaders() userId: string,
   ) {
@@ -91,9 +91,9 @@ export class PublicPostsController {
   @UseGuards(BasicAuthGuard)
   @Post()
   @HttpCode(201)
-  async createPost(@Body() postInputDto) {
-    const blog = await this.blogsRepository.findBlogById(postInputDto.blogId);
-    const post = this.PostModel.createPost(this.PostModel, postInputDto, blog);
+  async createPost(@Body() postInputDTO) {
+    const blog = await this.blogsRepository.findBlogById(postInputDTO.blogId);
+    const post = this.PostModel.createPost(this.PostModel, postInputDTO, blog);
     await this.postsRepository.save(post);
     return this.postsQueryRepository.findPostById(post._id.toString());
   }
@@ -102,12 +102,12 @@ export class PublicPostsController {
   @Post(':id/comments')
   @HttpCode(201)
   async createComment(
-    @Body() commentInputDto: CommentInputDto,
+    @Body() commentInputDTO: CommentInputDTO,
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
   ) {
     const commentId = await this.commandBus.execute(
-      new CommentCreateCommand(commentInputDto, postId, userId),
+      new CommentCreateCommand(commentInputDTO, postId, userId),
     );
 
     if (!commentId) {
@@ -121,13 +121,13 @@ export class PublicPostsController {
   @Put(':id')
   @HttpCode(204)
   async updatePost(
-    @Body() postInputDto,
+    @Body() postInputDTO,
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
   ) {
     const command = new PostUpdateCommand(
-      postInputDto,
-      postInputDto.blogId,
+      postInputDTO,
+      postInputDTO.blogId,
       postId,
       userId,
     );
@@ -142,12 +142,12 @@ export class PublicPostsController {
   @Put(':id/like-status')
   @HttpCode(204)
   async updateLikeStatus(
-    @Body() likeStatusInputDto: LikeStatusInputDto,
+    @Body() likeStatusInputDTO: LikeStatusInputDTO,
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
   ) {
     const result = await this.commandBus.execute(
-      new LikeUpdateForPostCommand(likeStatusInputDto, postId, userId),
+      new LikeUpdateForPostCommand(likeStatusInputDTO, postId, userId),
     );
 
     if (!result) {

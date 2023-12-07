@@ -2,7 +2,7 @@ import { IsIn } from 'class-validator';
 
 import { LikeStatus } from '../../../shared/enums/like-status.enum';
 
-export abstract class LikeStatusInputDto {
+export class LikeStatusInputDTO {
   @IsIn([LikeStatus.NONE, LikeStatus.LIKE, LikeStatus.DISLIKE])
   likeStatus: string;
 }

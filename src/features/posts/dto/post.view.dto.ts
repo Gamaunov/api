@@ -4,7 +4,7 @@ class likes {
   login: string;
 }
 
-export abstract class PostViewDto {
+export class PostViewDTO {
   id: string;
   title: string;
   shortDescription: string;

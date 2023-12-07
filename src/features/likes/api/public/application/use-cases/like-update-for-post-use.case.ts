@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { LikeStatusInputDto } from '../../../../dto/like-status-input.dto';
+import { LikeStatusInputDTO } from '../../../../dto/like-status-input.dto';
 import { Post, PostModelType } from '../../../../../posts/post.entity';
 import { LikesService } from '../likes.service';
 import { LikesDataType } from '../../../../schemas/likes-data.type';
@@ -9,7 +9,7 @@ import { PostsRepository } from '../../../../../posts/infrastructure/posts.repos
 
 export class LikeUpdateForPostCommand {
   constructor(
-    public likeStatusInputDto: LikeStatusInputDto,
+    public likeStatusInputDto: LikeStatusInputDTO,
     public postId: string,
     public userId: string,
   ) {}

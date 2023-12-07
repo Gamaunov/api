@@ -10,7 +10,7 @@ import {
 
 import { Comment } from './comment.entity';
 import { CommentsRepository } from './infrastructure/comments.repository';
-import { CommentInputDto } from './dto/comment-input.dto';
+import { CommentInputDTO } from './dto/comment-input.dto';
 
 @Injectable()
 export class CommentsService {
@@ -21,7 +21,7 @@ export class CommentsService {
   async updateCommentById(
     currentUserId: string,
     commentId: string,
-    commentInputDto: CommentInputDto,
+    commentInputDTO: CommentInputDTO,
   ): Promise<ExceptionResultType<boolean>> {
     const comment = await this.commentsRepository.findCommentById(commentId);
 
@@ -41,7 +41,7 @@ export class CommentsService {
       };
     }
 
-    await comment.updateComment(commentInputDto);
+    await comment.updateComment(commentInputDTO);
     await comment.save();
 
     return {

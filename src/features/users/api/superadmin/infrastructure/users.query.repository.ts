@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserLeanType, UserModelType } from '../../../user.entity';
 import { UserQuery } from '../../../dto/user.query';
 import { Paginator } from '../../../../../shared/pagination/_paginator';
-import { SuperAdminUserViewDto } from '../dto/sa.user-view.dto';
+import { SuperAdminUserViewDTO } from '../dto/sa.user-view.dto';
 import { paginateFeature } from '../../../../../shared/pagination/paginate-feature';
 import { usersFilter } from '../../../../../shared/pagination/users-filter';
 import { sortDirection } from '../../../../../shared/pagination/sort-direction';
@@ -18,7 +18,7 @@ export class UsersQueryRepository {
   ) {}
   async findUsers(
     query: UserQuery,
-  ): Promise<Paginator<SuperAdminUserViewDto[]>> {
+  ): Promise<Paginator<SuperAdminUserViewDTO[]>> {
     const users = await paginateFeature(
       this.UserModel,
       query.pageNumber,
@@ -39,7 +39,7 @@ export class UsersQueryRepository {
     });
   }
 
-  async findUser(id: string): Promise<SuperAdminUserViewDto | null> {
+  async findUser(id: string): Promise<SuperAdminUserViewDTO | null> {
     if (!mongoose.isValidObjectId(id)) {
       return null;
     }
@@ -60,7 +60,7 @@ export class UsersQueryRepository {
 
   private async usersMapping(
     users: UserLeanType[],
-  ): Promise<SuperAdminUserViewDto[]> {
+  ): Promise<SuperAdminUserViewDTO[]> {
     return users.map((u) => {
       return {
         id: u._id.toString(),

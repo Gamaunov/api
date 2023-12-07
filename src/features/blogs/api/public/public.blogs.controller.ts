@@ -7,7 +7,7 @@ import {
   blogIDField,
   blogNotFound,
 } from '../../../../shared/constants/constants';
-import { QueryDto } from '../../../../shared/dto/queryDto';
+import { QueryDTO } from '../../../../shared/dto/query.dto';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.query.repository';
 import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 
@@ -19,7 +19,7 @@ export class PublicBlogsController {
   ) {}
 
   @Get(':id')
-  async findBlog(@Param('id') id: string) {
+  async findBlog(@Param('id') id) {
     const result = await this.blogsQueryRepository.findBlogById(id);
 
     if (!result) {
@@ -31,7 +31,7 @@ export class PublicBlogsController {
 
   @Get(':id/posts')
   async findPosts(
-    @Query() query: QueryDto,
+    @Query() query: QueryDTO,
     @Param('id') blogId: string,
     @UserIdFromHeaders() userId: string,
   ) {

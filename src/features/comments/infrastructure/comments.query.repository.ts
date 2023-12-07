@@ -3,9 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
 import { getLikeStatus } from '../../likes/utils/getLikeStatus';
-import { Comment, CommentDtoType, CommentModelType } from '../comment.entity';
+import { Comment, CommentDTOType, CommentModelType } from '../comment.entity';
 import { CommentQuery } from '../dto/comment.query';
-import { CommentViewDto } from '../dto/comment-view.dto';
+import { CommentViewDTO } from '../dto/comment.view.dto';
 import { Paginator } from '../../../shared/pagination/_paginator';
 import { paginateFeature } from '../../../shared/pagination/paginate-feature';
 import { commentsFilter } from '../../../shared/pagination/comments-filter';
@@ -23,7 +23,7 @@ export class CommentsQueryRepository {
     query: CommentQuery,
     postId: string,
     userId: string,
-  ): Promise<Paginator<CommentViewDto[]>> {
+  ): Promise<Paginator<CommentViewDTO[]>> {
     const post = await this.postsRepository.findPostById(postId);
 
     if (!post) {
@@ -53,7 +53,7 @@ export class CommentsQueryRepository {
   async findCommentById(
     commentId: string,
     userId?: string,
-  ): Promise<CommentViewDto | null> {
+  ): Promise<CommentViewDTO | null> {
     if (!mongoose.isValidObjectId(commentId)) {
       return null;
     }
@@ -83,9 +83,9 @@ export class CommentsQueryRepository {
   }
 
   private async commentsMapping(
-    comments: CommentDtoType[],
+    comments: CommentDTOType[],
     userId: string,
-  ): Promise<CommentViewDto[]> {
+  ): Promise<CommentViewDTO[]> {
     return Promise.all(
       comments.map(async (c) => {
         const status = getLikeStatus(c, userId);

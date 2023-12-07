@@ -1,10 +1,10 @@
 import { LikeStatus } from '../../../shared/enums/like-status.enum';
-import { CommentDtoType } from '../../comments/comment.entity';
+import { CommentDTOType } from '../../comments/comment.entity';
 import { PostLeanType } from '../../posts/post.entity';
 import { UsersLikesSchema } from '../schemas/likes-users.schema';
 
 export const getLikeStatus = (
-  data: CommentDtoType | PostLeanType,
+  data: CommentDTOType | PostLeanType,
   userId: string,
 ) => {
   const users: UsersLikesSchema[] = data.likesInfo.users;

@@ -2,7 +2,7 @@ import { HydratedDocument, Model, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { add } from 'date-fns';
 
-import { UserInputDto } from './dto/user-input-dto';
+import { UserInputDTO } from './dto/user-input-dto';
 import { UserAccountSchema } from './schemas/user-account.schema';
 import { UserEmailSchema } from './schemas/user-email.schema';
 import { UserPasswordSchema } from './schemas/user-password.schema';
@@ -13,7 +13,7 @@ export type UserLeanType = User & { _id: Types.ObjectId };
 export type UserModelStaticType = {
   createUser: (
     UserModel: UserModelType,
-    userInputDto: UserInputDto,
+    userInputDto: UserInputDTO,
     hash: string,
     emailData?: UserEmailSchema,
   ) => UserDocument;
@@ -75,15 +75,15 @@ export class User {
 
   static createUser(
     UserModel: UserModelType,
-    userInputDto: UserInputDto,
+    userInputDTO: UserInputDTO,
     hash: string,
     emailData?: UserEmailSchema,
   ): UserDocument {
     const user = {
       accountData: {
-        login: userInputDto.login,
+        login: userInputDTO.login,
         passwordHash: hash,
-        email: userInputDto.email,
+        email: userInputDTO.email,
         createdAt: new Date(),
         isMembership: false,
       },

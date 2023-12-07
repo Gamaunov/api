@@ -1,8 +1,8 @@
 import { IsOptional } from 'class-validator';
 
-import { QueryDto } from '../../../shared/dto/queryDto';
+import { QueryDTO } from '../../../shared/dto/query.dto';
 
-export abstract class BlogQuery extends QueryDto {
+export class BlogQuery extends QueryDTO {
   @IsOptional()
   searchNameTerm: string;
 }
