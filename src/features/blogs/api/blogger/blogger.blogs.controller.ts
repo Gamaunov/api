@@ -79,10 +79,9 @@ export class BloggerBlogsController {
   async createPost(
     @Body() postInputDTO: PostInputDTO,
     @Param('id') blogId: string,
-    @UserIdFromHeaders() userId: string,
   ) {
     const result = await this.commandBus.execute(
-      new PostCreateCommand(postInputDTO, blogId, userId),
+      new PostCreateCommand(postInputDTO, blogId),
     );
 
     if (result.code !== ResultCode.Success) {

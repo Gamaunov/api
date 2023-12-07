@@ -8,18 +8,11 @@ import { ResultCode } from '../../../../../../shared/enums/result-code.enum';
 import {
   blogIDField,
   blogNotFound,
-  userIDField,
-  userNotFound,
 } from '../../../../../../shared/constants/constants';
 import { PostsRepository } from '../../../../infrastructure/posts.repository';
-import { UsersRepository } from '../../../../../users/infrastructure/users.repository';
 
 export class PostCreateCommand {
-  constructor(
-    public postInputDTO: PostInputDTO,
-    public blogId: string,
-    public userId: string,
-  ) {}
+  constructor(public postInputDTO: PostInputDTO, public blogId: string) {}
 }
 
 @CommandHandler(PostCreateCommand)
@@ -29,7 +22,6 @@ export class PostCreateUseCase implements ICommandHandler<PostCreateCommand> {
     private PostModel: PostModelType,
     private readonly postsRepository: PostsRepository,
     private readonly blogsRepository: BlogsRepository,
-    private readonly usersRepository: UsersRepository,
   ) {}
 
   async execute(command: PostCreateCommand) {
@@ -41,17 +33,6 @@ export class PostCreateUseCase implements ICommandHandler<PostCreateCommand> {
         code: ResultCode.NotFound,
         field: blogIDField,
         message: blogNotFound,
-      };
-    }
-
-    const user = await this.usersRepository.findUserById(command.userId);
-
-    if (!user) {
-      return {
-        data: false,
-        code: ResultCode.NotFound,
-        field: userIDField,
-        message: userNotFound,
       };
     }
 
