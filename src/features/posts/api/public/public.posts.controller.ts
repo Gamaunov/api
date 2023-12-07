@@ -34,6 +34,8 @@ import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository'
 import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 import { PostUpdateCommand } from '../blogger/application/use-cases/post-update.use-case';
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
+import { PostInputDTO } from '../../dto/post-input.dto';
+import { PostCreateCommand } from '../blogger/application/use-cases/post-create.use-case';
 
 @Controller('posts')
 export class PublicPostsController {
@@ -91,11 +93,16 @@ export class PublicPostsController {
   @UseGuards(BasicAuthGuard)
   @Post()
   @HttpCode(201)
-  async createPost(@Body() postInputDTO) {
-    const blog = await this.blogsRepository.findBlogById(postInputDTO.blogId);
-    const post = this.PostModel.createPost(this.PostModel, postInputDTO, blog);
-    await this.postsRepository.save(post);
-    return this.postsQueryRepository.findPostById(post._id.toString());
+  async createPost(@Body() postInputDto: PostInputDTO) {
+    const result = await this.commandBus.execute(
+      new PostCreateCommand(postInputDto, postInputDto.blogId),
+    );
+
+    if (result.code !== ResultCode.Success) {
+      return exceptionHandler(result.code, result.message, result.field);
+    }
+
+    return this.postsQueryRepository.findPostById(result.response);
   }
 
   @UseGuards(JwtBearerGuard)
@@ -121,7 +128,7 @@ export class PublicPostsController {
   @Put(':id')
   @HttpCode(204)
   async updatePost(
-    @Body() postInputDTO,
+    @Body() postInputDTO: PostInputDTO,
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
   ) {

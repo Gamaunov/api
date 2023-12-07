@@ -12,6 +12,7 @@ import { sortDirection } from '../../../shared/pagination/sort-direction';
 import { getLikeStatus } from '../../likes/utils/getLikeStatus';
 import { PostViewDTO } from '../dto/post.view.dto';
 import { getThreeNewestLikes } from '../../likes/utils/getThreeNewestLikes';
+import { LikeStatus } from '../../../shared/enums/like-status.enum';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -23,7 +24,7 @@ export class PostsQueryRepository {
 
   async findPosts(
     query: QueryDTO,
-    userId: string,
+    userId?: string,
     blogId?: string,
   ): Promise<Paginator<PostViewDTO[]> | null> {
     if (blogId) {
@@ -88,10 +89,16 @@ export class PostsQueryRepository {
 
   private async postsMapping(
     posts: PostLeanType[],
-    userId: string,
+    userId?: string,
   ): Promise<PostViewDTO[]> {
     return posts.map((p) => {
-      const status = getLikeStatus(p, userId);
+      let status;
+      if (typeof userId !== 'undefined') {
+        status = getLikeStatus(p, userId);
+      } else {
+        status = LikeStatus.NONE;
+      }
+
       const newestLikes = getThreeNewestLikes(p.likesInfo.users);
 
       return {

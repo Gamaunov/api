@@ -106,7 +106,6 @@ export class MainModule implements NestModule {
     consumer
       .apply(TokenParserMiddleware)
       .forRoutes(
-        { path: 'blogs/:id/posts', method: RequestMethod.GET },
         { path: 'posts', method: RequestMethod.GET },
         { path: 'posts/:id', method: RequestMethod.GET },
         { path: 'posts/:id/comments', method: RequestMethod.GET },

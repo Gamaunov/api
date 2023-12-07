@@ -59,8 +59,8 @@ export class BloggerBlogsController {
   @HttpCode(204)
   async updateBlog(
     @Body() blogInputDTO: BlogInputDTO,
-    @Param('id') blogId,
-    @UserIdFromGuard() userId,
+    @Param('id') blogId: string,
+    @UserIdFromGuard() userId: string,
   ) {
     const result = await this.commandBus.execute(
       new BlogUpdateCommand(blogInputDTO, blogId, userId),
