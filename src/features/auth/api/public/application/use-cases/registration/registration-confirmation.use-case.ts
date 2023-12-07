@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { ConfirmCodeInputDTO } from '../../../../../dto/user-confirm.dto';
+import { ConfirmCodeInputDto } from '../../../../../dto/user-confirm.dto';
 import { UsersRepository } from '../../../../../../users/infrastructure/users.repository';
 import { UserDocument } from '../../../../../../users/user.entity';
 
 export class RegistrationConfirmationCommand {
-  constructor(public confirmCodeInputDTO: ConfirmCodeInputDTO) {}
+  constructor(public confirmCodeInputDTO: ConfirmCodeInputDto) {}
 }
 
 @CommandHandler(RegistrationConfirmationCommand)

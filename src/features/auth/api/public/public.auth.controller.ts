@@ -13,7 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { CommandBus } from '@nestjs/cqrs';
 
-import { UserInputDTO } from '../../../users/dto/user-input-dto';
+import { UserInputDto } from '../../../users/dto/user-input-dto';
 import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
 import { ResultCode } from '../../../../shared/enums/result-code.enum';
 import {
@@ -29,14 +29,14 @@ import {
   userNotFound,
   userNotFoundOrConfirmed,
 } from '../../../../shared/constants/constants';
-import { ConfirmCodeInputDTO } from '../../dto/user-confirm.dto';
+import { ConfirmCodeInputDto } from '../../dto/user-confirm.dto';
 import { LocalAuthGuard } from '../../guards/local-auth.guard';
 import { UserIdFromGuard } from '../../decorators/user-id-from-guard.guard.decorator';
 import { JwtRefreshGuard } from '../../guards/jwt-refresh.guard';
 import { RefreshToken } from '../../decorators/refresh-token.param.decorator';
 import { JwtBearerGuard } from '../../guards/jwt-bearer.guard';
-import { EmailInputDTO } from '../../dto/email-input.dto';
-import { NewPasswordDTO } from '../../dto/new-password.dto';
+import { EmailInputDto } from '../../dto/email-input.dto';
+import { NewPasswordDto } from '../../dto/new-password.dto';
 import { DeviceCreateForLoginCommand } from '../../../devices/api/public/application/use-cases/device-create-for-login.use-case';
 import { DeviceUpdateForTokensCommand } from '../../../devices/api/public/application/use-cases/device-update-for-tokens.use-case';
 import { DeviceDeleteForLogoutCommand } from '../../../devices/api/public/application/use-cases/device-delete-for-logout.use-case';
@@ -76,17 +76,17 @@ export class PublicAuthController {
   @Throttle(5, 10)
   @Post('registration')
   @HttpCode(204)
-  async registerUser(@Body() userInputDTO: UserInputDTO) {
-    return this.commandBus.execute(new RegistrationCommand(userInputDTO));
+  async registerUser(@Body() userInputDto: UserInputDto) {
+    return this.commandBus.execute(new RegistrationCommand(userInputDto));
   }
 
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
   @Post('registration-email-resending')
   @HttpCode(204)
-  async resendEmail(@Body() emailInputDTO: EmailInputDTO) {
+  async resendEmail(@Body() emailInputDto: EmailInputDto) {
     const result = await this.commandBus.execute(
-      new RegistrationEmailResendCommand(emailInputDTO),
+      new RegistrationEmailResendCommand(emailInputDto),
     );
 
     if (!result) {
@@ -104,9 +104,9 @@ export class PublicAuthController {
   @Throttle(5, 10)
   @Post('registration-confirmation')
   @HttpCode(204)
-  async confirmUser(@Body() confirmCodeInputDTO: ConfirmCodeInputDTO) {
+  async confirmUser(@Body() confirmCodeInputDto: ConfirmCodeInputDto) {
     const result = await this.commandBus.execute(
-      new RegistrationConfirmationCommand(confirmCodeInputDTO),
+      new RegistrationConfirmationCommand(confirmCodeInputDto),
     );
 
     if (!result) {
@@ -124,17 +124,17 @@ export class PublicAuthController {
   @Throttle(5, 10)
   @Post('password-recovery')
   @HttpCode(204)
-  async recoverPassword(@Body() emailInputDTO: EmailInputDTO) {
-    return this.commandBus.execute(new PasswordRecoveryCommand(emailInputDTO));
+  async recoverPassword(@Body() emailInputDto: EmailInputDto) {
+    return this.commandBus.execute(new PasswordRecoveryCommand(emailInputDto));
   }
 
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
   @Post('new-password')
   @HttpCode(204)
-  async updatePassword(@Body() newPasswordDTO: NewPasswordDTO) {
+  async updatePassword(@Body() newPasswordDto: NewPasswordDto) {
     const result = await this.commandBus.execute(
-      new PasswordUpdateCommand(newPasswordDTO),
+      new PasswordUpdateCommand(newPasswordDto),
     );
 
     if (!result) {

@@ -1,4 +1,4 @@
-export abstract class DeviceViewDTO {
+export abstract class DeviceViewDto {
   ip: string;
   title: string;
   lastActiveDate: string;

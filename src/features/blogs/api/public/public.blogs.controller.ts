@@ -7,7 +7,7 @@ import {
   blogIDField,
   blogNotFound,
 } from '../../../../shared/constants/constants';
-import { QueryDTO } from '../../../../shared/dto/query.dto';
+import { QueryDto } from '../../../../shared/dto/queryDto';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.query.repository';
 import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 
@@ -31,7 +31,7 @@ export class PublicBlogsController {
 
   @Get(':id/posts')
   async findPosts(
-    @Query() query: QueryDTO,
+    @Query() query: QueryDto,
     @Param('id') blogId: string,
     @UserIdFromHeaders() userId: string,
   ) {

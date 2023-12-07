@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { Device, DeviceModelType } from '../device.entity';
-import { DeviceViewDTO } from '../dto/device.view.dto';
+import { DeviceViewDto } from '../dto/device.view.dto';
 
 @Injectable()
 export class DevicesQueryRepository {
@@ -10,7 +10,7 @@ export class DevicesQueryRepository {
     @InjectModel(Device.name)
     private DeviceModel: DeviceModelType,
   ) {}
-  async findDevices(userId: string): Promise<DeviceViewDTO[]> {
+  async findDevices(userId: string): Promise<DeviceViewDto[]> {
     const devices = await this.DeviceModel.find({ userId }).lean();
     return devices.map((device) => {
       return {

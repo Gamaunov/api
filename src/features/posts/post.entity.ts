@@ -6,7 +6,7 @@ import { LikesInfoSchema } from '../likes/schemas/likes-info.schema';
 
 import { PostInputDto } from './dto/post-input.dto';
 
-interface IUpdatePostDTO {
+interface IUpdatePostDto {
   title: string;
   shortDescription: string;
   content: string;
@@ -18,7 +18,7 @@ export type PostLeanType = Post & { _id: Types.ObjectId };
 export type PostModelStaticType = {
   createPost: (
     PostModel: PostModelType,
-    postInputDTO: PostInputDto,
+    postInputDto: PostInputDto,
     blog: BlogDocument,
   ) => PostDocument;
 };
@@ -48,21 +48,21 @@ export class Post {
   @Prop({ required: true })
   likesInfo: LikesInfoSchema;
 
-  updatePost(updatePostDTO: IUpdatePostDTO): void {
-    this.title = updatePostDTO.title;
-    this.shortDescription = updatePostDTO.shortDescription;
-    this.content = updatePostDTO.content;
+  updatePost(updatePostDto: IUpdatePostDto): void {
+    this.title = updatePostDto.title;
+    this.shortDescription = updatePostDto.shortDescription;
+    this.content = updatePostDto.content;
   }
 
   static createPost(
     PostModel: PostModelType,
-    postInputDTO: PostInputDto,
+    postInputDto: PostInputDto,
     blog: BlogDocument,
   ): PostDocument {
     const post = {
-      title: postInputDTO.title,
-      shortDescription: postInputDTO.shortDescription,
-      content: postInputDTO.content,
+      title: postInputDto.title,
+      shortDescription: postInputDto.shortDescription,
+      content: postInputDto.content,
       blogId: blog._id.toString(),
       blogName: blog.name,
       createdAt: new Date(),

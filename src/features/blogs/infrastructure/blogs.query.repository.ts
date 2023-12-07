@@ -8,7 +8,7 @@ import { Paginator } from '../../../shared/pagination/_paginator';
 import { blogsFilter } from '../../../shared/pagination/blogs-filter';
 import { Blog, BlogLeanType, BlogModelType } from '../blog.entity';
 import { BlogQuery } from '../dto/blog-query';
-import { BlogViewDTO } from '../dto/blog.view.dto';
+import { BlogViewDto } from '../dto/blog-view.dto';
 
 @Injectable()
 export class BlogsQueryRepository {
@@ -20,7 +20,7 @@ export class BlogsQueryRepository {
   async findBlogs(
     query: BlogQuery,
     userId?: string,
-  ): Promise<Paginator<BlogViewDTO[]>> {
+  ): Promise<Paginator<BlogViewDto[]>> {
     const blogs = await paginateFeature(
       this.BlogModel,
       query.pageNumber,
@@ -43,7 +43,7 @@ export class BlogsQueryRepository {
     });
   }
 
-  async findBlogById(id: string): Promise<BlogViewDTO | null> {
+  async findBlogById(id: string): Promise<BlogViewDto | null> {
     if (!mongoose.isValidObjectId(id)) {
       return null;
     }
@@ -64,7 +64,7 @@ export class BlogsQueryRepository {
     };
   }
 
-  private async blogsMapping(blogs: BlogLeanType[]): Promise<BlogViewDTO[]> {
+  private async blogsMapping(blogs: BlogLeanType[]): Promise<BlogViewDto[]> {
     return blogs.map((b) => {
       return {
         id: b._id.toString(),
