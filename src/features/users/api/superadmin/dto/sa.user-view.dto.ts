@@ -1,4 +1,4 @@
-export class SuperAdminUserViewDto {
+export class SuperAdminUserViewDTO {
   id: string;
   login: string;
   email: string;

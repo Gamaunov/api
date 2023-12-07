@@ -5,20 +5,20 @@ import { PostDocument } from '../posts/post.entity';
 import { UserDocument } from '../users/user.entity';
 import { LikesInfoSchema } from '../likes/schemas/likes-info.schema';
 
-import { CommentInputDto } from './dto/comment-input.dto';
+import { CommentInputDTO } from './dto/comment-input.dto';
 import { CommentatorInfoSchema } from './schemas/commentator.info.schema';
 
-interface IUpdateCommentDto {
+interface IUpdateCommentDTO {
   content: string;
 }
 
 export type CommentDocument = HydratedDocument<Comment>;
-export type CommentDtoType = Comment & { _id: Types.ObjectId };
+export type CommentDTOType = Comment & { _id: Types.ObjectId };
 
 export type CommentModelStaticType = {
   createComment: (
     CommentModel: CommentModelType,
-    commentInputDto: CommentInputDto,
+    commentInputDTO: CommentInputDTO,
     post: PostDocument,
     user: UserDocument,
   ) => CommentDocument;
@@ -43,18 +43,18 @@ export class Comment {
   @Prop({ required: true })
   likesInfo: LikesInfoSchema;
 
-  updateComment(iUpdateCommentDto: IUpdateCommentDto): void {
-    this.content = iUpdateCommentDto.content;
+  updateComment(updateCommentDTO: IUpdateCommentDTO): void {
+    this.content = updateCommentDTO.content;
   }
 
   static createComment(
     CommentModel: CommentModelType,
-    commentInputDto: CommentInputDto,
+    commentInputDTO: CommentInputDTO,
     post: PostDocument,
     user: UserDocument,
   ): CommentDocument {
     const comment = {
-      content: commentInputDto.content,
+      content: commentInputDTO.content,
       commentatorInfo: {
         userId: user.id,
         userLogin: user.accountData.login,

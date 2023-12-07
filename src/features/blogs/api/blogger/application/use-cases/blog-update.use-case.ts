@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { BlogInputDto } from '../../../../dto/blog-input.dto';
+import { BlogInputDTO } from '../../../../dto/blog-input.dto';
 import { BlogsRepository } from '../../../../infrastructure/blogs.repository';
 import { ExceptionResultType } from '../../../../../../shared/types/exceptions.types';
 import { ResultCode } from '../../../../../../shared/enums/result-code.enum';
@@ -11,7 +11,7 @@ import {
 
 export class BlogUpdateCommand {
   constructor(
-    public blogInputDto: BlogInputDto,
+    public blogInputDTO: BlogInputDTO,
     public blogId: string,
     public userId: string,
   ) {}
@@ -35,7 +35,7 @@ export class BlogUpdateUseCase implements ICommandHandler<BlogUpdateCommand> {
       };
     }
 
-    await blog.updateBlog(command.blogInputDto);
+    await blog.updateBlog(command.blogInputDTO);
     await this.blogsRepository.save(blog);
 
     return {

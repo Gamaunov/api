@@ -1,3 +1,3 @@
-import { QueryDto } from '../../../shared/dto/queryDto';
+import { QueryDTO } from '../../../shared/dto/query.dto';
 
-export abstract class CommentQuery extends QueryDto {}
+export class CommentQuery extends QueryDTO {}

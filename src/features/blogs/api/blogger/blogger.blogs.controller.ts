@@ -14,22 +14,21 @@ import { CommandBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { BlogsQueryRepository } from '../../infrastructure/blogs.query.repository';
-import { BlogInputDto } from '../../dto/blog-input.dto';
+import { BlogInputDTO } from '../../dto/blog-input.dto';
 import { UserIdFromGuard } from '../../../auth/decorators/user-id-from-guard.guard.decorator';
 import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
 import { ResultCode } from '../../../../shared/enums/result-code.enum';
 import { BlogQuery } from '../../dto/blog-query';
-import { PostInputDto } from '../../../posts/dto/post-input.dto';
+import { PostInputDTO } from '../../../posts/dto/post-input.dto';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.query.repository';
 import { PostCreateCommand } from '../../../posts/api/blogger/application/use-cases/post-create.use-case';
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
 import { Blog, BlogModelType } from '../../blog.entity';
 import { BlogsRepository } from '../../infrastructure/blogs.repository';
-import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
+import { JwtBearerGuard } from '../../../auth/guards/jwt-bearer.guard';
 
 import { BlogUpdateCommand } from './application/use-cases/blog-update.use-case';
 import { BlogDeleteCommand } from './application/use-cases/blog-delete.use-case';
-import { BlogCreateCommand } from './application/use-cases/blog-create.use-case';
 
 @Controller('blogs')
 export class BloggerBlogsController {
@@ -50,24 +49,22 @@ export class BloggerBlogsController {
   @UseGuards(BasicAuthGuard)
   @Post()
   @HttpCode(201)
-  async createBlog(@Body() blogInputDto: BlogInputDto) {
-    const blogId = await this.commandBus.execute(
-      new BlogCreateCommand(blogInputDto),
-    );
-
-    return this.blogsQueryRepository.findBlogById(blogId);
+  async createBlog(@Body() blogInputDTO: BlogInputDTO) {
+    const blog = this.BlogModel.createBlog(this.BlogModel, blogInputDTO);
+    await this.blogsRepository.save(blog);
+    return this.blogsRepository.findBlog(blog._id);
   }
 
   @UseGuards(BasicAuthGuard)
   @Put(':id')
   @HttpCode(204)
   async updateBlog(
-    @Body() blogInputDto: BlogInputDto,
-    @Param('id') blogId: string,
-    @UserIdFromHeaders() userId: string,
+    @Body() blogInputDTO: BlogInputDTO,
+    @Param('id') blogId,
+    @UserIdFromGuard() userId,
   ) {
     const result = await this.commandBus.execute(
-      new BlogUpdateCommand(blogInputDto, blogId, userId),
+      new BlogUpdateCommand(blogInputDTO, blogId, userId),
     );
 
     if (result.code !== ResultCode.Success) {
@@ -77,15 +74,15 @@ export class BloggerBlogsController {
     return result;
   }
 
-  @UseGuards(BasicAuthGuard)
+  @UseGuards(JwtBearerGuard)
   @Post(':id/posts')
   async createPost(
-    @Body() postInputDto: PostInputDto,
+    @Body() postInputDTO: PostInputDTO,
     @Param('id') blogId: string,
-    @UserIdFromHeaders() userId: string,
+    @UserIdFromGuard() userId: string,
   ) {
     const result = await this.commandBus.execute(
-      new PostCreateCommand(postInputDto, blogId, userId),
+      new PostCreateCommand(postInputDTO, blogId, userId),
     );
 
     if (result.code !== ResultCode.Success) {
@@ -98,10 +95,7 @@ export class BloggerBlogsController {
   @UseGuards(BasicAuthGuard)
   @Delete(':id')
   @HttpCode(204)
-  async deleteBlog(
-    @Param('id') blogId: string,
-    @UserIdFromGuard() userId: string,
-  ) {
+  async deleteBlog(@Param('id') blogId, @UserIdFromGuard() userId) {
     const result = await this.commandBus.execute(
       new BlogDeleteCommand(blogId, userId),
     );

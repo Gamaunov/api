@@ -13,7 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { CommandBus } from '@nestjs/cqrs';
 
-import { UserInputDto } from '../../../users/dto/user-input-dto';
+import { UserInputDTO } from '../../../users/dto/user-input-dto';
 import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
 import { ResultCode } from '../../../../shared/enums/result-code.enum';
 import {
@@ -29,14 +29,14 @@ import {
   userNotFound,
   userNotFoundOrConfirmed,
 } from '../../../../shared/constants/constants';
-import { ConfirmCodeInputDto } from '../../dto/user-confirm.dto';
+import { ConfirmCodeInputDTO } from '../../dto/user-confirm.dto';
 import { LocalAuthGuard } from '../../guards/local-auth.guard';
 import { UserIdFromGuard } from '../../decorators/user-id-from-guard.guard.decorator';
 import { JwtRefreshGuard } from '../../guards/jwt-refresh.guard';
 import { RefreshToken } from '../../decorators/refresh-token.param.decorator';
 import { JwtBearerGuard } from '../../guards/jwt-bearer.guard';
-import { EmailInputDto } from '../../dto/email-input.dto';
-import { NewPasswordDto } from '../../dto/new-password.dto';
+import { EmailInputDTO } from '../../dto/email-input.dto';
+import { NewPasswordDTO } from '../../dto/new-password.dto';
 import { DeviceCreateForLoginCommand } from '../../../devices/api/public/application/use-cases/device-create-for-login.use-case';
 import { DeviceUpdateForTokensCommand } from '../../../devices/api/public/application/use-cases/device-update-for-tokens.use-case';
 import { DeviceDeleteForLogoutCommand } from '../../../devices/api/public/application/use-cases/device-delete-for-logout.use-case';
@@ -76,17 +76,17 @@ export class PublicAuthController {
   @Throttle(5, 10)
   @Post('registration')
   @HttpCode(204)
-  async registerUser(@Body() userInputDto: UserInputDto) {
-    return this.commandBus.execute(new RegistrationCommand(userInputDto));
+  async registerUser(@Body() userInputDTO: UserInputDTO) {
+    return this.commandBus.execute(new RegistrationCommand(userInputDTO));
   }
 
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
   @Post('registration-email-resending')
   @HttpCode(204)
-  async resendEmail(@Body() emailInputDto: EmailInputDto) {
+  async resendEmail(@Body() emailInputDTO: EmailInputDTO) {
     const result = await this.commandBus.execute(
-      new RegistrationEmailResendCommand(emailInputDto),
+      new RegistrationEmailResendCommand(emailInputDTO),
     );
 
     if (!result) {
@@ -104,9 +104,9 @@ export class PublicAuthController {
   @Throttle(5, 10)
   @Post('registration-confirmation')
   @HttpCode(204)
-  async confirmUser(@Body() confirmCodeInputDto: ConfirmCodeInputDto) {
+  async confirmUser(@Body() confirmCodeInputDTO: ConfirmCodeInputDTO) {
     const result = await this.commandBus.execute(
-      new RegistrationConfirmationCommand(confirmCodeInputDto),
+      new RegistrationConfirmationCommand(confirmCodeInputDTO),
     );
 
     if (!result) {
@@ -124,17 +124,17 @@ export class PublicAuthController {
   @Throttle(5, 10)
   @Post('password-recovery')
   @HttpCode(204)
-  async recoverPassword(@Body() emailInputDto: EmailInputDto) {
-    return this.commandBus.execute(new PasswordRecoveryCommand(emailInputDto));
+  async recoverPassword(@Body() emailInputDTO: EmailInputDTO) {
+    return this.commandBus.execute(new PasswordRecoveryCommand(emailInputDTO));
   }
 
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
   @Post('new-password')
   @HttpCode(204)
-  async updatePassword(@Body() newPasswordDto: NewPasswordDto) {
+  async updatePassword(@Body() newPasswordDTO: NewPasswordDTO) {
     const result = await this.commandBus.execute(
-      new PasswordUpdateCommand(newPasswordDto),
+      new PasswordUpdateCommand(newPasswordDTO),
     );
 
     if (!result) {
@@ -148,7 +148,8 @@ export class PublicAuthController {
     return result;
   }
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(ThrottlerGuard, LocalAuthGuard)
+  @Throttle(5, 10)
   @Post('login')
   @HttpCode(200)
   async login(
