@@ -9,6 +9,7 @@ import {
 } from '../../../../shared/constants/constants';
 import { QueryDTO } from '../../../../shared/dto/query.dto';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.query.repository';
+import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 
 @Controller('blogs')
 export class PublicBlogsController {
@@ -29,13 +30,16 @@ export class PublicBlogsController {
   }
 
   @Get(':id/posts')
-  async findPosts(@Query() query: QueryDTO, @Param('id') blogId: string) {
+  async findPosts(
+    @Query() query: QueryDTO,
+    @Param('id') blogId: string,
+    @UserIdFromHeaders() userId: string,
+  ) {
     const result = await this.postsQueryRepository.findPosts(
       query,
-      undefined,
+      userId,
       blogId,
     );
-
     if (!result) {
       return exceptionHandler(ResultCode.NotFound, blogNotFound, blogIDField);
     }
