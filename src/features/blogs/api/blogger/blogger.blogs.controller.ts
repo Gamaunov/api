@@ -9,6 +9,7 @@ import {
   Put,
   Query,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
@@ -48,7 +49,7 @@ export class BloggerBlogsController {
   @UseGuards(BasicAuthGuard)
   @Post()
   @HttpCode(201)
-  async createBlog(@Body() blogInputDTO: BlogInputDTO) {
+  async createBlog(@Body(new ValidationPipe()) blogInputDTO: BlogInputDTO) {
     const blog = this.BlogModel.createBlog(this.BlogModel, blogInputDTO);
     await this.blogsRepository.save(blog);
     return this.blogsRepository.findBlog(blog._id);

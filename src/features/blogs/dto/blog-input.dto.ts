@@ -1,7 +1,7 @@
 import {
-  IsAlpha,
   IsNotEmpty,
   IsUrl,
+  Matches,
   MaxLength,
   NotContains,
 } from 'class-validator';
@@ -9,7 +9,7 @@ import {
 export class BlogInputDTO {
   @IsNotEmpty()
   @NotContains(' ')
-  @IsAlpha()
+  @Matches(/^[a-zA-Z]+$/)
   @MaxLength(15)
   name: string;
 
