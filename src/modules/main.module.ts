@@ -18,8 +18,6 @@ import { PublicPostsController } from '../features/posts/api/public/public.posts
 import { PublicCommentsController } from '../features/comments/api/public/public.comments.controller';
 import { BlogsRepository } from '../features/blogs/infrastructure/blogs.repository';
 import { BlogsQueryRepository } from '../features/blogs/infrastructure/blogs.query.repository';
-import { PostsRepository } from '../features/posts/infrastructure/posts.repository';
-import { PostsQueryRepository } from '../features/posts/infrastructure/posts.query.repository';
 import { CommentsRepository } from '../features/comments/infrastructure/comments.repository';
 import { CommentsQueryRepository } from '../features/comments/infrastructure/comments.query.repository';
 import { UsersRepository } from '../features/users/infrastructure/users.repository';
@@ -29,9 +27,6 @@ import { LikesService } from '../features/likes/api/public/application/likes.ser
 import { BlogBindUseCase } from '../features/blogs/api/superadmin/application/use-cases/blog-bind.use-case';
 import { BlogUpdateUseCase } from '../features/blogs/api/blogger/application/use-cases/blog-update.use-case';
 import { BlogDeleteUseCase } from '../features/blogs/api/blogger/application/use-cases/blog-delete.use-case';
-import { PostCreateUseCase } from '../features/posts/api/blogger/application/use-cases/post-create.use-case';
-import { PostUpdateUseCase } from '../features/posts/api/blogger/application/use-cases/post-update.use-case';
-import { PostDeleteUseCase } from '../features/posts/api/blogger/application/use-cases/post-delete.use-case';
 import { CommentCreateUseCase } from '../features/comments/api/public/application/use-cases/comment-create.use-case';
 import { CommentUpdateUseCase } from '../features/comments/api/public/application/use-cases/comment-update.use-case';
 import { CommentDeleteUseCase } from '../features/comments/api/public/application/use-cases/comment-delete.use-case';
@@ -40,13 +35,19 @@ import { LikeUpdateForCommentUseCase } from '../features/likes/api/public/applic
 import { BlogCreateUseCase } from '../features/blogs/api/blogger/application/use-cases/blog-create.use-case';
 import { LikesRepository } from '../features/likes/infrastructure/likes.repository';
 import { JwtBearerGuard } from '../features/auth/guards/jwt-bearer.guard';
+import { PostsRepository } from '../features/posts/infrastructure/posts.repository';
+import { PostCreateUseCase } from '../features/posts/api/blogger/application/use-cases/post-create.use-case';
+import { PostDeleteUseCase } from '../features/posts/api/blogger/application/use-cases/post-delete.use-case';
+import { PostUpdateUseCase } from '../features/posts/api/blogger/application/use-cases/post-update.use-case';
+import { PostsQueryRepository } from '../features/posts/infrastructure/posts.query.repository';
+import { IsBlogExistConstraint } from '../shared/exceptions/decorators/is-blog-exist.decorator';
 
 const controllers = [
   SuperAdminBlogsController,
   BloggerBlogsController,
   PublicBlogsController,
-  PublicPostsController,
   PublicCommentsController,
+  PublicPostsController,
 ];
 
 const services = [LikesService, JwtService];
@@ -56,28 +57,28 @@ const useCases = [
   BlogCreateUseCase,
   BlogUpdateUseCase,
   BlogDeleteUseCase,
-  PostCreateUseCase,
-  PostUpdateUseCase,
-  PostDeleteUseCase,
   CommentCreateUseCase,
   CommentUpdateUseCase,
   CommentDeleteUseCase,
   LikeUpdateForPostUseCase,
   LikeUpdateForCommentUseCase,
+  PostCreateUseCase,
+  PostDeleteUseCase,
+  PostUpdateUseCase,
 ];
 
 const repositories = [
   BlogsRepository,
-  PostsRepository,
   CommentsRepository,
   UsersRepository,
+  PostsRepository,
   LikesRepository,
 ];
 
 const queryRepositories = [
   BlogsQueryRepository,
-  PostsQueryRepository,
   CommentsQueryRepository,
+  PostsQueryRepository,
 ];
 
 @Module({
@@ -97,6 +98,7 @@ const queryRepositories = [
     ...repositories,
     ...queryRepositories,
     JwtBearerGuard,
+    IsBlogExistConstraint,
   ],
 })
 export class MainModule implements NestModule {

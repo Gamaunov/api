@@ -12,7 +12,7 @@ import { DeviceDeleteForLogoutUseCase } from '../devices/api/public/application/
 import { DevicesRepository } from '../devices/infrastructure/devices.repository';
 import { UsersRepository } from '../users/infrastructure/users.repository';
 import { Device, DeviceSchema } from '../devices/device.entity';
-import { CheckLoginAndEmail } from '../../shared/middlewares/check-login-and-email';
+import { CheckLoginAndEmailMiddleware } from '../../shared/middlewares/check-login-and-email.middleware';
 
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtBearerStrategy } from './strategies/jwt-bearer.strategy';
@@ -71,6 +71,6 @@ const strategies = [
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CheckLoginAndEmail).forRoutes('auth/registration');
+    consumer.apply(CheckLoginAndEmailMiddleware).forRoutes('auth/registration');
   }
 }

@@ -9,7 +9,7 @@ import {
 export function IsNotEmptyString(validationOptions?: ValidationOptions) {
   return (object: unknown, propertyName: string) => {
     registerDecorator({
-      name: 'isNotEmptyString',
+      name: 'IsNotEmptyString',
       target: object.constructor,
       propertyName,
       options: validationOptions,
