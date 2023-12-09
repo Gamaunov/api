@@ -14,7 +14,7 @@ import { UserInputModel } from '../../../../../../users/api/models/user-input-mo
 import { SendRegistrationMailCommand } from '../../../../../../mail/application/use-cases/send-registration-mail.use-case';
 
 export class RegistrationCommand {
-  constructor(public userInputDTO: UserInputModel) {}
+  constructor(public userInputModel: UserInputModel) {}
 }
 
 @CommandHandler(RegistrationCommand)
@@ -29,7 +29,7 @@ export class RegistrationUseCase
   ) {}
 
   async execute(command: RegistrationCommand): Promise<UserDocument | null> {
-    const hash = await bcrypt.hash(command.userInputDTO.password, 10);
+    const hash = await bcrypt.hash(command.userInputModel.password, 10);
 
     const emailData = {
       confirmationCode: randomUUID(),
@@ -39,7 +39,7 @@ export class RegistrationUseCase
 
     const user = this.UserModel.createUser(
       this.UserModel,
-      command.userInputDTO,
+      command.userInputModel,
       hash,
       emailData,
     );
@@ -49,8 +49,8 @@ export class RegistrationUseCase
     try {
       await this.commandBus.execute(
         new SendRegistrationMailCommand(
-          command.userInputDTO.login,
-          command.userInputDTO.email,
+          command.userInputModel.login,
+          command.userInputModel.email,
           emailData.confirmationCode,
         ),
       );

@@ -6,7 +6,7 @@ import { Blog, BlogModelType } from '../../../../domain/blog.entity';
 import { BlogsRepository } from '../../../../infrastructure/blogs.repository';
 
 export class BlogCreateCommand {
-  constructor(public blogInputDTO: BlogInputModel) {}
+  constructor(public blogInputModel: BlogInputModel) {}
 }
 
 @CommandHandler(BlogCreateCommand)
@@ -20,7 +20,7 @@ export class BlogCreateUseCase implements ICommandHandler<BlogCreateCommand> {
   async execute(command: BlogCreateCommand): Promise<string | null> {
     const blog = this.BlogModel.createBlog(
       this.BlogModel,
-      command.blogInputDTO,
+      command.blogInputModel,
     );
     await this.blogsRepository.save(blog);
     return blog.id;

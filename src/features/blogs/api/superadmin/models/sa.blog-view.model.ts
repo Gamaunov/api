@@ -1,4 +1,4 @@
-export class SuperAdminBlogViewDTO {
+export class SuperAdminBlogViewModel {
   id: string;
   name: string;
   description: string;

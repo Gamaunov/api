@@ -7,7 +7,7 @@ import { UserDocument } from '../../../../../../users/domain/user.entity';
 import { SendPasswordRecoveryMailCommand } from '../../../../../../mail/application/use-cases/send-pass-recovery-mail.use-case';
 
 export class PasswordRecoveryCommand {
-  constructor(public emailInputDto: EmailInputModel) {}
+  constructor(public emailInputModel: EmailInputModel) {}
 }
 
 @CommandHandler(PasswordRecoveryCommand)
@@ -23,7 +23,7 @@ export class PasswordRecoveryUseCase
     command: PasswordRecoveryCommand,
   ): Promise<UserDocument | null> {
     const user = await this.usersRepository.findUserByLoginOrEmail(
-      command.emailInputDto.email,
+      command.emailInputModel.email,
     );
 
     if (!user) {

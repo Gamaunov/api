@@ -30,18 +30,18 @@ import { LikeStatusInputModel } from '../../../likes/models/like-status-input.mo
 import { LikeUpdateForPostCommand } from '../../../likes/api/public/application/use-cases/like-update-for-post-use.case';
 import { PostsQueryRepository } from '../../infrastructure/posts.query.repository';
 import { PostsRepository } from '../../infrastructure/posts.repository';
-import { Post as ClassPost } from '../../domain/post.entity';
+import { Post as ClassPost, PostModelType } from '../../domain/post.entity';
 import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 import { PostUpdateCommand } from '../blogger/application/use-cases/post-update.use-case';
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
 import { PostCreateCommand } from '../blogger/application/use-cases/post-create.use-case';
 import { CreatePostInputModel } from '../../models/create-post-input.model';
-
 @ApiTags('posts')
 @Controller('posts')
 export class PublicPostsController {
   constructor(
     @InjectModel(ClassPost.name)
+    private PostModel: PostModelType,
     private commandBus: CommandBus,
     private readonly postsQueryRepository: PostsQueryRepository,
     private readonly postsRepository: PostsRepository,

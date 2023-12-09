@@ -5,7 +5,7 @@ import { UsersRepository } from '../../../../../../users/infrastructure/users.re
 import { UserDocument } from '../../../../../../users/domain/user.entity';
 
 export class RegistrationConfirmationCommand {
-  constructor(public confirmCodeInputDTO: ConfirmCodeInputModel) {}
+  constructor(public confirmCodeInputModel: ConfirmCodeInputModel) {}
 }
 
 @CommandHandler(RegistrationConfirmationCommand)
@@ -18,7 +18,7 @@ export class RegistrationConfirmationUseCase
     command: RegistrationConfirmationCommand,
   ): Promise<UserDocument | null> {
     const user = await this.usersRepository.findUserByEmailCode(
-      command.confirmCodeInputDTO.code,
+      command.confirmCodeInputModel.code,
     );
 
     if (!user || !user.userCanBeConfirmed()) {

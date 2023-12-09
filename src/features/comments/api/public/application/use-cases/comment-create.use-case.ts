@@ -9,7 +9,7 @@ import { UsersRepository } from '../../../../../users/infrastructure/users.repos
 
 export class CommentCreateCommand {
   constructor(
-    public commentInputDto: CommentInputModel,
+    public commentInputModel: CommentInputModel,
     public postId: string,
     public userId: string,
   ) {}
@@ -38,7 +38,7 @@ export class CommentCreateUseCase
 
     const comment = this.CommentModel.createComment(
       this.CommentModel,
-      command.commentInputDto,
+      command.commentInputModel,
       post,
       user,
     );

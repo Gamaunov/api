@@ -7,7 +7,7 @@ import { UserDocument } from '../../../../../../users/domain/user.entity';
 import { SendRegistrationMailCommand } from '../../../../../../mail/application/use-cases/send-registration-mail.use-case';
 
 export class RegistrationEmailResendCommand {
-  constructor(public emailInputDTO: EmailInputModel) {}
+  constructor(public emailInputModel: EmailInputModel) {}
 }
 
 @CommandHandler(RegistrationEmailResendCommand)
@@ -23,7 +23,7 @@ export class RegistrationEmailResendUseCase
     command: RegistrationEmailResendCommand,
   ): Promise<UserDocument | null> {
     const user = await this.usersRepository.findUserByLoginOrEmail(
-      command.emailInputDTO.email,
+      command.emailInputModel.email,
     );
 
     if (!user || user.emailConfirmation.isConfirmed) {

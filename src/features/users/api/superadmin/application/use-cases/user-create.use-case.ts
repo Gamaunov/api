@@ -7,7 +7,7 @@ import { User, UserModelType } from '../../../../domain/user.entity';
 import { UserInputModel } from '../../../models/user-input-model';
 
 export class UserCreateCommand {
-  constructor(public userInputDTO: UserInputModel) {}
+  constructor(public userInputModel: UserInputModel) {}
 }
 
 @CommandHandler(UserCreateCommand)
@@ -19,10 +19,10 @@ export class UserCreateUseCase implements ICommandHandler<UserCreateCommand> {
   ) {}
 
   async execute(command: UserCreateCommand): Promise<string | null> {
-    const hash = await bcrypt.hash(command.userInputDTO.password, 10);
+    const hash = await bcrypt.hash(command.userInputModel.password, 10);
     const user = this.UserModel.createUser(
       this.UserModel,
-      command.userInputDTO,
+      command.userInputModel,
       hash,
     );
     await this.usersRepository.save(user);

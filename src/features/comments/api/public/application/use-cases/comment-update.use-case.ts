@@ -11,7 +11,7 @@ import {
 
 export class CommentUpdateCommand {
   constructor(
-    public commentInputDTO: CommentInputModel,
+    public commentInputModel: CommentInputModel,
     public commentId: string,
     public userId: string,
   ) {}
@@ -46,7 +46,7 @@ export class CommentUpdateUseCase
       };
     }
 
-    await comment.updateComment(command.commentInputDTO);
+    await comment.updateComment(command.commentInputModel);
     await comment.save();
 
     return {

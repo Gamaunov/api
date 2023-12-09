@@ -6,7 +6,7 @@ import { UsersRepository } from '../../../../../../users/infrastructure/users.re
 import { UserDocument } from '../../../../../../users/domain/user.entity';
 
 export class PasswordUpdateCommand {
-  constructor(public newPasswordDTO: NewPasswordModel) {}
+  constructor(public newPasswordModel: NewPasswordModel) {}
 }
 
 @CommandHandler(PasswordUpdateCommand)
@@ -17,17 +17,14 @@ export class PasswordUpdateUseCase
 
   async execute(command: PasswordUpdateCommand): Promise<UserDocument | null> {
     const user = await this.usersRepository.findUserByRecoveryCode(
-      command.newPasswordDTO.recoveryCode,
+      command.newPasswordModel.recoveryCode,
     );
 
     if (!user || !user.passwordCanBeUpdated()) {
       return null;
     }
 
-    const hash = await bcrypt.hash(
-      command.newPasswordDTO.newPassword,
-      Number(process.env.HASH_ROUNDS),
-    );
+    const hash = await bcrypt.hash(command.newPasswordModel.newPassword, 10);
 
     await user.updatePassword(hash);
     return this.usersRepository.save(user);

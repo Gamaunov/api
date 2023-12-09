@@ -12,7 +12,7 @@ import {
 import { PostsRepository } from '../../../../infrastructure/posts.repository';
 
 export class PostCreateCommand {
-  constructor(public postInputDTO: PostInputModel, public blogId: string) {}
+  constructor(public postInputModel: PostInputModel, public blogId: string) {}
 }
 
 @CommandHandler(PostCreateCommand)
@@ -38,7 +38,7 @@ export class PostCreateUseCase implements ICommandHandler<PostCreateCommand> {
 
     const post = this.PostModel.createPost(
       this.PostModel,
-      command.postInputDTO,
+      command.postInputModel,
       blog,
     );
 

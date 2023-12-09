@@ -13,7 +13,7 @@ export type UserLeanType = User & { _id: Types.ObjectId };
 export type UserModelStaticType = {
   createUser: (
     UserModel: UserModelType,
-    userInputDto: UserInputModel,
+    userInputModel: UserInputModel,
     hash: string,
     emailData?: UserEmailSchema,
   ) => UserDocument;
@@ -75,15 +75,15 @@ export class User {
 
   static createUser(
     UserModel: UserModelType,
-    userInputDTO: UserInputModel,
+    userInputModel: UserInputModel,
     hash: string,
     emailData?: UserEmailSchema,
   ): UserDocument {
     const user = {
       accountData: {
-        login: userInputDTO.login,
+        login: userInputModel.login,
         passwordHash: hash,
-        email: userInputDTO.email,
+        email: userInputModel.email,
         createdAt: new Date(),
         isMembership: false,
       },

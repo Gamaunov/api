@@ -12,7 +12,7 @@ import { LikeStatusInputModel } from '../../../../models/like-status-input.model
 
 export class LikeUpdateForCommentCommand {
   constructor(
-    public likeStatusInputDTO: LikeStatusInputModel,
+    public likeStatusInputModel: LikeStatusInputModel,
     public commentId: string,
     public userId: string,
   ) {}
@@ -41,7 +41,7 @@ export class LikeUpdateForCommentUseCase
     const data: LikesDataType = {
       commentOrPostId: command.commentId,
       userId: command.userId,
-      likeStatus: command.likeStatusInputDTO.likeStatus,
+      likeStatus: command.likeStatusInputModel.likeStatus,
       likesCount: comment.likesInfo.likesCount,
       dislikesCount: comment.likesInfo.dislikesCount,
       model: this.CommentModel,

@@ -7,7 +7,7 @@ import { LikesInfoSchema } from '../../likes/schemas/likes-info.schema';
 import { CommentInputModel } from '../models/comment-input.model';
 import { CommentatorInfoSchema } from '../schemas/commentator.info.schema';
 
-interface IUpdateCommentDTO {
+interface IUpdateCommentModel {
   content: string;
 }
 
@@ -17,7 +17,7 @@ export type CommentDTOType = Comment & { _id: Types.ObjectId };
 export type CommentModelStaticType = {
   createComment: (
     CommentModel: CommentModelType,
-    commentInputDTO: CommentInputModel,
+    commentInputModel: CommentInputModel,
     post: PostDocument,
     user: UserDocument,
   ) => CommentDocument;
@@ -42,18 +42,18 @@ export class Comment {
   @Prop({ required: true })
   likesInfo: LikesInfoSchema;
 
-  updateComment(updateCommentDTO: IUpdateCommentDTO): void {
-    this.content = updateCommentDTO.content;
+  updateComment(updateCommentModel: IUpdateCommentModel): void {
+    this.content = updateCommentModel.content;
   }
 
   static createComment(
     CommentModel: CommentModelType,
-    commentInputDTO: CommentInputModel,
+    commentInputModel: CommentInputModel,
     post: PostDocument,
     user: UserDocument,
   ): CommentDocument {
     const comment = {
-      content: commentInputDTO.content,
+      content: commentInputModel.content,
       commentatorInfo: {
         userId: user.id,
         userLogin: user.accountData.login,

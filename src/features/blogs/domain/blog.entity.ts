@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { BlogInputModel } from '../models/blog-input.model';
 
-interface IUpdateBlogDTO {
+interface IUpdateBlogModel {
   name: string;
   description: string;
   websiteUrl: string;
@@ -14,7 +14,7 @@ export type BlogDocument = HydratedDocument<Blog>;
 export type BlogModelStaticType = {
   createBlog: (
     BlogModel: BlogModelType,
-    blogInputDto: BlogInputModel,
+    blogInputModel: BlogInputModel,
   ) => BlogDocument;
 };
 
@@ -38,20 +38,20 @@ export class Blog {
   @Prop({ required: true })
   isMembership: boolean;
 
-  updateBlog(updateBlogDTO: IUpdateBlogDTO): void {
-    this.name = updateBlogDTO.name;
-    this.description = updateBlogDTO.description;
-    this.websiteUrl = updateBlogDTO.websiteUrl;
+  updateBlog(updateBlogModel: IUpdateBlogModel): void {
+    this.name = updateBlogModel.name;
+    this.description = updateBlogModel.description;
+    this.websiteUrl = updateBlogModel.websiteUrl;
   }
 
   static createBlog(
     BlogModel: BlogModelType,
-    blogInputDTO: BlogInputModel,
+    blogInputModel: BlogInputModel,
   ): BlogDocument {
     const blog = {
-      name: blogInputDTO.name,
-      description: blogInputDTO.description,
-      websiteUrl: blogInputDTO.websiteUrl,
+      name: blogInputModel.name,
+      description: blogInputModel.description,
+      websiteUrl: blogInputModel.websiteUrl,
       createdAt: new Date(),
       isMembership: false,
     };

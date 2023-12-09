@@ -14,7 +14,7 @@ import { PostsRepository } from '../../../../infrastructure/posts.repository';
 
 export class PostUpdateCommand {
   constructor(
-    public postInputDTO: PostInputModel,
+    public postInputModel: PostInputModel,
     public blogId: string,
     public postId: string,
     public userId: string,
@@ -53,7 +53,7 @@ export class PostUpdateUseCase implements ICommandHandler<PostUpdateCommand> {
       };
     }
 
-    post.updatePost(command.postInputDTO);
+    post.updatePost(command.postInputModel);
     await this.postsRepository.save(post);
 
     return {

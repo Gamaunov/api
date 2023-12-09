@@ -9,7 +9,7 @@ import { PostsRepository } from '../../../../../posts/infrastructure/posts.repos
 
 export class LikeUpdateForPostCommand {
   constructor(
-    public likeStatusInputDto: LikeStatusInputModel,
+    public likeStatusInputModel: LikeStatusInputModel,
     public postId: string,
     public userId: string,
   ) {}
@@ -36,7 +36,7 @@ export class LikeUpdateForPostUseCase
     const data: LikesDataType = {
       commentOrPostId: command.postId,
       userId: command.userId,
-      likeStatus: command.likeStatusInputDto.likeStatus,
+      likeStatus: command.likeStatusInputModel.likeStatus,
       likesCount: post.likesInfo.likesCount,
       dislikesCount: post.likesInfo.dislikesCount,
       model: this.PostModel,

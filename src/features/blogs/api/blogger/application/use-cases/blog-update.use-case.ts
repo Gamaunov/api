@@ -11,7 +11,7 @@ import {
 
 export class BlogUpdateCommand {
   constructor(
-    public blogInputDTO: BlogInputModel,
+    public blogInputModel: BlogInputModel,
     public blogId: string,
     public userId: string,
   ) {}
@@ -35,7 +35,7 @@ export class BlogUpdateUseCase implements ICommandHandler<BlogUpdateCommand> {
       };
     }
 
-    await blog.updateBlog(command.blogInputDTO);
+    await blog.updateBlog(command.blogInputModel);
     await this.blogsRepository.save(blog);
 
     return {
