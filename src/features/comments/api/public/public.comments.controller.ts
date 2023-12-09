@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CommentsQueryRepository } from '../../infrastructure/comments.query.repository';
 import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception.handler';
@@ -28,6 +29,7 @@ import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers
 import { CommentUpdateCommand } from './application/use-cases/comment-update.use-case';
 import { CommentDeleteCommand } from './application/use-cases/comment-delete.use-case';
 
+@ApiTags('comments')
 @Controller('comments')
 export class PublicCommentsController {
   constructor(
@@ -36,6 +38,7 @@ export class PublicCommentsController {
   ) {}
 
   @Get(':id')
+  @ApiOperation({ summary: 'Return comment by id' })
   async findComment(
     @Param('id') commentId: string,
     @UserIdFromHeaders() userId: string,
@@ -54,16 +57,17 @@ export class PublicCommentsController {
     return result;
   }
 
-  @UseGuards(JwtBearerGuard)
   @Put(':id')
+  @ApiOperation({ summary: 'Update existing comment by id with InputModel' })
+  @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async updateComment(
-    @Body() commentInputDTO: CommentInputModel,
+    @Body() commentInputModel: CommentInputModel,
     @Param('id') commentId: string,
     @UserIdFromGuard() userId: string,
   ) {
     const result = await this.commandBus.execute(
-      new CommentUpdateCommand(commentInputDTO, commentId, userId),
+      new CommentUpdateCommand(commentInputModel, commentId, userId),
     );
 
     if (result.code !== ResultCode.Success) {
@@ -73,16 +77,17 @@ export class PublicCommentsController {
     return result;
   }
 
-  @UseGuards(JwtBearerGuard)
   @Put(':id/like-status')
+  @ApiOperation({ summary: 'Make like/unlike/dislike/undislike operation' })
+  @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async updateLikeStatus(
-    @Body() likeStatusInputDTO: LikeStatusInputModel,
+    @Body() likeStatusInputModel: LikeStatusInputModel,
     @Param('id') commentId: string,
     @UserIdFromGuard() userId: string,
   ) {
     const result = await this.commandBus.execute(
-      new LikeUpdateForCommentCommand(likeStatusInputDTO, commentId, userId),
+      new LikeUpdateForCommentCommand(likeStatusInputModel, commentId, userId),
     );
 
     if (!result) {
@@ -96,8 +101,9 @@ export class PublicCommentsController {
     return result;
   }
 
-  @UseGuards(JwtBearerGuard)
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete comment specified by id' })
+  @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async deleteComment(
     @Param('id') commentId: string,

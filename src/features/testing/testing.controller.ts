@@ -1,5 +1,6 @@
 import { Controller, Delete, HttpCode } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { Blog, BlogModelType } from '../blogs/domain/blog.entity';
 import { Post, PostModelType } from '../posts/domain/post.entity';
@@ -7,6 +8,7 @@ import { Comment, CommentModelType } from '../comments/domain/comment.entity';
 import { User, UserModelType } from '../users/domain/user.entity';
 import { Device, DeviceModelType } from '../devices/domain/device.entity';
 
+@ApiTags('testing')
 @Controller('testing')
 export class TestingController {
   constructor(
@@ -23,6 +25,9 @@ export class TestingController {
   ) {}
 
   @Delete('all-data')
+  @ApiOperation({
+    summary: 'Clear database: delete all data from all tables/collections',
+  })
   @HttpCode(204)
   async deleteAll() {
     await this.BlogModel.deleteMany();

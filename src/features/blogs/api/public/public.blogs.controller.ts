@@ -1,4 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { BlogsQueryRepository } from '../../infrastructure/blogs.query.repository';
 import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception.handler';
@@ -11,6 +12,7 @@ import { QueryModel } from '../../../../base/models/query.model';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.query.repository';
 import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 
+@ApiTags('blogs')
 @Controller('blogs')
 export class PublicBlogsController {
   constructor(
@@ -19,6 +21,7 @@ export class PublicBlogsController {
   ) {}
 
   @Get(':id')
+  @ApiOperation({ summary: 'Returns blog by id' })
   async findBlog(@Param('id') id: string) {
     const result = await this.blogsQueryRepository.findBlogById(id);
 
@@ -30,6 +33,7 @@ export class PublicBlogsController {
   }
 
   @Get(':id/posts')
+  @ApiOperation({ summary: 'Returns all posts for specified blog' })
   async findPosts(
     @Query() query: QueryModel,
     @Param('id') blogId: string,

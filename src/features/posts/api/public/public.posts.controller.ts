@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CommentsQueryRepository } from '../../../comments/infrastructure/comments.query.repository';
 import { QueryModel } from '../../../../base/models/query.model';
@@ -29,20 +30,18 @@ import { LikeStatusInputModel } from '../../../likes/models/like-status-input.mo
 import { LikeUpdateForPostCommand } from '../../../likes/api/public/application/use-cases/like-update-for-post-use.case';
 import { PostsQueryRepository } from '../../infrastructure/posts.query.repository';
 import { PostsRepository } from '../../infrastructure/posts.repository';
-import { Post as ClassPost, PostModelType } from '../../domain/post.entity';
-import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
+import { Post as ClassPost } from '../../domain/post.entity';
 import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 import { PostUpdateCommand } from '../blogger/application/use-cases/post-update.use-case';
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
 import { PostCreateCommand } from '../blogger/application/use-cases/post-create.use-case';
 import { CreatePostInputModel } from '../../models/create-post-input.model';
 
+@ApiTags('posts')
 @Controller('posts')
 export class PublicPostsController {
   constructor(
     @InjectModel(ClassPost.name)
-    private PostModel: PostModelType,
-    private readonly blogsRepository: BlogsRepository,
     private commandBus: CommandBus,
     private readonly postsQueryRepository: PostsQueryRepository,
     private readonly postsRepository: PostsRepository,
@@ -50,6 +49,9 @@ export class PublicPostsController {
   ) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'Returns all posts',
+  })
   async findPosts(
     @Query() query: QueryModel,
     @UserIdFromHeaders() userId: string,
@@ -58,6 +60,9 @@ export class PublicPostsController {
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'Return post by id',
+  })
   async findPost(
     @Param('id') postId: string,
     @UserIdFromHeaders() userId: string,
@@ -72,6 +77,9 @@ export class PublicPostsController {
   }
 
   @Get(':id/comments')
+  @ApiOperation({
+    summary: 'Returns comments for specified post',
+  })
   async findComments(
     @Query() query: QueryModel,
     @Param('id') postId: string,
@@ -90,12 +98,15 @@ export class PublicPostsController {
     return result;
   }
 
-  @UseGuards(BasicAuthGuard)
   @Post()
+  @ApiOperation({
+    summary: 'Create new post',
+  })
+  @UseGuards(BasicAuthGuard)
   @HttpCode(201)
-  async createPost(@Body() postInputDto: CreatePostInputModel) {
+  async createPost(@Body() createPostInputModel: CreatePostInputModel) {
     const result = await this.commandBus.execute(
-      new PostCreateCommand(postInputDto, postInputDto.blogId),
+      new PostCreateCommand(createPostInputModel, createPostInputModel.blogId),
     );
 
     if (result.code !== ResultCode.Success) {
@@ -105,16 +116,19 @@ export class PublicPostsController {
     return this.postsQueryRepository.findPostById(result.response);
   }
 
-  @UseGuards(JwtBearerGuard)
   @Post(':id/comments')
+  @ApiOperation({
+    summary: 'Create new comment',
+  })
+  @UseGuards(JwtBearerGuard)
   @HttpCode(201)
   async createComment(
-    @Body() commentInputDTO: CommentInputModel,
+    @Body() commentInputModel: CommentInputModel,
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
   ) {
     const commentId = await this.commandBus.execute(
-      new CommentCreateCommand(commentInputDTO, postId, userId),
+      new CommentCreateCommand(commentInputModel, postId, userId),
     );
 
     if (!commentId) {
@@ -124,17 +138,20 @@ export class PublicPostsController {
     return this.commentsQueryRepository.findCommentById(commentId);
   }
 
-  @UseGuards(BasicAuthGuard)
   @Put(':id')
+  @ApiOperation({
+    summary: 'Update existing post by id with InputModel',
+  })
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async updatePost(
-    @Body() postInputDTO: CreatePostInputModel,
+    @Body() createPostInputModel: CreatePostInputModel,
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
   ) {
     const command = new PostUpdateCommand(
-      postInputDTO,
-      postInputDTO.blogId,
+      createPostInputModel,
+      createPostInputModel.blogId,
       postId,
       userId,
     );
@@ -145,16 +162,19 @@ export class PublicPostsController {
     }
   }
 
-  @UseGuards(JwtBearerGuard)
   @Put(':id/like-status')
+  @ApiOperation({
+    summary: 'Make like/unlike/dislike/undislike operation',
+  })
+  @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async updateLikeStatus(
-    @Body() likeStatusInputDTO: LikeStatusInputModel,
+    @Body() likeStatusInputModel: LikeStatusInputModel,
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
   ) {
     const result = await this.commandBus.execute(
-      new LikeUpdateForPostCommand(likeStatusInputDTO, postId, userId),
+      new LikeUpdateForPostCommand(likeStatusInputModel, postId, userId),
     );
 
     if (!result) {
@@ -164,8 +184,11 @@ export class PublicPostsController {
     return result;
   }
 
-  @UseGuards(BasicAuthGuard)
   @Delete(':id')
+  @ApiOperation({
+    summary: 'Delete post specified by id',
+  })
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deletePost(@Param('id') postId: string) {
     const post = await this.postsQueryRepository.findPostById(postId);

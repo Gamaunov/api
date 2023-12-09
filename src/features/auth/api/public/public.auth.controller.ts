@@ -12,6 +12,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { CommandBus } from '@nestjs/cqrs';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { UserInputModel } from '../../../users/api/models/user-input-model';
 import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception.handler';
@@ -49,6 +50,7 @@ import { RegistrationEmailResendCommand } from './application/use-cases/registra
 import { RegistrationCommand } from './application/use-cases/registration/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration/registration-confirmation.use-case';
 
+@ApiTags('auth')
 @Controller('auth')
 export class PublicAuthController {
   constructor(
@@ -56,8 +58,9 @@ export class PublicAuthController {
     private readonly jwtService: JwtService,
     private readonly usersRepository: UsersRepository,
   ) {}
-  @UseGuards(JwtBearerGuard)
   @Get('me')
+  @ApiOperation({ summary: 'Get information about current user' })
+  @UseGuards(JwtBearerGuard)
   async getProfile(@UserIdFromGuard() userId: string) {
     const user = await this.usersRepository.findUserById(userId);
 
@@ -72,21 +75,28 @@ export class PublicAuthController {
     };
   }
 
+  @Post('registration')
+  @ApiOperation({
+    summary:
+      'Registration in the system. Email with confirmation code will be send to passed email address',
+  })
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
-  @Post('registration')
   @HttpCode(204)
-  async registerUser(@Body() userInputDTO: UserInputModel) {
-    return this.commandBus.execute(new RegistrationCommand(userInputDTO));
+  async registerUser(@Body() userInputModel: UserInputModel) {
+    return this.commandBus.execute(new RegistrationCommand(userInputModel));
   }
 
+  @Post('registration-email-resending')
+  @ApiOperation({
+    summary: 'Resend confirmation registration Email if user exists',
+  })
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
-  @Post('registration-email-resending')
   @HttpCode(204)
-  async resendEmail(@Body() emailInputDTO: EmailInputModel) {
+  async resendEmail(@Body() emailInputModel: EmailInputModel) {
     const result = await this.commandBus.execute(
-      new RegistrationEmailResendCommand(emailInputDTO),
+      new RegistrationEmailResendCommand(emailInputModel),
     );
 
     if (!result) {
@@ -100,13 +110,14 @@ export class PublicAuthController {
     return result;
   }
 
+  @Post('registration-confirmation')
+  @ApiOperation({ summary: 'Confirm registration' })
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
-  @Post('registration-confirmation')
   @HttpCode(204)
-  async confirmUser(@Body() confirmCodeInputDTO: ConfirmCodeInputModel) {
+  async confirmUser(@Body() confirmCodeInputModel: ConfirmCodeInputModel) {
     const result = await this.commandBus.execute(
-      new RegistrationConfirmationCommand(confirmCodeInputDTO),
+      new RegistrationConfirmationCommand(confirmCodeInputModel),
     );
 
     if (!result) {
@@ -120,21 +131,30 @@ export class PublicAuthController {
     return result;
   }
 
+  @Post('password-recovery')
+  @ApiOperation({
+    summary:
+      'Password recovery via Email confirmation. Email should be sent with RecoveryCode inside',
+  })
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
-  @Post('password-recovery')
   @HttpCode(204)
-  async recoverPassword(@Body() emailInputDTO: EmailInputModel) {
-    return this.commandBus.execute(new PasswordRecoveryCommand(emailInputDTO));
+  async recoverPassword(@Body() emailInputModel: EmailInputModel) {
+    return this.commandBus.execute(
+      new PasswordRecoveryCommand(emailInputModel),
+    );
   }
 
+  @Post('new-password')
+  @ApiOperation({
+    summary: 'Confirm Password recovery',
+  })
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
-  @Post('new-password')
   @HttpCode(204)
-  async updatePassword(@Body() newPasswordDTO: NewPasswordModel) {
+  async updatePassword(@Body() newPasswordModel: NewPasswordModel) {
     const result = await this.commandBus.execute(
-      new PasswordUpdateCommand(newPasswordDTO),
+      new PasswordUpdateCommand(newPasswordModel),
     );
 
     if (!result) {
@@ -148,8 +168,11 @@ export class PublicAuthController {
     return result;
   }
 
-  @UseGuards(LocalAuthGuard)
   @Post('login')
+  @ApiOperation({
+    summary: 'Try login user to the system',
+  })
+  @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   async login(
     @UserIdFromGuard() userId: string,
@@ -174,8 +197,12 @@ export class PublicAuthController {
       .json({ accessToken: tokens.accessToken });
   }
 
-  @UseGuards(JwtRefreshGuard)
   @Post('refresh-token')
+  @ApiOperation({
+    summary:
+      'Generate new pair of access and refresh tokens (in cookie client must send correct refreshToken that will be revoked after refreshing) Device LastActiveDate should be overrode by issued Date of new refresh token',
+  })
+  @UseGuards(JwtRefreshGuard)
   @HttpCode(200)
   async refreshTokens(
     @UserIdFromGuard() userId: string,
@@ -204,8 +231,12 @@ export class PublicAuthController {
       .json({ accessToken: tokens.accessToken });
   }
 
-  @UseGuards(JwtRefreshGuard)
   @Post('logout')
+  @ApiOperation({
+    summary:
+      'In cookie client must send correct refreshToken that will be revoked',
+  })
+  @UseGuards(JwtRefreshGuard)
   @HttpCode(204)
   async logout(@RefreshToken() refreshToken: string): Promise<boolean> {
     const decodedToken: any = this.jwtService.decode(refreshToken);

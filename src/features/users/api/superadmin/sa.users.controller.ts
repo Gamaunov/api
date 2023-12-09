@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
 import { UserInputModel } from '../models/user-input-model';
@@ -25,6 +26,7 @@ import { UsersQueryRepository } from './infrastructure/users.query.repository';
 import { UserCreateCommand } from './application/use-cases/user-create.use-case';
 import { UserDeleteCommand } from './application/use-cases/user-delete.use-case';
 
+@ApiTags('users')
 @Controller('users')
 export class SuperAdminUsersController {
   constructor(
@@ -32,24 +34,33 @@ export class SuperAdminUsersController {
     private readonly usersQueryRepository: UsersQueryRepository,
   ) {}
 
-  @UseGuards(BasicAuthGuard)
   @Get()
+  @ApiOperation({
+    summary: 'Returns all users. Admins only',
+  })
+  @UseGuards(BasicAuthGuard)
   async findUsers(@Query() query: UserQueryModel) {
     return this.usersQueryRepository.findUsers(query);
   }
 
-  @UseGuards(BasicAuthGuard)
   @Post()
-  async createUser(@Body() userInputDTO: UserInputModel) {
+  @ApiOperation({
+    summary: 'Add new user to the system. Admins only',
+  })
+  @UseGuards(BasicAuthGuard)
+  async createUser(@Body() userInputModel: UserInputModel) {
     const userId = await this.commandBus.execute(
-      new UserCreateCommand(userInputDTO),
+      new UserCreateCommand(userInputModel),
     );
 
     return this.usersQueryRepository.findUser(userId);
   }
 
-  @UseGuards(BasicAuthGuard)
   @Delete(':id')
+  @ApiOperation({
+    summary: 'Delete user specified by id. Admins only',
+  })
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deleteUser(@Param('id') userId: string) {
     const result = await this.commandBus.execute(new UserDeleteCommand(userId));

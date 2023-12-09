@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CommandBus } from '@nestjs/cqrs';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { DevicesQueryRepository } from '../../infrastructure/devices.query.repository';
 import { JwtRefreshGuard } from '../../../auth/guards/jwt-refresh.guard';
@@ -19,6 +20,7 @@ import { exceptionHandler } from '../../../../infrastructure/exception-filters/e
 import { DeviceDeleteForTerminateCommand } from './application/use-cases/device-delete-for-terminate.use-case';
 import { DevicesDeleteOldCommand } from './application/use-cases/devices-delete-old.use-case';
 
+@ApiTags('security')
 @Controller('security')
 export class PublicDevicesController {
   constructor(
@@ -27,14 +29,20 @@ export class PublicDevicesController {
     private readonly jwtService: JwtService,
   ) {}
 
-  @UseGuards(JwtRefreshGuard)
   @Get('devices')
+  @ApiOperation({
+    summary: 'Returns all devices with active sessions for current user',
+  })
+  @UseGuards(JwtRefreshGuard)
   async getDevices(@UserIdFromGuard() userId: string) {
     return this.devicesQueryRepository.findDevices(userId);
   }
 
-  @UseGuards(JwtRefreshGuard)
   @Delete('devices')
+  @ApiOperation({
+    summary: 'Terminate all other (exclude current) devices sessions',
+  })
+  @UseGuards(JwtRefreshGuard)
   @HttpCode(204)
   async deleteOldDevices(@RefreshToken() refreshToken) {
     const decodedToken: any = this.jwtService.decode(refreshToken);
@@ -42,8 +50,11 @@ export class PublicDevicesController {
     return this.commandBus.execute(new DevicesDeleteOldCommand(deviceId));
   }
 
-  @UseGuards(JwtRefreshGuard)
   @Delete('devices/:id')
+  @ApiOperation({
+    summary: 'Terminate specified device session',
+  })
+  @UseGuards(JwtRefreshGuard)
   @HttpCode(204)
   async terminateSession(
     @Param('id') deviceId: string,

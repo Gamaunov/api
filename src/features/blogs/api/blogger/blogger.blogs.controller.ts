@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { BlogsQueryRepository } from '../../infrastructure/blogs.query.repository';
 import { BlogInputModel } from '../../models/blog-input.model';
@@ -29,6 +30,7 @@ import { BlogsRepository } from '../../infrastructure/blogs.repository';
 import { BlogUpdateCommand } from './application/use-cases/blog-update.use-case';
 import { BlogDeleteCommand } from './application/use-cases/blog-delete.use-case';
 
+@ApiTags('blogs')
 @Controller('blogs')
 export class BloggerBlogsController {
   constructor(
@@ -41,29 +43,34 @@ export class BloggerBlogsController {
   ) {}
 
   @Get()
+  @ApiOperation({ summary: 'Returns blogs with paging' })
   async findBlogs(@Query() query: BlogQueryModel) {
     return this.blogsQueryRepository.findBlogs(query);
   }
 
-  @UseGuards(BasicAuthGuard)
   @Post()
+  @ApiOperation({ summary: 'Create new blog. Admins only' })
+  @UseGuards(BasicAuthGuard)
   @HttpCode(201)
-  async createBlog(@Body() blogInputDTO: BlogInputModel) {
-    const blog = this.BlogModel.createBlog(this.BlogModel, blogInputDTO);
+  async createBlog(@Body() blogInputModel: BlogInputModel) {
+    const blog = this.BlogModel.createBlog(this.BlogModel, blogInputModel);
     await this.blogsRepository.save(blog);
     return this.blogsRepository.findBlog(blog._id);
   }
 
-  @UseGuards(BasicAuthGuard)
   @Put(':id')
+  @ApiOperation({
+    summary: 'Update existing Blog by id with InputModel. Admins only',
+  })
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async updateBlog(
-    @Body() blogInputDTO: BlogInputModel,
+    @Body() blogInputModel: BlogInputModel,
     @Param('id') blogId: string,
     @UserIdFromGuard() userId: string,
   ) {
     const result = await this.commandBus.execute(
-      new BlogUpdateCommand(blogInputDTO, blogId, userId),
+      new BlogUpdateCommand(blogInputModel, blogId, userId),
     );
 
     if (result.code !== ResultCode.Success) {
@@ -73,14 +80,15 @@ export class BloggerBlogsController {
     return result;
   }
 
-  @UseGuards(BasicAuthGuard)
   @Post(':id/posts')
+  @ApiOperation({ summary: 'Create new post for specific blog. Admins only' })
+  @UseGuards(BasicAuthGuard)
   async createPost(
-    @Body() postInputDTO: PostInputModel,
+    @Body() postInputModel: PostInputModel,
     @Param('id') blogId: string,
   ) {
     const result = await this.commandBus.execute(
-      new PostCreateCommand(postInputDTO, blogId),
+      new PostCreateCommand(postInputModel, blogId),
     );
 
     if (result.code !== ResultCode.Success) {
@@ -90,10 +98,16 @@ export class BloggerBlogsController {
     return this.postsQueryRepository.findPostById(result.response);
   }
 
-  @UseGuards(BasicAuthGuard)
   @Delete(':id')
+  @ApiOperation({
+    summary: 'Delete blog specified by id. Admins only',
+  })
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
-  async deleteBlog(@Param('id') blogId, @UserIdFromGuard() userId) {
+  async deleteBlog(
+    @Param('id') blogId: string,
+    @UserIdFromGuard() userId: string,
+  ) {
     const result = await this.commandBus.execute(
       new BlogDeleteCommand(blogId, userId),
     );
