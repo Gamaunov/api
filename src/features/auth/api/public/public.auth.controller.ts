@@ -12,7 +12,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { UserInputModel } from '../../../users/api/models/user-input-model';
 import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception.handler';
@@ -60,6 +60,7 @@ export class PublicAuthController {
   ) {}
   @Get('me')
   @ApiOperation({ summary: 'Get information about current user' })
+  @ApiBasicAuth('Bearer')
   @UseGuards(JwtBearerGuard)
   async getProfile(@UserIdFromGuard() userId: string) {
     const user = await this.usersRepository.findUserById(userId);

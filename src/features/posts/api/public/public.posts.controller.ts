@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CommentsQueryRepository } from '../../../comments/infrastructure/comments.query.repository';
 import { QueryModel } from '../../../../base/models/query.model';
@@ -102,6 +102,7 @@ export class PublicPostsController {
   @ApiOperation({
     summary: 'Create new post',
   })
+  @ApiBasicAuth('Basic')
   @UseGuards(BasicAuthGuard)
   @HttpCode(201)
   async createPost(@Body() createPostInputModel: CreatePostInputModel) {
@@ -120,6 +121,7 @@ export class PublicPostsController {
   @ApiOperation({
     summary: 'Create new comment',
   })
+  @ApiBasicAuth('Bearer')
   @UseGuards(JwtBearerGuard)
   @HttpCode(201)
   async createComment(
@@ -142,6 +144,7 @@ export class PublicPostsController {
   @ApiOperation({
     summary: 'Update existing post by id with InputModel',
   })
+  @ApiBasicAuth('Basic')
   @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async updatePost(
@@ -166,6 +169,7 @@ export class PublicPostsController {
   @ApiOperation({
     summary: 'Make like/unlike/dislike/undislike operation',
   })
+  @ApiBasicAuth('Bearer')
   @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async updateLikeStatus(
@@ -188,6 +192,7 @@ export class PublicPostsController {
   @ApiOperation({
     summary: 'Delete post specified by id',
   })
+  @ApiBasicAuth('Basic')
   @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deletePost(@Param('id') postId: string) {

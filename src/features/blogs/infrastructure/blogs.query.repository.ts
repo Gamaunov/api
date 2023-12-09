@@ -8,7 +8,7 @@ import { Paginator } from '../../../base/pagination/_paginator';
 import { blogsFilter } from '../../../base/pagination/blogs-filter';
 import { Blog, BlogLeanType, BlogModelType } from '../domain/blog.entity';
 import { BlogQueryModel } from '../models/blog-quer.model';
-import { BlogViewModel } from '../models/blogViewModel';
+import { BlogViewModel } from '../models/blog.view.model';
 
 @Injectable()
 export class BlogsQueryRepository {

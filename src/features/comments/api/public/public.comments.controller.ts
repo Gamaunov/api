@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CommentsQueryRepository } from '../../infrastructure/comments.query.repository';
 import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception.handler';
@@ -59,6 +59,7 @@ export class PublicCommentsController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update existing comment by id with InputModel' })
+  @ApiBasicAuth('Bearer')
   @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async updateComment(
@@ -79,6 +80,7 @@ export class PublicCommentsController {
 
   @Put(':id/like-status')
   @ApiOperation({ summary: 'Make like/unlike/dislike/undislike operation' })
+  @ApiBasicAuth('Bearer')
   @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async updateLikeStatus(
@@ -103,6 +105,7 @@ export class PublicCommentsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete comment specified by id' })
+  @ApiBasicAuth('Bearer')
   @UseGuards(JwtBearerGuard)
   @HttpCode(204)
   async deleteComment(

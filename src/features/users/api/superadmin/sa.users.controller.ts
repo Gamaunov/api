@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
 import { UserInputModel } from '../models/user-input-model';
@@ -38,6 +38,7 @@ export class SuperAdminUsersController {
   @ApiOperation({
     summary: 'Returns all users. Admins only',
   })
+  @ApiBasicAuth('Basic')
   @UseGuards(BasicAuthGuard)
   async findUsers(@Query() query: UserQueryModel) {
     return this.usersQueryRepository.findUsers(query);
@@ -47,6 +48,7 @@ export class SuperAdminUsersController {
   @ApiOperation({
     summary: 'Add new user to the system. Admins only',
   })
+  @ApiBasicAuth('Basic')
   @UseGuards(BasicAuthGuard)
   async createUser(@Body() userInputModel: UserInputModel) {
     const userId = await this.commandBus.execute(
@@ -60,6 +62,7 @@ export class SuperAdminUsersController {
   @ApiOperation({
     summary: 'Delete user specified by id. Admins only',
   })
+  @ApiBasicAuth('Basic')
   @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deleteUser(@Param('id') userId: string) {

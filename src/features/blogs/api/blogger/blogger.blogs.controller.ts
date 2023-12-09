@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { BlogsQueryRepository } from '../../infrastructure/blogs.query.repository';
 import { BlogInputModel } from '../../models/blog-input.model';
@@ -50,6 +50,7 @@ export class BloggerBlogsController {
 
   @Post()
   @ApiOperation({ summary: 'Create new blog. Admins only' })
+  @ApiBasicAuth('Basic')
   @UseGuards(BasicAuthGuard)
   @HttpCode(201)
   async createBlog(@Body() blogInputModel: BlogInputModel) {
@@ -62,6 +63,7 @@ export class BloggerBlogsController {
   @ApiOperation({
     summary: 'Update existing Blog by id with InputModel. Admins only',
   })
+  @ApiBasicAuth('Basic')
   @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async updateBlog(
@@ -82,6 +84,7 @@ export class BloggerBlogsController {
 
   @Post(':id/posts')
   @ApiOperation({ summary: 'Create new post for specific blog. Admins only' })
+  @ApiBasicAuth('Basic')
   @UseGuards(BasicAuthGuard)
   async createPost(
     @Body() postInputModel: PostInputModel,
@@ -102,6 +105,7 @@ export class BloggerBlogsController {
   @ApiOperation({
     summary: 'Delete blog specified by id. Admins only',
   })
+  @ApiBasicAuth('Basic')
   @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deleteBlog(
