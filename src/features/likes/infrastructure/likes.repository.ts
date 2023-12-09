@@ -5,8 +5,12 @@ import {
   Comment,
   CommentDocument,
   CommentModelType,
-} from '../../comments/comment.entity';
-import { Post, PostDocument, PostModelType } from '../../posts/post.entity';
+} from '../../comments/domain/comment.entity';
+import {
+  Post,
+  PostDocument,
+  PostModelType,
+} from '../../posts/domain/post.entity';
 import { LikesDataType } from '../schemas/likes-data.type';
 
 @Injectable()

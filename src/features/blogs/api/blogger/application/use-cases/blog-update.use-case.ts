@@ -1,17 +1,17 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { BlogInputDTO } from '../../../../dto/blog-input.dto';
+import { BlogInputModel } from '../../../../models/blog-input.model';
 import { BlogsRepository } from '../../../../infrastructure/blogs.repository';
-import { ExceptionResultType } from '../../../../../../shared/types/exceptions.types';
-import { ResultCode } from '../../../../../../shared/enums/result-code.enum';
+import { ExceptionResultType } from '../../../../../../infrastructure/types/exceptions.types';
+import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {
   blogIDField,
   blogNotFound,
-} from '../../../../../../shared/constants/constants';
+} from '../../../../../../base/constants/constants';
 
 export class BlogUpdateCommand {
   constructor(
-    public blogInputDTO: BlogInputDTO,
+    public blogInputDTO: BlogInputModel,
     public blogId: string,
     public userId: string,
   ) {}

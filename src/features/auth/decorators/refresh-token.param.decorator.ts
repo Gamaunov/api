@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { noJwtGuardFound } from '../../../shared/constants/constants';
+import { noJwtGuardFound } from '../../../base/constants/constants';
 
 export const RefreshToken = createParamDecorator(
   (data: unknown, context: ExecutionContext) => {

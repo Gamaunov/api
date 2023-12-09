@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { User, UserLeanType, UserModelType } from '../../../user.entity';
-import { UserQuery } from '../../../dto/user.query';
-import { Paginator } from '../../../../../shared/pagination/_paginator';
-import { SuperAdminUserViewDTO } from '../dto/sa.user-view.dto';
-import { paginateFeature } from '../../../../../shared/pagination/paginate-feature';
-import { usersFilter } from '../../../../../shared/pagination/users-filter';
-import { sortDirection } from '../../../../../shared/pagination/sort-direction';
+import { User, UserLeanType, UserModelType } from '../../../domain/user.entity';
+import { UserQueryModel } from '../../models/user.query.model';
+import { Paginator } from '../../../../../base/pagination/_paginator';
+import { SuperAdminUserViewModel } from '../models/sa.user-view.model';
+import { paginateFeature } from '../../../../../base/pagination/paginate-feature';
+import { usersFilter } from '../../../../../base/pagination/users-filter';
+import { sortDirection } from '../../../../../base/pagination/sort-direction';
 
 @Injectable()
 export class UsersQueryRepository {
@@ -17,8 +17,8 @@ export class UsersQueryRepository {
     private UserModel: UserModelType,
   ) {}
   async findUsers(
-    query: UserQuery,
-  ): Promise<Paginator<SuperAdminUserViewDTO[]>> {
+    query: UserQueryModel,
+  ): Promise<Paginator<SuperAdminUserViewModel[]>> {
     const users = await paginateFeature(
       this.UserModel,
       query.pageNumber,
@@ -39,7 +39,7 @@ export class UsersQueryRepository {
     });
   }
 
-  async findUser(id: string): Promise<SuperAdminUserViewDTO | null> {
+  async findUser(id: string): Promise<SuperAdminUserViewModel | null> {
     if (!mongoose.isValidObjectId(id)) {
       return null;
     }
@@ -60,7 +60,7 @@ export class UsersQueryRepository {
 
   private async usersMapping(
     users: UserLeanType[],
-  ): Promise<SuperAdminUserViewDTO[]> {
+  ): Promise<SuperAdminUserViewModel[]> {
     return users.map((u) => {
       return {
         id: u._id.toString(),

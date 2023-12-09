@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
-import { paginateFeature } from '../../../shared/pagination/paginate-feature';
-import { sortDirection } from '../../../shared/pagination/sort-direction';
-import { Paginator } from '../../../shared/pagination/_paginator';
-import { blogsFilter } from '../../../shared/pagination/blogs-filter';
-import { Blog, BlogLeanType, BlogModelType } from '../blog.entity';
-import { BlogQuery } from '../dto/blog-query';
-import { BlogViewDTO } from '../dto/blog.view.dto';
+import { paginateFeature } from '../../../base/pagination/paginate-feature';
+import { sortDirection } from '../../../base/pagination/sort-direction';
+import { Paginator } from '../../../base/pagination/_paginator';
+import { blogsFilter } from '../../../base/pagination/blogs-filter';
+import { Blog, BlogLeanType, BlogModelType } from '../domain/blog.entity';
+import { BlogQueryModel } from '../models/blog-quer.model';
+import { BlogViewModel } from '../models/blogViewModel';
 
 @Injectable()
 export class BlogsQueryRepository {
@@ -18,9 +18,9 @@ export class BlogsQueryRepository {
   ) {}
 
   async findBlogs(
-    query: BlogQuery,
+    query: BlogQueryModel,
     userId?: string,
-  ): Promise<Paginator<BlogViewDTO[]>> {
+  ): Promise<Paginator<BlogViewModel[]>> {
     const blogs = await paginateFeature(
       this.BlogModel,
       query.pageNumber,
@@ -43,7 +43,7 @@ export class BlogsQueryRepository {
     });
   }
 
-  async findBlogById(id: string): Promise<BlogViewDTO | null> {
+  async findBlogById(id: string): Promise<BlogViewModel | null> {
     if (!mongoose.isValidObjectId(id)) {
       return null;
     }
@@ -64,7 +64,7 @@ export class BlogsQueryRepository {
     };
   }
 
-  private async blogsMapping(blogs: BlogLeanType[]): Promise<BlogViewDTO[]> {
+  private async blogsMapping(blogs: BlogLeanType[]): Promise<BlogViewModel[]> {
     return blogs.map((b) => {
       return {
         id: b._id.toString(),

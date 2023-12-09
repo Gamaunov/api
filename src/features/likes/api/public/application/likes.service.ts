@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { LikesDataType } from '../../../schemas/likes-data.type';
-import { LikeStatus } from '../../../../../shared/enums/like-status.enum';
+import { LikeStatus } from '../../../../../base/enums/like-status.enum';
 import { UsersRepository } from '../../../../users/infrastructure/users.repository';
 import { LikesRepository } from '../../../infrastructure/likes.repository';
 

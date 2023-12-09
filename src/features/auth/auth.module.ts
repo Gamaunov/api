@@ -5,14 +5,14 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { JwtService } from '@nestjs/jwt';
 import { CqrsModule } from '@nestjs/cqrs';
 
-import { User, UserSchema } from '../users/user.entity';
+import { User, UserSchema } from '../users/domain/user.entity';
 import { DeviceCreateForLoginUseCase } from '../devices/api/public/application/use-cases/device-create-for-login.use-case';
 import { DeviceUpdateForTokensUseCase } from '../devices/api/public/application/use-cases/device-update-for-tokens.use-case';
 import { DeviceDeleteForLogoutUseCase } from '../devices/api/public/application/use-cases/device-delete-for-logout.use-case';
 import { DevicesRepository } from '../devices/infrastructure/devices.repository';
 import { UsersRepository } from '../users/infrastructure/users.repository';
-import { Device, DeviceSchema } from '../devices/device.entity';
-import { CheckLoginAndEmailMiddleware } from '../../shared/middlewares/check-login-and-email.middleware';
+import { Device, DeviceSchema } from '../devices/domain/device.entity';
+import { CheckLoginAndEmailMiddleware } from '../../infrastructure/middlewares/check-login-and-email.middleware';
 
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtBearerStrategy } from './strategies/jwt-bearer.strategy';

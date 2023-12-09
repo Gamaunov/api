@@ -14,28 +14,28 @@ import { CommandBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { CommentsQueryRepository } from '../../../comments/infrastructure/comments.query.repository';
-import { QueryDTO } from '../../../../shared/dto/query.dto';
+import { QueryModel } from '../../../../base/models/query.model';
 import {
   postIDField,
   postNotFound,
-} from '../../../../shared/constants/constants';
-import { ResultCode } from '../../../../shared/enums/result-code.enum';
-import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
+} from '../../../../base/constants/constants';
+import { ResultCode } from '../../../../base/enums/result-code.enum';
+import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception.handler';
 import { JwtBearerGuard } from '../../../auth/guards/jwt-bearer.guard';
-import { CommentInputDTO } from '../../../comments/dto/comment-input.dto';
+import { CommentInputModel } from '../../../comments/models/comment-input.model';
 import { UserIdFromGuard } from '../../../auth/decorators/user-id-from-guard.guard.decorator';
 import { CommentCreateCommand } from '../../../comments/api/public/application/use-cases/comment-create.use-case';
-import { LikeStatusInputDTO } from '../../../likes/dto/like-status-input.dto';
+import { LikeStatusInputModel } from '../../../likes/models/like-status-input.model';
 import { LikeUpdateForPostCommand } from '../../../likes/api/public/application/use-cases/like-update-for-post-use.case';
 import { PostsQueryRepository } from '../../infrastructure/posts.query.repository';
 import { PostsRepository } from '../../infrastructure/posts.repository';
-import { Post as ClassPost, PostModelType } from '../../post.entity';
+import { Post as ClassPost, PostModelType } from '../../domain/post.entity';
 import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
 import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 import { PostUpdateCommand } from '../blogger/application/use-cases/post-update.use-case';
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
 import { PostCreateCommand } from '../blogger/application/use-cases/post-create.use-case';
-import { CreatePostInputDto } from '../../dto/create-post-input.dto';
+import { CreatePostInputModel } from '../../models/create-post-input.model';
 
 @Controller('posts')
 export class PublicPostsController {
@@ -51,7 +51,7 @@ export class PublicPostsController {
 
   @Get()
   async findPosts(
-    @Query() query: QueryDTO,
+    @Query() query: QueryModel,
     @UserIdFromHeaders() userId: string,
   ) {
     return this.postsQueryRepository.findPosts(query, userId);
@@ -73,7 +73,7 @@ export class PublicPostsController {
 
   @Get(':id/comments')
   async findComments(
-    @Query() query: QueryDTO,
+    @Query() query: QueryModel,
     @Param('id') postId: string,
     @UserIdFromHeaders() userId: string,
   ) {
@@ -93,7 +93,7 @@ export class PublicPostsController {
   @UseGuards(BasicAuthGuard)
   @Post()
   @HttpCode(201)
-  async createPost(@Body() postInputDto: CreatePostInputDto) {
+  async createPost(@Body() postInputDto: CreatePostInputModel) {
     const result = await this.commandBus.execute(
       new PostCreateCommand(postInputDto, postInputDto.blogId),
     );
@@ -109,7 +109,7 @@ export class PublicPostsController {
   @Post(':id/comments')
   @HttpCode(201)
   async createComment(
-    @Body() commentInputDTO: CommentInputDTO,
+    @Body() commentInputDTO: CommentInputModel,
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
   ) {
@@ -128,7 +128,7 @@ export class PublicPostsController {
   @Put(':id')
   @HttpCode(204)
   async updatePost(
-    @Body() postInputDTO: CreatePostInputDto,
+    @Body() postInputDTO: CreatePostInputModel,
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
   ) {
@@ -149,7 +149,7 @@ export class PublicPostsController {
   @Put(':id/like-status')
   @HttpCode(204)
   async updateLikeStatus(
-    @Body() likeStatusInputDTO: LikeStatusInputDTO,
+    @Body() likeStatusInputDTO: LikeStatusInputModel,
     @Param('id') postId: string,
     @UserIdFromGuard() userId: string,
   ) {

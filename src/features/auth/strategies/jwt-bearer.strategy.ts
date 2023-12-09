@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 
 import { jwtConstants } from '../config/constants';
-import { bearerType } from '../../../shared/constants/constants';
+import { bearerType } from '../../../base/constants/constants';
 
 @Injectable()
 export class JwtBearerStrategy extends PassportStrategy(Strategy, bearerType) {

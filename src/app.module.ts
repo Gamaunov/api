@@ -13,7 +13,7 @@ import { AuthModule } from './features/auth/auth.module';
 import { TestingModule } from './features/testing/testing.module';
 import { UsersModule } from './features/users/users.module';
 import { MailModule } from './features/mail/mail.module';
-import { MainModule } from './modules/main.module';
+import { MainModule } from './base/modules/main.module';
 import { DevicesModule } from './features/devices/devices.module';
 
 const DB_URI: string =

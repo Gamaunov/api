@@ -28,8 +28,8 @@ import {
   security_devices_uri,
   set_cookie,
 } from '../utils/constants/auth.constants';
-import { HttpExceptionFilter } from '../../src/shared/exceptions/exception.filter';
-import { customExceptionFactory } from '../../src/shared/exceptions/exception.factory';
+import { HttpExceptionFilter } from '../../src/infrastructure/exception-filters/exception.filter';
+import { customExceptionFactory } from '../../src/infrastructure/exception-filters/exception.factory';
 import { sleep } from '../utils/functions/sleep';
 import { deviceResponse, userProfileResponse } from '../utils/dto/dto';
 

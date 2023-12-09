@@ -13,9 +13,9 @@ import { JwtService } from '@nestjs/jwt';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { CommandBus } from '@nestjs/cqrs';
 
-import { UserInputDTO } from '../../../users/dto/user-input-dto';
-import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
-import { ResultCode } from '../../../../shared/enums/result-code.enum';
+import { UserInputModel } from '../../../users/api/models/user-input-model';
+import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception.handler';
+import { ResultCode } from '../../../../base/enums/result-code.enum';
 import {
   confirmCodeField,
   confirmCodeIsIncorrect,
@@ -28,15 +28,15 @@ import {
   userIDField,
   userNotFound,
   userNotFoundOrConfirmed,
-} from '../../../../shared/constants/constants';
-import { ConfirmCodeInputDTO } from '../../dto/user-confirm.dto';
+} from '../../../../base/constants/constants';
+import { ConfirmCodeInputModel } from '../../models/user-confirm.model';
 import { LocalAuthGuard } from '../../guards/local-auth.guard';
 import { UserIdFromGuard } from '../../decorators/user-id-from-guard.guard.decorator';
 import { JwtRefreshGuard } from '../../guards/jwt-refresh.guard';
 import { RefreshToken } from '../../decorators/refresh-token.param.decorator';
 import { JwtBearerGuard } from '../../guards/jwt-bearer.guard';
-import { EmailInputDTO } from '../../dto/email-input.dto';
-import { NewPasswordDTO } from '../../dto/new-password.dto';
+import { EmailInputModel } from '../../models/email-input.model';
+import { NewPasswordModel } from '../../models/new-password.model';
 import { DeviceCreateForLoginCommand } from '../../../devices/api/public/application/use-cases/device-create-for-login.use-case';
 import { DeviceUpdateForTokensCommand } from '../../../devices/api/public/application/use-cases/device-update-for-tokens.use-case';
 import { DeviceDeleteForLogoutCommand } from '../../../devices/api/public/application/use-cases/device-delete-for-logout.use-case';
@@ -76,7 +76,7 @@ export class PublicAuthController {
   @Throttle(5, 10)
   @Post('registration')
   @HttpCode(204)
-  async registerUser(@Body() userInputDTO: UserInputDTO) {
+  async registerUser(@Body() userInputDTO: UserInputModel) {
     return this.commandBus.execute(new RegistrationCommand(userInputDTO));
   }
 
@@ -84,7 +84,7 @@ export class PublicAuthController {
   @Throttle(5, 10)
   @Post('registration-email-resending')
   @HttpCode(204)
-  async resendEmail(@Body() emailInputDTO: EmailInputDTO) {
+  async resendEmail(@Body() emailInputDTO: EmailInputModel) {
     const result = await this.commandBus.execute(
       new RegistrationEmailResendCommand(emailInputDTO),
     );
@@ -104,7 +104,7 @@ export class PublicAuthController {
   @Throttle(5, 10)
   @Post('registration-confirmation')
   @HttpCode(204)
-  async confirmUser(@Body() confirmCodeInputDTO: ConfirmCodeInputDTO) {
+  async confirmUser(@Body() confirmCodeInputDTO: ConfirmCodeInputModel) {
     const result = await this.commandBus.execute(
       new RegistrationConfirmationCommand(confirmCodeInputDTO),
     );
@@ -124,7 +124,7 @@ export class PublicAuthController {
   @Throttle(5, 10)
   @Post('password-recovery')
   @HttpCode(204)
-  async recoverPassword(@Body() emailInputDTO: EmailInputDTO) {
+  async recoverPassword(@Body() emailInputDTO: EmailInputModel) {
     return this.commandBus.execute(new PasswordRecoveryCommand(emailInputDTO));
   }
 
@@ -132,7 +132,7 @@ export class PublicAuthController {
   @Throttle(5, 10)
   @Post('new-password')
   @HttpCode(204)
-  async updatePassword(@Body() newPasswordDTO: NewPasswordDTO) {
+  async updatePassword(@Body() newPasswordDTO: NewPasswordModel) {
     const result = await this.commandBus.execute(
       new PasswordUpdateCommand(newPasswordDTO),
     );

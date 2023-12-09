@@ -4,8 +4,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 
 import { jwtConstants } from '../config/constants';
-import { refreshType } from '../../../shared/constants/constants';
-import { cookieExtractor } from '../../../shared/utils/cookie-extractor';
+import { refreshType } from '../../../base/constants/constants';
+import { cookieExtractor } from '../../../base/utils/cookie-extractor';
 import { ValidateRefreshTokenCommand } from '../api/public/application/use-cases/validations/validate-refresh-token.use-case';
 
 @Injectable()

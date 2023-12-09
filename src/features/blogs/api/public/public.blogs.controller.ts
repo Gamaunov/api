@@ -1,13 +1,13 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 
 import { BlogsQueryRepository } from '../../infrastructure/blogs.query.repository';
-import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
-import { ResultCode } from '../../../../shared/enums/result-code.enum';
+import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception.handler';
+import { ResultCode } from '../../../../base/enums/result-code.enum';
 import {
   blogIDField,
   blogNotFound,
-} from '../../../../shared/constants/constants';
-import { QueryDTO } from '../../../../shared/dto/query.dto';
+} from '../../../../base/constants/constants';
+import { QueryModel } from '../../../../base/models/query.model';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.query.repository';
 import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers.decorator';
 
@@ -31,7 +31,7 @@ export class PublicBlogsController {
 
   @Get(':id/posts')
   async findPosts(
-    @Query() query: QueryDTO,
+    @Query() query: QueryModel,
     @Param('id') blogId: string,
     @UserIdFromHeaders() userId: string,
   ) {

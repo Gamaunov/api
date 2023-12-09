@@ -1,12 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { CommentsRepository } from '../../../../infrastructure/comments.repository';
-import { ExceptionResultType } from '../../../../../../shared/types/exceptions.types';
-import { ResultCode } from '../../../../../../shared/enums/result-code.enum';
+import { ExceptionResultType } from '../../../../../../infrastructure/types/exceptions.types';
+import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {
   commentIDField,
   commentNotFound,
-} from '../../../../../../shared/constants/constants';
+} from '../../../../../../base/constants/constants';
 
 export class CommentDeleteCommand {
   constructor(public commentId: string, public userId: string) {}

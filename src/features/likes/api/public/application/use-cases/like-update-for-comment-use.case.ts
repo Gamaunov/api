@@ -7,12 +7,12 @@ import { CommentsRepository } from '../../../../../comments/infrastructure/comme
 import {
   Comment,
   CommentModelType,
-} from '../../../../../comments/comment.entity';
-import { LikeStatusInputDTO } from '../../../../dto/like-status-input.dto';
+} from '../../../../../comments/domain/comment.entity';
+import { LikeStatusInputModel } from '../../../../models/like-status-input.model';
 
 export class LikeUpdateForCommentCommand {
   constructor(
-    public likeStatusInputDTO: LikeStatusInputDTO,
+    public likeStatusInputDTO: LikeStatusInputModel,
     public commentId: string,
     public userId: string,
   ) {}

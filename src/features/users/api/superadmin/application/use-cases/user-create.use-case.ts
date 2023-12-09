@@ -3,11 +3,11 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import bcrypt from 'bcrypt';
 
 import { UsersRepository } from '../../../../infrastructure/users.repository';
-import { User, UserModelType } from '../../../../user.entity';
-import { UserInputDTO } from '../../../../dto/user-input-dto';
+import { User, UserModelType } from '../../../../domain/user.entity';
+import { UserInputModel } from '../../../models/user-input-model';
 
 export class UserCreateCommand {
-  constructor(public userInputDTO: UserInputDTO) {}
+  constructor(public userInputDTO: UserInputModel) {}
 }
 
 @CommandHandler(UserCreateCommand)

@@ -1,12 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { DevicesRepository } from '../../../../infrastructure/devices.repository';
-import { ExceptionResultType } from '../../../../../../shared/types/exceptions.types';
-import { ResultCode } from '../../../../../../shared/enums/result-code.enum';
+import { ExceptionResultType } from '../../../../../../infrastructure/types/exceptions.types';
+import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {
   deviceIDField,
   deviceNotFound,
-} from '../../../../../../shared/constants/constants';
+} from '../../../../../../base/constants/constants';
 
 export class DeviceDeleteForTerminateCommand {
   constructor(public deviceId: string, public userId: string) {}

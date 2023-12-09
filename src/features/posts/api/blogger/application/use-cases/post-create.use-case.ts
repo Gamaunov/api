@@ -1,18 +1,18 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { PostInputDTO } from '../../../../dto/post-input.dto';
-import { Post, PostModelType } from '../../../../post.entity';
+import { PostInputModel } from '../../../../models/post-input.model';
+import { Post, PostModelType } from '../../../../domain/post.entity';
 import { BlogsRepository } from '../../../../../blogs/infrastructure/blogs.repository';
-import { ResultCode } from '../../../../../../shared/enums/result-code.enum';
+import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {
   blogIDField,
   blogNotFound,
-} from '../../../../../../shared/constants/constants';
+} from '../../../../../../base/constants/constants';
 import { PostsRepository } from '../../../../infrastructure/posts.repository';
 
 export class PostCreateCommand {
-  constructor(public postInputDTO: PostInputDTO, public blogId: string) {}
+  constructor(public postInputDTO: PostInputModel, public blogId: string) {}
 }
 
 @CommandHandler(PostCreateCommand)

@@ -6,7 +6,7 @@ import {
   Device,
   DeviceDocument,
   DeviceModelType,
-} from '../../../../device.entity';
+} from '../../../../domain/device.entity';
 import { DevicesRepository } from '../../../../infrastructure/devices.repository';
 
 export class DeviceCreateForLoginCommand {

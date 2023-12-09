@@ -1,15 +1,15 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { CommentInputDTO } from '../../../../dto/comment-input.dto';
-import { Comment, CommentModelType } from '../../../../comment.entity';
+import { CommentInputModel } from '../../../../models/comment-input.model';
+import { Comment, CommentModelType } from '../../../../domain/comment.entity';
 import { CommentsRepository } from '../../../../infrastructure/comments.repository';
 import { PostsRepository } from '../../../../../posts/infrastructure/posts.repository';
 import { UsersRepository } from '../../../../../users/infrastructure/users.repository';
 
 export class CommentCreateCommand {
   constructor(
-    public commentInputDto: CommentInputDTO,
+    public commentInputDto: CommentInputModel,
     public postId: string,
     public userId: string,
   ) {}

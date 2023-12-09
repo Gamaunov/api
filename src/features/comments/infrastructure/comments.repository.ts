@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
-import { Comment, CommentDocument, CommentModelType } from '../comment.entity';
+import {
+  Comment,
+  CommentDocument,
+  CommentModelType,
+} from '../domain/comment.entity';
 
 @Injectable()
 export class CommentsRepository {

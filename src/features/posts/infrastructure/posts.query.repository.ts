@@ -2,17 +2,17 @@ import { Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { Post, PostLeanType, PostModelType } from '../post.entity';
+import { Post, PostLeanType, PostModelType } from '../domain/post.entity';
 import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
-import { QueryDTO } from '../../../shared/dto/query.dto';
-import { Paginator } from '../../../shared/pagination/_paginator';
-import { paginateFeature } from '../../../shared/pagination/paginate-feature';
-import { postsFilter } from '../../../shared/pagination/posts-filter';
-import { sortDirection } from '../../../shared/pagination/sort-direction';
-import { getLikeStatus } from '../../likes/utils/getLikeStatus';
-import { PostViewDTO } from '../dto/post.view.dto';
-import { getThreeNewestLikes } from '../../likes/utils/getThreeNewestLikes';
-import { LikeStatus } from '../../../shared/enums/like-status.enum';
+import { QueryModel } from '../../../base/models/query.model';
+import { Paginator } from '../../../base/pagination/_paginator';
+import { paginateFeature } from '../../../base/pagination/paginate-feature';
+import { postsFilter } from '../../../base/pagination/posts-filter';
+import { sortDirection } from '../../../base/pagination/sort-direction';
+import { getLikeStatus } from '../../../base/utils/likes/getLikeStatus';
+import { PostViewModel } from '../models/post.view.model';
+import { getThreeNewestLikes } from '../../../base/utils/likes/getThreeNewestLikes';
+import { LikeStatus } from '../../../base/enums/like-status.enum';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -23,10 +23,10 @@ export class PostsQueryRepository {
   ) {}
 
   async findPosts(
-    query: QueryDTO,
+    query: QueryModel,
     userId?: string,
     blogId?: string,
-  ): Promise<Paginator<PostViewDTO[]> | null> {
+  ): Promise<Paginator<PostViewModel[]> | null> {
     if (blogId) {
       const blog = await this.blogsQueryRepository.findBlogById(blogId);
 
@@ -56,7 +56,7 @@ export class PostsQueryRepository {
   async findPostById(
     postId: string,
     userId?: string,
-  ): Promise<PostViewDTO | null> {
+  ): Promise<PostViewModel | null> {
     if (!mongoose.isValidObjectId(postId)) {
       return null;
     }
@@ -90,7 +90,7 @@ export class PostsQueryRepository {
   private async postsMapping(
     posts: PostLeanType[],
     userId?: string,
-  ): Promise<PostViewDTO[]> {
+  ): Promise<PostViewModel[]> {
     return posts.map((p) => {
       let status;
       if (typeof userId !== 'undefined') {

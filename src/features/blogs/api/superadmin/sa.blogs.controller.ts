@@ -3,8 +3,8 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 
 import { BlogsQueryRepository } from '../../infrastructure/blogs.query.repository';
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
-import { BlogQuery } from '../../dto/blog-query';
-import { Role } from '../../../../shared/enums/roles.enum';
+import { BlogQueryModel } from '../../models/blog-quer.model';
+import { Role } from '../../../../base/enums/roles.enum';
 
 @Controller('sa/blogs')
 export class SuperAdminBlogsController {
@@ -15,7 +15,7 @@ export class SuperAdminBlogsController {
 
   @UseGuards(BasicAuthGuard)
   @Get()
-  async findBlogs(@Query() query: BlogQuery) {
+  async findBlogs(@Query() query: BlogQueryModel) {
     const role = Role.SUPER_ADMIN;
     return this.blogsQueryRepository.findBlogs(query, role);
   }

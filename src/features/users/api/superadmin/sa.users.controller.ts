@@ -12,14 +12,14 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
-import { UserInputDTO } from '../../dto/user-input-dto';
-import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
-import { ResultCode } from '../../../../shared/enums/result-code.enum';
+import { UserInputModel } from '../models/user-input-model';
+import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception.handler';
+import { ResultCode } from '../../../../base/enums/result-code.enum';
 import {
   userIDField,
   userNotFound,
-} from '../../../../shared/constants/constants';
-import { UserQuery } from '../../dto/user.query';
+} from '../../../../base/constants/constants';
+import { UserQueryModel } from '../models/user.query.model';
 
 import { UsersQueryRepository } from './infrastructure/users.query.repository';
 import { UserCreateCommand } from './application/use-cases/user-create.use-case';
@@ -34,13 +34,13 @@ export class SuperAdminUsersController {
 
   @UseGuards(BasicAuthGuard)
   @Get()
-  async findUsers(@Query() query: UserQuery) {
+  async findUsers(@Query() query: UserQueryModel) {
     return this.usersQueryRepository.findUsers(query);
   }
 
   @UseGuards(BasicAuthGuard)
   @Post()
-  async createUser(@Body() userInputDTO: UserInputDTO) {
+  async createUser(@Body() userInputDTO: UserInputModel) {
     const userId = await this.commandBus.execute(
       new UserCreateCommand(userInputDTO),
     );

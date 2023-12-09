@@ -13,8 +13,8 @@ import { DevicesQueryRepository } from '../../infrastructure/devices.query.repos
 import { JwtRefreshGuard } from '../../../auth/guards/jwt-refresh.guard';
 import { UserIdFromGuard } from '../../../auth/decorators/user-id-from-guard.guard.decorator';
 import { RefreshToken } from '../../../auth/decorators/refresh-token.param.decorator';
-import { ResultCode } from '../../../../shared/enums/result-code.enum';
-import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
+import { ResultCode } from '../../../../base/enums/result-code.enum';
+import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception.handler';
 
 import { DeviceDeleteForTerminateCommand } from './application/use-cases/device-delete-for-terminate.use-case';
 import { DevicesDeleteOldCommand } from './application/use-cases/devices-delete-old.use-case';

@@ -1,17 +1,17 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { CommentInputDTO } from '../../../../dto/comment-input.dto';
+import { CommentInputModel } from '../../../../models/comment-input.model';
 import { CommentsRepository } from '../../../../infrastructure/comments.repository';
-import { ExceptionResultType } from '../../../../../../shared/types/exceptions.types';
-import { ResultCode } from '../../../../../../shared/enums/result-code.enum';
+import { ExceptionResultType } from '../../../../../../infrastructure/types/exceptions.types';
+import { ResultCode } from '../../../../../../base/enums/result-code.enum';
 import {
   commentIDField,
   commentNotFound,
-} from '../../../../../../shared/constants/constants';
+} from '../../../../../../base/constants/constants';
 
 export class CommentUpdateCommand {
   constructor(
-    public commentInputDTO: CommentInputDTO,
+    public commentInputDTO: CommentInputModel,
     public commentId: string,
     public userId: string,
   ) {}

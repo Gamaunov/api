@@ -14,16 +14,16 @@ import { CommandBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { BlogsQueryRepository } from '../../infrastructure/blogs.query.repository';
-import { BlogInputDTO } from '../../dto/blog-input.dto';
+import { BlogInputModel } from '../../models/blog-input.model';
 import { UserIdFromGuard } from '../../../auth/decorators/user-id-from-guard.guard.decorator';
-import { exceptionHandler } from '../../../../shared/exceptions/exception.handler';
-import { ResultCode } from '../../../../shared/enums/result-code.enum';
-import { BlogQuery } from '../../dto/blog-query';
-import { PostInputDTO } from '../../../posts/dto/post-input.dto';
+import { exceptionHandler } from '../../../../infrastructure/exception-filters/exception.handler';
+import { ResultCode } from '../../../../base/enums/result-code.enum';
+import { BlogQueryModel } from '../../models/blog-quer.model';
+import { PostInputModel } from '../../../posts/models/post-input.model';
 import { PostsQueryRepository } from '../../../posts/infrastructure/posts.query.repository';
 import { PostCreateCommand } from '../../../posts/api/blogger/application/use-cases/post-create.use-case';
 import { BasicAuthGuard } from '../../../auth/guards/basic-auth.guard';
-import { Blog, BlogModelType } from '../../blog.entity';
+import { Blog, BlogModelType } from '../../domain/blog.entity';
 import { BlogsRepository } from '../../infrastructure/blogs.repository';
 
 import { BlogUpdateCommand } from './application/use-cases/blog-update.use-case';
@@ -41,14 +41,14 @@ export class BloggerBlogsController {
   ) {}
 
   @Get()
-  async findBlogs(@Query() query: BlogQuery) {
+  async findBlogs(@Query() query: BlogQueryModel) {
     return this.blogsQueryRepository.findBlogs(query);
   }
 
   @UseGuards(BasicAuthGuard)
   @Post()
   @HttpCode(201)
-  async createBlog(@Body() blogInputDTO: BlogInputDTO) {
+  async createBlog(@Body() blogInputDTO: BlogInputModel) {
     const blog = this.BlogModel.createBlog(this.BlogModel, blogInputDTO);
     await this.blogsRepository.save(blog);
     return this.blogsRepository.findBlog(blog._id);
@@ -58,7 +58,7 @@ export class BloggerBlogsController {
   @Put(':id')
   @HttpCode(204)
   async updateBlog(
-    @Body() blogInputDTO: BlogInputDTO,
+    @Body() blogInputDTO: BlogInputModel,
     @Param('id') blogId: string,
     @UserIdFromGuard() userId: string,
   ) {
@@ -76,7 +76,7 @@ export class BloggerBlogsController {
   @UseGuards(BasicAuthGuard)
   @Post(':id/posts')
   async createPost(
-    @Body() postInputDTO: PostInputDTO,
+    @Body() postInputDTO: PostInputModel,
     @Param('id') blogId: string,
   ) {
     const result = await this.commandBus.execute(
