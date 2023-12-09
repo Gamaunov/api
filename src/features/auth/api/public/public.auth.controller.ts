@@ -173,6 +173,7 @@ export class PublicAuthController {
   @ApiOperation({
     summary: 'Try login user to the system',
   })
+  @Throttle(5, 10)
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   async login(
