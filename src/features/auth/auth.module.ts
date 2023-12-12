@@ -27,8 +27,9 @@ import { ValidateLoginAndPasswordUseCase } from './api/public/application/use-ca
 import { ValidateRefreshTokenUseCase } from './api/public/application/use-cases/validations/validate-refresh-token.use-case';
 import { TokensCreateUseCase } from './api/public/application/use-cases/tokens/tokens-create.use-case';
 import { PublicAuthController } from './api/public/public.auth.controller';
+import { AuthService } from './api/public/application/use-cases/auth.service';
 
-const services = [JwtService];
+const services = [JwtService, AuthService];
 
 const useCases = [
   RegistrationUseCase,

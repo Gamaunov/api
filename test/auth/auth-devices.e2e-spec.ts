@@ -116,6 +116,7 @@ describe('describe', () => {
     });
 
     it(`should login user01 5 times & create five devices`, async () => {
+      await sleep(10000);
       let i = 0;
       let response;
       while (i < 5) {
@@ -136,9 +137,9 @@ describe('describe', () => {
       expect(refreshTokenUser01).toContain('refreshToken=');
 
       await agent.delete(security_devices_uri);
-    });
+    }, 15000);
 
-    it(`should create 6 posts`, async () => {
+    it(`should login user01 5 times & receive 429 if more than 5 attempt in 10 sec`, async () => {
       let i = 0;
       while (i < 6) {
         await agent

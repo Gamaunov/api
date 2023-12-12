@@ -31,7 +31,6 @@ import {
   userNotFoundOrConfirmed,
 } from '../../../../base/constants/constants';
 import { ConfirmCodeInputModel } from '../../models/user-confirm.model';
-import { LocalAuthGuard } from '../../guards/local-auth.guard';
 import { UserIdFromGuard } from '../../decorators/user-id-from-guard.guard.decorator';
 import { JwtRefreshGuard } from '../../guards/jwt-refresh.guard';
 import { RefreshToken } from '../../decorators/refresh-token.param.decorator';
@@ -49,6 +48,7 @@ import { PasswordRecoveryCommand } from './application/use-cases/password/passwo
 import { RegistrationEmailResendCommand } from './application/use-cases/registration/registration-email-resend.use-case';
 import { RegistrationCommand } from './application/use-cases/registration/registration.use-case';
 import { RegistrationConfirmationCommand } from './application/use-cases/registration/registration-confirmation.use-case';
+import { AuthService } from './application/use-cases/auth.service';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -57,6 +57,7 @@ export class PublicAuthController {
     private commandBus: CommandBus,
     private readonly jwtService: JwtService,
     private readonly usersRepository: UsersRepository,
+    private readonly authService: AuthService,
   ) {}
   @Get('me')
   @ApiOperation({ summary: 'Get information about current user' })
@@ -175,14 +176,23 @@ export class PublicAuthController {
   })
   @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
-  @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   async login(
-    @UserIdFromGuard() userId: string,
     @Ip() ip: string,
+    @Body() body,
     @Headers() headers: string,
     @Response() res,
   ) {
+    const userId = await this.authService.checkCredentials(
+      body.loginOrEmail,
+      body.password,
+    );
+
+    if (!userId) {
+      res.sendStatus(401);
+      return;
+    }
+
     const userAgent = headers['user-agent'] || 'unknown';
     const tokens = await this.commandBus.execute(
       new TokensCreateCommand(userId),
