@@ -173,6 +173,7 @@ export class PublicAuthController {
   @ApiOperation({
     summary: 'Try login user to the system',
   })
+  @UseGuards(ThrottlerGuard)
   @Throttle(5, 10)
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
@@ -182,7 +183,7 @@ export class PublicAuthController {
     @Headers() headers: string,
     @Response() res,
   ) {
-    const userAgent = headers[userAgent_] || unknown_;
+    const userAgent = headers['user-agent'] || 'unknown';
     const tokens = await this.commandBus.execute(
       new TokensCreateCommand(userId),
     );

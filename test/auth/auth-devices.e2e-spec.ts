@@ -134,9 +134,28 @@ describe('describe', () => {
 
       expect(accessTokenUser01).toBeDefined();
       expect(refreshTokenUser01).toContain('refreshToken=');
+
+      await agent.delete(security_devices_uri);
+    });
+
+    it(`should create 6 posts`, async () => {
+      let i = 0;
+      while (i < 6) {
+        await agent
+          .post(auth_login_uri)
+          .send({
+            loginOrEmail: userLogin01,
+            password: userPassword,
+          })
+          .expect(429);
+        i++;
+      }
     });
 
     it(`should login user02`, async () => {
+      await sleep(10000);
+      await agent.delete(security_devices_uri);
+
       const response = await agent
         .post(auth_login_uri)
         .send({
@@ -145,8 +164,8 @@ describe('describe', () => {
         })
         .expect(200);
 
-      refreshTokenUser02 = response.headers[set_cookie][0];
-    });
+      refreshTokenUser02 = response.headers['set-cookie'][0];
+    }, 15000);
   });
 
   describe('Update tokens', () => {
