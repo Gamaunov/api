@@ -193,7 +193,7 @@ export class PublicAuthController {
     );
 
     res
-      .cookie(refreshToken_, tokens.refreshToken, {
+      .cookie('refreshToken', tokens.refreshToken, {
         httpOnly: true,
         secure: true,
       })

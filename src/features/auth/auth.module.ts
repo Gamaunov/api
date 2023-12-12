@@ -1,9 +1,9 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ThrottlerModule } from '@nestjs/throttler';
 import { JwtService } from '@nestjs/jwt';
 import { CqrsModule } from '@nestjs/cqrs';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 import { User, UserSchema } from '../users/domain/user.entity';
 import { DeviceCreateForLoginUseCase } from '../devices/api/public/application/use-cases/device-create-for-login.use-case';
@@ -56,8 +56,8 @@ const strategies = [
 @Module({
   imports: [
     ThrottlerModule.forRoot({
-      ttl: 60,
-      limit: 10,
+      ttl: 10,
+      limit: 5,
     }),
     MongooseModule.forFeature([
       { name: Device.name, schema: DeviceSchema },
