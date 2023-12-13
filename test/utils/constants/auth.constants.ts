@@ -9,3 +9,4 @@ export const basicAuthPassword = 'qwerty';
 export const set_cookie = 'set-cookie';
 
 export const someSiteURl = 'https://some-site.com';
+export const updatedSomeSiteURl = 'https://some-updated-site.com';

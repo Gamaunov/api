@@ -10,4 +10,4 @@ export const userLogin03 = 'login03';
 export const userEmail03 = 'login-user-3@gmail.com';
 export const userLogin04 = 'login04';
 export const userEmail04 = 'login-user-4@gmail.com';
-export const userPassword = 'superuserpassword';
+export const userPassword = 'super123456';
