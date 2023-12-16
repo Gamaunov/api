@@ -32,8 +32,8 @@ export class PublicBlogsController {
     return result;
   }
 
-  @Get(':id/posts-likes')
-  @ApiOperation({ summary: 'Returns all posts-likes for specified blog' })
+  @Get(':id/posts')
+  @ApiOperation({ summary: 'Returns all posts for specified blog' })
   async findPosts(
     @Query() query: QueryModel,
     @Param('id') blogId: string,
