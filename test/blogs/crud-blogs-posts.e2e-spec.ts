@@ -11,7 +11,7 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from '../../src/app.module';
 import { customExceptionFactory } from '../../src/infrastructure/exception-filters/exception.factory';
 import { HttpExceptionFilter } from '../../src/infrastructure/exception-filters/exception.filter';
-import { testing_allData_uri } from '../utils/constants/testing.constants';
+import { testing_allData_uri } from '../base/utils/constants/testing.constants';
 import {
   userEmail01,
   userEmail02,
@@ -19,21 +19,21 @@ import {
   userLogin02,
   userPassword,
   users_uri,
-} from '../utils/constants/users.constants';
+} from '../base/utils/constants/users.constants';
 import {
   auth_login_uri,
   basicAuthLogin,
   basicAuthPassword,
   someSiteURl,
   updatedSomeSiteURl,
-} from '../utils/constants/auth.constants';
+} from '../base/utils/constants/auth.constants';
 import {
   blogDescription,
   blogName01,
   blogs_uri,
   updatedBlogDescription,
   updatedBlogName,
-} from '../utils/constants/blogs.constant';
+} from '../base/utils/constants/blogs.constant';
 import {
   postContent,
   posts_uri,
@@ -42,15 +42,19 @@ import {
   updatedContent,
   updatedDescription,
   updatedTitle,
-} from '../utils/constants/posts.constants';
-import { exceptionObject, postDto, updatedPostDto } from '../utils/dto/dto';
+} from '../base/utils/constants/posts.constants';
+import {
+  exceptionObject,
+  postDto,
+  updatedPostDto,
+} from '../base/utils/dto/dto';
 import {
   lorem1000,
   lorem1001,
   lorem15,
   lorem20,
   lorem50,
-} from '../utils/constants/constants';
+} from '../base/utils/constants/constants';
 
 describe('Blogger blogs and posts testing', () => {
   let app: INestApplication;

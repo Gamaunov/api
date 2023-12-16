@@ -9,7 +9,7 @@ import * as process from 'process';
 import { randomUUID } from 'crypto';
 
 import { AppModule } from '../../src/app.module';
-import { testing_allData_uri } from '../utils/constants/testing.constants';
+import { testing_allData_uri } from '../base/utils/constants/testing.constants';
 import {
   userEmail01,
   userEmail02,
@@ -17,7 +17,7 @@ import {
   userLogin02,
   userPassword,
   users_uri,
-} from '../utils/constants/users.constants';
+} from '../base/utils/constants/users.constants';
 import {
   auth_login_uri,
   auth_logout_uri,
@@ -27,13 +27,13 @@ import {
   basicAuthPassword,
   security_devices_uri,
   set_cookie,
-} from '../utils/constants/auth.constants';
+} from '../base/utils/constants/auth.constants';
 import { HttpExceptionFilter } from '../../src/infrastructure/exception-filters/exception.filter';
 import { customExceptionFactory } from '../../src/infrastructure/exception-filters/exception.factory';
-import { sleep } from '../utils/functions/sleep';
-import { deviceResponse, userProfileResponse } from '../utils/dto/dto';
+import { wait } from '../base/utils/functions/wait';
+import { deviceResponse, userProfileResponse } from '../base/utils/dto/dto';
 
-describe('describe', () => {
+describe('auth', () => {
   let app: INestApplication;
   let agent: SuperAgentTest;
 
@@ -116,7 +116,7 @@ describe('describe', () => {
     });
 
     it(`should login user01 5 times & create five devices`, async () => {
-      await sleep(10000);
+      await wait(10);
       let i = 0;
       let response;
       while (i < 5) {
@@ -154,7 +154,7 @@ describe('describe', () => {
     });
 
     it(`should login user02`, async () => {
-      await sleep(10000);
+      await wait(10);
       await agent.delete(security_devices_uri);
 
       const response = await agent
@@ -180,7 +180,7 @@ describe('describe', () => {
 
     it(`should update tokens and return 401 with 
     outdated refreshToken`, async () => {
-      await sleep(1000);
+      await wait(10);
       const response = await agent
         .post(auth_refreshToken_uri)
         .set('Cookie', refreshTokenUser01)
@@ -197,7 +197,7 @@ describe('describe', () => {
 
       refreshTokenUser01 = response.headers[set_cookie][0];
       accessTokenUser01 = response.body.accessToken;
-    });
+    }, 15000);
   });
 
   describe('user profile', () => {

@@ -29,8 +29,8 @@ import { UserIdFromHeaders } from '../../../auth/decorators/user-id-from-headers
 import { CommentUpdateCommand } from './application/use-cases/comment-update.use-case';
 import { CommentDeleteCommand } from './application/use-cases/comment-delete.use-case';
 
-@ApiTags('comments')
-@Controller('comments')
+@ApiTags('comments-likes')
+@Controller('comments-likes')
 export class PublicCommentsController {
   constructor(
     private commandBus: CommandBus,
