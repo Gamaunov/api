@@ -11,3 +11,35 @@ export const userEmail03 = 'login-user-3@gmail.com';
 export const userLogin04 = 'login04';
 export const userEmail04 = 'login-user-4@gmail.com';
 export const userPassword = 'super123456';
+export const createUserInput = {
+  login: userLogin01,
+  password: userPassword,
+  email: userEmail01,
+};
+
+export const createUserInput2 = {
+  login: userLogin02,
+  password: userPassword,
+  email: userEmail02,
+};
+
+export const createUserInput3 = {
+  login: userLogin03,
+  password: userPassword,
+  email: userEmail03,
+};
+
+export const loginUserInput = {
+  loginOrEmail: userLogin01,
+  password: userPassword,
+};
+
+export const loginUserInput2 = {
+  loginOrEmail: userLogin02,
+  password: userPassword,
+};
+
+export const loginUserInput3 = {
+  loginOrEmail: userLogin03,
+  password: userPassword,
+};

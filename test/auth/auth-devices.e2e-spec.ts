@@ -1,15 +1,7 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import supertest, { SuperAgentTest } from 'supertest';
-import { Test } from '@nestjs/testing';
-import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { useContainer } from 'class-validator';
-import cookieParser from 'cookie-parser';
-import * as process from 'process';
+import { INestApplication } from '@nestjs/common';
+import { SuperAgentTest } from 'supertest';
 import { randomUUID } from 'crypto';
 
-import { AppModule } from '../../src/app.module';
-import { testing_allData_uri } from '../base/utils/constants/testing.constants';
 import {
   userEmail01,
   userEmail02,
@@ -28,42 +20,18 @@ import {
   security_devices_uri,
   set_cookie,
 } from '../base/utils/constants/auth.constants';
-import { HttpExceptionFilter } from '../../src/infrastructure/exception-filters/exception.filter';
-import { customExceptionFactory } from '../../src/infrastructure/exception-filters/exception.factory';
 import { wait } from '../base/utils/functions/wait';
 import { deviceResponse, userProfileResponse } from '../base/utils/dto/dto';
+import { initializeApp } from '../base/utils/functions/initializeApp';
 
 describe('auth', () => {
   let app: INestApplication;
   let agent: SuperAgentTest;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot(),
-        MongooseModule.forRoot(process.env.MONGO_TEST_URI || ''),
-        AppModule,
-      ],
-    }).compile();
-
-    app = moduleRef.createNestApplication();
-
-    useContainer(app.select(AppModule), { fallbackOnErrors: true });
-    app.enableCors();
-    app.use(cookieParser());
-    app.useGlobalPipes(
-      new ValidationPipe({
-        transform: true,
-        stopAtFirstError: true,
-        exceptionFactory: customExceptionFactory,
-      }),
-    );
-    app.useGlobalFilters(new HttpExceptionFilter());
-
-    await app.init();
-    agent = supertest.agent(app.getHttpServer());
-
-    await agent.delete(testing_allData_uri);
+    const result = await initializeApp();
+    app = result.app;
+    agent = result.agent;
   });
 
   let accessTokenUser01;
@@ -95,6 +63,7 @@ describe('auth', () => {
         .expect(201);
     });
 
+    // negative
     it(`should return 401 when trying to login user with incorrect login or email`, async () => {
       await agent
         .post(auth_login_uri)
@@ -105,7 +74,7 @@ describe('auth', () => {
         .expect(401);
     });
 
-    it(`should return 401 when trying to log in user with incorrect password`, async () => {
+    it(`should return 401 when trying to login user with incorrect password`, async () => {
       await agent
         .post(auth_login_uri)
         .send({
@@ -115,6 +84,7 @@ describe('auth', () => {
         .expect(401);
     });
 
+    // positive
     it(`should login user01 5 times & create five devices`, async () => {
       await wait(10);
       let i = 0;
@@ -139,7 +109,7 @@ describe('auth', () => {
       await agent.delete(security_devices_uri);
     }, 15000);
 
-    it(`should login user01 5 times & receive 429 if more than 5 attempt in 10 sec`, async () => {
+    it(`should login user 1 5 times & receive 429 if more than 5 attempt in 10 sec`, async () => {
       let i = 0;
       while (i < 6) {
         await agent
@@ -153,7 +123,7 @@ describe('auth', () => {
       }
     });
 
-    it(`should login user02`, async () => {
+    it(`should login user 2`, async () => {
       await wait(10);
       await agent.delete(security_devices_uri);
 
@@ -170,6 +140,7 @@ describe('auth', () => {
   });
 
   describe('Update tokens', () => {
+    // negative
     it(`should return 401 when trying to update 
     token with incorrect refreshToken`, async () => {
       await agent
@@ -201,6 +172,7 @@ describe('auth', () => {
   });
 
   describe('user profile', () => {
+    // negative
     it(`should return 401 with incorrect accessToken`, async () => {
       await agent
         .get(auth_me_uri)
@@ -208,6 +180,7 @@ describe('auth', () => {
         .expect(401);
     });
 
+    // positive
     it(`should return user profile`, async () => {
       const user = await agent
         .get(auth_me_uri)
@@ -218,6 +191,7 @@ describe('auth', () => {
   });
 
   describe('Get devices', () => {
+    // negative
     it(`should return 401 with incorrect refreshToken`, async () => {
       await agent
         .get(security_devices_uri)
@@ -229,6 +203,7 @@ describe('auth', () => {
       await agent.get(security_devices_uri).expect(401);
     });
 
+    // positive
     it(`should return 4 devices`, async () => {
       const devices = await agent
         .get(security_devices_uri)
@@ -244,6 +219,7 @@ describe('auth', () => {
   });
 
   describe('Delete devices', () => {
+    // negative
     it(`should return 401 with incorrect refreshToken`, async () => {
       await agent.post(auth_logout_uri).set('Cookie', randomUUID()).expect(401);
     });
@@ -288,6 +264,7 @@ describe('auth', () => {
         .expect(404);
     });
 
+    // positive
     it(`should delete device by ID`, async () => {
       await agent
         .delete(security_devices_uri + devceId02)
