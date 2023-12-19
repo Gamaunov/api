@@ -9,14 +9,12 @@ import {
   loginUserInput2,
   loginUserInput3,
 } from '../base/utils/constants/users.constants';
-import {
-  auth_me_uri,
-  basicAuthLogin,
-  basicAuthPassword,
-} from '../base/utils/constants/auth.constants';
-import { initializeApp } from '../base/utils/functions/initializeApp';
+import { auth_me_uri } from '../base/utils/constants/auth.constants';
+import { initializeApp } from '../base/settings/initializeApp';
 import { UsersTestManager } from '../base/managers/users.manager';
 import { wait } from '../base/utils/functions/wait';
+import { testing_allData_uri } from '../base/utils/constants/testing.constants';
+import { UsersRepository } from '../../src/features/users/infrastructure/users.repository';
 
 describe('Auth: auth/me', () => {
   let app: INestApplication;
@@ -27,7 +25,8 @@ describe('Auth: auth/me', () => {
     const result = await initializeApp();
     app = result.app;
     agent = result.agent;
-    usersTestManager = new UsersTestManager(app);
+    const usersRepository = app.get(UsersRepository);
+    usersTestManager = new UsersTestManager(app, usersRepository);
   });
 
   describe('negative: auth/me', () => {
@@ -36,11 +35,7 @@ describe('Auth: auth/me', () => {
     });
 
     it(`should not Get information about current user if accessToken is incorrect`, async () => {
-      await usersTestManager.createUser(
-        basicAuthLogin,
-        basicAuthPassword,
-        createUserInput,
-      );
+      await usersTestManager.createUser(createUserInput);
 
       const response = await usersTestManager.login(loginUserInput);
 
@@ -53,11 +48,7 @@ describe('Auth: auth/me', () => {
     });
 
     it(`should not Get information about current user if accessToken is expired`, async () => {
-      await usersTestManager.createUser(
-        basicAuthLogin,
-        basicAuthPassword,
-        createUserInput3,
-      );
+      await usersTestManager.createUser(createUserInput3);
 
       const response = await usersTestManager.login(loginUserInput3);
 
@@ -73,12 +64,12 @@ describe('Auth: auth/me', () => {
   });
 
   describe('positive: auth/me', () => {
+    it(`should clear db`, async () => {
+      await agent.delete(testing_allData_uri);
+    });
+
     it(`should Get information about current user`, async () => {
-      await usersTestManager.createUser(
-        basicAuthLogin,
-        basicAuthPassword,
-        createUserInput2,
-      );
+      await usersTestManager.createUser(createUserInput2);
 
       const response = await usersTestManager.login(loginUserInput2);
 

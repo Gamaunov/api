@@ -22,7 +22,7 @@ import {
 } from '../base/utils/constants/auth.constants';
 import { wait } from '../base/utils/functions/wait';
 import { deviceResponse, userProfileResponse } from '../base/utils/dto/dto';
-import { initializeApp } from '../base/utils/functions/initializeApp';
+import { initializeApp } from '../base/settings/initializeApp';
 
 describe('auth', () => {
   let app: INestApplication;

@@ -7,14 +7,12 @@ import {
   userLogin01,
   userPassword,
 } from '../base/utils/constants/users.constants';
-import {
-  auth_login_uri,
-  basicAuthLogin,
-  basicAuthPassword,
-} from '../base/utils/constants/auth.constants';
+import { auth_login_uri } from '../base/utils/constants/auth.constants';
 import { wait } from '../base/utils/functions/wait';
-import { initializeApp } from '../base/utils/functions/initializeApp';
+import { initializeApp } from '../base/settings/initializeApp';
 import { UsersTestManager } from '../base/managers/users.manager';
+import { testing_allData_uri } from '../base/utils/constants/testing.constants';
+import { UsersRepository } from '../../src/features/users/infrastructure/users.repository';
 
 describe('Auth: auth/login', () => {
   let app: INestApplication;
@@ -25,16 +23,17 @@ describe('Auth: auth/login', () => {
     const result = await initializeApp();
     app = result.app;
     agent = result.agent;
-    usersTestManager = new UsersTestManager(app);
+    const usersRepository = app.get(UsersRepository);
+    usersTestManager = new UsersTestManager(app, usersRepository);
   });
 
   describe('negative: auth/login', () => {
+    it(`should clear db`, async () => {
+      await agent.delete(testing_allData_uri);
+    });
+
     it(`should create 1 user`, async () => {
-      await usersTestManager.createUser(
-        basicAuthLogin,
-        basicAuthPassword,
-        createUserInput,
-      );
+      await usersTestManager.createUser(createUserInput);
     });
 
     // negative

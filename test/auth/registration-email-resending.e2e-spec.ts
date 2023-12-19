@@ -5,20 +5,22 @@ import {
   createUserInput,
   userEmail01,
   userEmail02,
+  userEmail03,
   userLogin01,
   userLogin02,
+  userLogin03,
   userPassword,
 } from '../base/utils/constants/users.constants';
 import {
   auth_registration_uri,
   auth_registrationEmailResending_uri,
-  basicAuthLogin,
-  basicAuthPassword,
 } from '../base/utils/constants/auth.constants';
 import { wait } from '../base/utils/functions/wait';
-import { initializeApp } from '../base/utils/functions/initializeApp';
+import { initializeApp } from '../base/settings/initializeApp';
 import { UsersTestManager } from '../base/managers/users.manager';
 import { testing_allData_uri } from '../base/utils/constants/testing.constants';
+import { SendRegistrationMailUseCase } from '../../src/features/mail/application/use-cases/send-registration-mail.use-case';
+import { UsersRepository } from '../../src/features/users/infrastructure/users.repository';
 
 describe('Auth: auth/registration-email-resending', () => {
   let app: INestApplication;
@@ -29,7 +31,8 @@ describe('Auth: auth/registration-email-resending', () => {
     const result = await initializeApp();
     app = result.app;
     agent = result.agent;
-    usersTestManager = new UsersTestManager(app);
+    const usersRepository = app.get(UsersRepository);
+    usersTestManager = new UsersTestManager(app, usersRepository);
   });
 
   describe('negative: auth/registration-email-resending', () => {
@@ -55,11 +58,7 @@ describe('Auth: auth/registration-email-resending', () => {
     });
 
     it(`should return 400 If user already confirmed`, async () => {
-      await usersTestManager.createUser(
-        basicAuthLogin,
-        basicAuthPassword,
-        createUserInput,
-      );
+      await usersTestManager.createUser(createUserInput);
 
       const response = await agent
         .post(auth_registrationEmailResending_uri)
@@ -114,8 +113,11 @@ describe('Auth: auth/registration-email-resending', () => {
   });
 
   describe('positive: auth/registration-email-resending', () => {
-    it(`should Resend confirmation registration Email if user exists`, async () => {
+    it(`should clear db`, async () => {
       await agent.delete(testing_allData_uri);
+    });
+
+    it(`should Resend confirmation registration Email if user exists`, async () => {
       await wait(10);
 
       await agent
@@ -134,6 +136,36 @@ describe('Auth: auth/registration-email-resending', () => {
         })
         .expect(204);
     }, 20000);
+
+    it(`"should Resend confirmation registration Email, 
+    SendRegistrationMailUseCase should be called`, async () => {
+      await agent
+        .post(auth_registration_uri)
+        .send({
+          login: userLogin03,
+          password: userPassword,
+          email: userEmail03,
+        })
+        .expect(204);
+
+      const executeSpy = jest.spyOn(
+        SendRegistrationMailUseCase.prototype,
+        'execute',
+      );
+
+      await agent
+        .post(auth_registrationEmailResending_uri)
+        .send({ email: userEmail03 })
+        .expect(204);
+
+      expect(executeSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: userEmail03,
+        }),
+      );
+
+      executeSpy.mockClear();
+    });
   });
 
   afterAll(async () => {

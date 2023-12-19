@@ -1,8 +1,11 @@
 import { randomUUID } from 'crypto';
 
 export const auth_login_uri = '/auth/login/';
+export const auth_passwordRecovery_uri = '/auth/password-recovery/';
 export const auth_newPassword_uri = '/auth/new-password/';
 export const auth_registration_uri = '/auth/registration/';
+export const auth_registrationConfirmation_uri =
+  '/auth/registration-confirmation/';
 export const auth_registrationEmailResending_uri =
   '/auth/registration-email-resending/';
 export const auth_logout_uri = '/auth/logout/';
@@ -38,4 +41,5 @@ export const registrationInputDto = {
 
 export const invalidAccessToken = `accessToken=${randomUUID()}`;
 export const invalidRefreshToken = `refreshToken=${randomUUID()}`;
+export const invalidConfirmationCode = `refreshToken=${randomUUID()}`;
 export const expiredAccessToken = `accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTgwMjI1MjA1MmI4ZTJjZGUwNzgxYzIiLCJpYXQiOjE3MDI4OTYyMTAsImV4cCI6MTcwMjg5OTgxMH0.DiIAJgMRXzrVwdWFSBSh2PZzI7L-1HQUJk6F-1w7C1U`;

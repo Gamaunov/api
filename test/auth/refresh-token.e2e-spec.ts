@@ -9,13 +9,13 @@ import {
 } from '../base/utils/constants/users.constants';
 import {
   auth_refreshToken_uri,
-  basicAuthLogin,
-  basicAuthPassword,
   invalidRefreshToken,
 } from '../base/utils/constants/auth.constants';
-import { initializeApp } from '../base/utils/functions/initializeApp';
+import { initializeApp } from '../base/settings/initializeApp';
 import { UsersTestManager } from '../base/managers/users.manager';
 import { wait } from '../base/utils/functions/wait';
+import { testing_allData_uri } from '../base/utils/constants/testing.constants';
+import { UsersRepository } from '../../src/features/users/infrastructure/users.repository';
 
 describe('Auth: auth/refresh-token', () => {
   let app: INestApplication;
@@ -26,7 +26,8 @@ describe('Auth: auth/refresh-token', () => {
     const result = await initializeApp();
     app = result.app;
     agent = result.agent;
-    usersTestManager = new UsersTestManager(app);
+    const usersRepository = app.get(UsersRepository);
+    usersTestManager = new UsersTestManager(app, usersRepository);
   });
 
   describe('negative: auth/refresh-token', () => {
@@ -42,11 +43,7 @@ describe('Auth: auth/refresh-token', () => {
     });
 
     it(`should return 401 if refreshToken is expired`, async () => {
-      await usersTestManager.createUser(
-        basicAuthLogin,
-        basicAuthPassword,
-        createUserInput3,
-      );
+      await usersTestManager.createUser(createUserInput3);
 
       const response = await usersTestManager.login(loginUserInput3);
 
@@ -64,14 +61,14 @@ describe('Auth: auth/refresh-token', () => {
   });
 
   describe('positive: auth/refresh-token', () => {
+    it(`should clear db`, async () => {
+      await agent.delete(testing_allData_uri);
+    });
+
     it(`should Generate new pair of access and refresh tokens 
         (in cookie client must send correct refreshToken 
         that will be revoked after refreshing`, async () => {
-      await usersTestManager.createUser(
-        basicAuthLogin,
-        basicAuthPassword,
-        createUserInput,
-      );
+      await usersTestManager.createUser(createUserInput);
 
       const response = await usersTestManager.login(loginUserInput);
 

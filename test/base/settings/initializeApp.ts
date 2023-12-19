@@ -6,10 +6,10 @@ import cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 import supertest from 'supertest';
 
-import { customExceptionFactory } from '../../../../src/infrastructure/exception-filters/exception.factory';
-import { HttpExceptionFilter } from '../../../../src/infrastructure/exception-filters/exception.filter';
-import { AppModule } from '../../../../src/app.module';
-import { testing_allData_uri } from '../constants/testing.constants';
+import { customExceptionFactory } from '../../../src/infrastructure/exception-filters/exception.factory';
+import { HttpExceptionFilter } from '../../../src/infrastructure/exception-filters/exception.filter';
+import { AppModule } from '../../../src/app.module';
+import { testing_allData_uri } from '../utils/constants/testing.constants';
 
 export const initializeApp = async () => {
   const moduleRef = await Test.createTestingModule({

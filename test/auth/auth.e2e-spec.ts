@@ -27,7 +27,7 @@ import {
   lorem20,
   lorem30,
 } from '../base/utils/constants/constants';
-import { initializeApp } from '../base/utils/functions/initializeApp';
+import { initializeApp } from '../base/settings/initializeApp';
 
 describe('auth', () => {
   let app: INestApplication;

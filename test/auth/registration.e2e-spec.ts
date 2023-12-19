@@ -6,13 +6,13 @@ import {
   createUserInput,
   userEmail01,
   userEmail02,
+  userEmail03,
   userLogin02,
+  userLogin03,
   userPassword,
 } from '../base/utils/constants/users.constants';
 import {
   auth_registration_uri,
-  basicAuthLogin,
-  basicAuthPassword,
   userAgent1,
 } from '../base/utils/constants/auth.constants';
 import {
@@ -22,8 +22,11 @@ import {
   lorem30,
 } from '../base/utils/constants/constants';
 import { wait } from '../base/utils/functions/wait';
-import { initializeApp } from '../base/utils/functions/initializeApp';
+import { initializeApp } from '../base/settings/initializeApp';
 import { UsersTestManager } from '../base/managers/users.manager';
+import { SendRegistrationMailUseCase } from '../../src/features/mail/application/use-cases/send-registration-mail.use-case';
+import { UsersRepository } from '../../src/features/users/infrastructure/users.repository';
+import { testing_allData_uri } from '../base/utils/constants/testing.constants';
 
 describe('Auth: auth/registration', () => {
   let app: INestApplication;
@@ -34,16 +37,13 @@ describe('Auth: auth/registration', () => {
     const result = await initializeApp();
     app = result.app;
     agent = result.agent;
-    usersTestManager = new UsersTestManager(app);
+    const usersRepository = app.get(UsersRepository);
+    usersTestManager = new UsersTestManager(app, usersRepository);
   });
 
   describe('negative: auth/registration', () => {
     it(`should create 1 user`, async () => {
-      await usersTestManager.createUser(
-        basicAuthLogin,
-        basicAuthPassword,
-        createUserInput,
-      );
+      await usersTestManager.createUser(createUserInput);
     });
 
     // negative
@@ -235,6 +235,10 @@ describe('Auth: auth/registration', () => {
   });
 
   describe('positive: auth/registration', () => {
+    it(`should clear db`, async () => {
+      await agent.delete(testing_allData_uri);
+    });
+
     it(`should return 204 when trying to Register in the system`, async () => {
       await wait(10);
 
@@ -247,6 +251,37 @@ describe('Auth: auth/registration', () => {
         })
         .expect(204);
     }, 50000);
+
+    it(`should return 204 when trying to Register in the system, 
+    SendRegistrationMailUseCase should be called`, async () => {
+      const executeSpy = jest.spyOn(
+        SendRegistrationMailUseCase.prototype,
+        'execute',
+      );
+
+      await agent
+        .post(auth_registration_uri)
+        .send({
+          login: userLogin03,
+          password: userPassword,
+          email: userEmail03,
+        })
+        .expect(204);
+
+      const confirmationCode = await usersTestManager.getConfirmationCode(
+        userEmail03,
+      );
+
+      expect(executeSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          login: userLogin03,
+          email: userEmail03,
+          confirmationCode: confirmationCode,
+        }),
+      );
+
+      executeSpy.mockClear();
+    });
   });
 
   afterAll(async () => {
