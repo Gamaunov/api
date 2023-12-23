@@ -1,8 +1,8 @@
 
 
 <p align="center">
-I have also added swagger documentation for this application, which is available <a href="https://myapi-y4ih.onrender.com/swagger" target="blank">here</a>
-note that this documentation is not complete and will be updated in the future.
+I have also added swagger <a href="https://myapi-y4ih.onrender.com/swagger" target="blank">documentation</a>.
+Note that this documentation is not complete and will be updated in the future.
 </p>
 
 <p align="center">
