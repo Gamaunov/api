@@ -1,4 +1,9 @@
-I have also added swagger documentation for this application, which is available at '/swagger'
+
+
+<p align="center">
+I have also added swagger documentation for this application, which is available <a href="https://myapi-y4ih.onrender.com/swagger" target="blank">here</a>
+note that this documentation is not complete and will be updated in the future.
+</p>
 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
